@@ -2,5 +2,20 @@
 
 .general-pane{
 	-fx-padding: 10.0px;
-	-fx-spacing: 5px;
+	-fx-spacing: 15.0px;
+}
+
+.label{
+	-fx-padding: 0.0 5.0 0.0 5.0;
+}
+
+.hbox-title{
+	-fx-background-color: #cccccc;
+}
+
+.button-menu{
+    -fx-padding: 5;
+    -fx-border-style: none;
+    -fx-border-width: 0;
+    -fx-border-insets: 0;
 }

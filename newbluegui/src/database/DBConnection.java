@@ -1,5 +1,6 @@
 package database;
 
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -8,14 +9,18 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import client.Client;
 import job.Job;
 import jobprice.JobPrice;
 import pricetable.PriceTable;
 
+
 public class DBConnection {
+
     private static String url = "jdbc:mysql://remotemysql.com:3306/C7e4RLuFgL?useTimezone=true&serverTimezone=UTC";
     private static String user = "C7e4RLuFgL";
     private static String password = "G8dSrzSuXN";
@@ -33,7 +38,7 @@ public class DBConnection {
             lgr.log(Level.SEVERE, ex.getMessage(), ex);
         }
     }
-    
+
     /* Tabela de Preços */
     public static void insertPriceTable(PriceTable p) {
         String query = "insert into PriceTable (name) values (?)";
@@ -50,7 +55,7 @@ public class DBConnection {
             throw new RuntimeException(u);
         }
     }
-    
+
     public static List<PriceTable> listPriceTable() {
         List<PriceTable> list = new ArrayList<PriceTable>();
 
@@ -77,16 +82,16 @@ public class DBConnection {
 
         return list;
     }
-    
+
     public static PriceTable getPriceTable(int id) {
         PriceTable p = null;
-        
-        String query = "SELECT * FROM PriceTable WHERE id = "+ id +";";
+
+        String query = "SELECT * FROM PriceTable WHERE id = " + id + ";";
 
         try {
             Statement st = connection.createStatement();
             ResultSet rs = st.executeQuery(query);
-            
+
             while (rs.next()) {
                 p = new PriceTable();
                 p.setId(rs.getInt("id"));
@@ -99,10 +104,10 @@ public class DBConnection {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
+
         return p;
     }
-    
+
     public static void deletePriceTable(int id) {
         String query = "DELETE FROM PriceTable WHERE id = ?;";
 
@@ -118,7 +123,7 @@ public class DBConnection {
             throw new RuntimeException(u);
         }
     }
-    
+
     public static void updatePriceTable(PriceTable p) {
         String query = "UPDATE PriceTable SET name = ? WHERE id = ?;";
 
@@ -135,7 +140,7 @@ public class DBConnection {
             throw new RuntimeException(u);
         }
     }
-    
+
     /* Trabalho */
     public static void insertJob(Job j) {
         String query = "insert into Job (name) values (?)";
@@ -152,7 +157,7 @@ public class DBConnection {
             throw new RuntimeException(u);
         }
     }
-    
+
     public static List<Job> listJob() {
         List<Job> list = new ArrayList<Job>();
 
@@ -179,16 +184,16 @@ public class DBConnection {
 
         return list;
     }
-    
+
     public static Job getJob(int id) {
         Job j = null;
-        
-        String query = "SELECT * FROM Job WHERE id = "+ id +";";
+
+        String query = "SELECT * FROM Job WHERE id = " + id + ";";
 
         try {
             Statement st = connection.createStatement();
             ResultSet rs = st.executeQuery(query);
-            
+
             while (rs.next()) {
                 j = new Job();
                 j.setId(rs.getInt("id"));
@@ -201,10 +206,10 @@ public class DBConnection {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
+
         return j;
     }
-    
+
     public static void deleteJob(int id) {
         String query = "DELETE FROM Job WHERE id = ?;";
 
@@ -220,7 +225,7 @@ public class DBConnection {
             throw new RuntimeException(u);
         }
     }
-    
+
     public static void updateJob(Job j) {
         String query = "UPDATE Job SET name = ? WHERE id = ?;";
 
@@ -237,7 +242,7 @@ public class DBConnection {
             throw new RuntimeException(u);
         }
     }
-    
+
     /* Preço */
     public static void insertJobPrice(JobPrice j) {
         String query = "insert into JobPrice (table_id, job_id, price) values (?, ?, ?)";
@@ -256,7 +261,7 @@ public class DBConnection {
             throw new RuntimeException(u);
         }
     }
-    
+
     public static List<JobPrice> listJobPrice() {
         List<JobPrice> list = new ArrayList<JobPrice>();
 
@@ -272,7 +277,7 @@ public class DBConnection {
                 j.setPriceTable(getPriceTable(rs.getInt("table_id")));
                 j.setJob(getJob(rs.getInt("job_id")));
                 j.setPrice(rs.getDouble("price"));
-                
+
                 list.add(j);
             }
 
@@ -285,7 +290,7 @@ public class DBConnection {
 
         return list;
     }
-    
+
     public static void deleteJobPrice(int id) {
         String query = "DELETE FROM JobPrice WHERE id = ?;";
 
@@ -301,7 +306,7 @@ public class DBConnection {
             throw new RuntimeException(u);
         }
     }
-    
+
     public static void updateJobPrice(JobPrice j) {
         String query = "UPDATE JobPrice SET table_id=?, job_id=?,price=? WHERE id = ?;";
 
@@ -320,5 +325,112 @@ public class DBConnection {
             throw new RuntimeException(u);
         }
     }
+
+    /* Cliente */
+    public static boolean insertClient(Client c) {
+        String query = "INSERT INTO Client (clientName, clientCpf, clientTel, clientCel, respName, respCpf, respTel, respCel, address, number, complement, city, state, cep, pricetable_id) VALUES"
+                + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            stmt.setString(1, c.getClientName());
+            stmt.setString(2, c.getClientCpf());
+            stmt.setString(3, c.getClientTel());
+            stmt.setString(4, c.getClientCel());
+            stmt.setString(5, c.getRespName());
+            stmt.setString(6, c.getRespCpf());
+            stmt.setString(7, c.getRespTel());
+            stmt.setString(8, c.getRespCel());
+            stmt.setString(9, c.getAddress());
+            stmt.setInt(10, c.getNumber());
+            stmt.setString(11, c.getComplement());
+            stmt.setString(12, c.getCity());
+            stmt.setString(13, c.getState());
+            stmt.setString(14, c.getCep());
+            stmt.setInt(15, c.getPriceTable().getId());
+
+            boolean result = stmt.execute();
+            stmt.close();
+
+            return result;
+        }
+        catch (SQLException u) {
+            throw new RuntimeException(u);
+        }
+    }
     
+    public static List<Client> listClients() {
+        List<Client> list = new ArrayList<Client>();
+
+        String query = "SELECT * FROM Client;";
+
+        try {
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
+
+            while (rs.next()) {
+                Client c = new Client();
+                c.setId(rs.getInt("id"));
+                c.setClientName(rs.getString("clientName"));
+                c.setClientCpf(rs.getString("clientCpf"));
+                c.setClientTel(rs.getString("clientTel"));
+                c.setClientCel(rs.getString("clientCel"));
+                c.setRespName(rs.getString("respName"));
+                c.setRespCpf(rs.getString("respCpf"));
+                c.setRespTel(rs.getString("respTel"));
+                c.setRespCel(rs.getString("respCel"));
+                c.setAddress(rs.getString("address"));
+                c.setNumber(rs.getInt("number"));
+                c.setComplement(rs.getString("complement"));
+                c.setCity(rs.getString("city"));
+                c.setState(rs.getString("state"));
+                c.setCep(rs.getString("cep"));
+                c.setPriceTable(getPriceTable(rs.getInt("pricetable_id")));
+
+                list.add(c);
+            }
+
+            st.close();
+        }
+        catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+    
+    public static boolean updateClient(Client c) {
+        String query = "UPDATE Client SET clientName = ?, clientCpf = ?, clientTel = ?, clientCel = ?, respName = ?, respCpf = ?, respTel = ?, respCel = ?, address = ?, number = ?, complement = ?, city = ?, state = ?, cep = ?, pricetable_id = ? WHERE id = ?";
+    
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            stmt.setString(1, c.getClientName());
+            stmt.setString(2, c.getClientCpf());
+            stmt.setString(3, c.getClientTel());
+            stmt.setString(4, c.getClientCel());
+            stmt.setString(5, c.getRespName());
+            stmt.setString(6, c.getRespCpf());
+            stmt.setString(7, c.getRespTel());
+            stmt.setString(8, c.getRespCel());
+            stmt.setString(9, c.getAddress());
+            stmt.setInt(10, c.getNumber());
+            stmt.setString(11, c.getComplement());
+            stmt.setString(12, c.getCity());
+            stmt.setString(13, c.getState());
+            stmt.setString(14, c.getCep());
+            stmt.setInt(15, c.getPriceTable().getId());
+            stmt.setInt(16, c.getId());
+
+            boolean r = stmt.execute();
+            stmt.close();
+            
+            return r;
+        }
+        catch (SQLException u) {
+            throw new RuntimeException(u);
+        }
+    }
 }
