@@ -9,8 +9,9 @@
 	-fx-padding: 0.0 5.0 0.0 5.0;
 }
 
-.hbox-title{
-	-fx-background-color: #cccccc;
+.hbox-table{
+	-fx-spacing: 5.0px;
+	-fx-padding: 5.0 0.0 0.0 0.0;
 }
 
 .button-menu{
@@ -18,4 +19,12 @@
     -fx-border-style: none;
     -fx-border-width: 0;
     -fx-border-insets: 0;
+}
+
+.jfx-tab-pane .tab-header-background {
+    -fx-background-color: #cccccc;
+}
+
+.jfx-tab-pane .headers-region .tab-container .tab-label {
+    -fx-text-fill: #000000;
 }
