@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -16,7 +18,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
 <AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ClientCtrl">
    <children>
@@ -82,26 +83,25 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints maxHeight="40.0" minHeight="40.0" prefHeight="40.0" vgrow="NEVER" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
                     </rowConstraints>
                      <children>
-                        <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="hbox-title" GridPane.columnSpan="4">
-                           <children>
-                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../icons/user.png" />
-                                 </image>
-                              </ImageView>
-                              <Label text="Cliente">
-                                 <font>
-                                    <Font name="System Bold" size="15.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </HBox>
+                        <JFXTabPane GridPane.columnSpan="4">
+                           <tabs>
+                              <Tab text="Cliente">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icons/user.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Tab>
+                           </tabs>
+                        </JFXTabPane>
                         <Label text="Nome:" GridPane.rowIndex="1" />
                         <Label text="CPF/CNPJ:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                         <Label text="Telefone:" GridPane.rowIndex="2" />
@@ -113,40 +113,41 @@
                         <Label text="Estado:" GridPane.rowIndex="5" />
                         <Label text="CEP:" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                         <Label text="Tabela:" GridPane.rowIndex="6" />
-                        <TextField fx:id="clientName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <TextField fx:id="clientCpf" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                        <TextField fx:id="clientTel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <TextField fx:id="clientCel" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                        <TextField fx:id="address" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        <TextField fx:id="number" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-                        <TextField fx:id="complement" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                        <TextField fx:id="city" GridPane.columnIndex="3" GridPane.rowIndex="4" />
-                        <ComboBox fx:id="state" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                        <ComboBox fx:id="clientTable" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                        <TextField fx:id="cep" GridPane.columnIndex="3" GridPane.rowIndex="5" />
                         <Label text="Nome:" GridPane.rowIndex="9" />
-                        <TextField fx:id="respName" GridPane.columnIndex="1" GridPane.rowIndex="9" />
                         <Label text="Telefone:" GridPane.rowIndex="10" />
-                        <TextField fx:id="respTel" GridPane.columnIndex="1" GridPane.rowIndex="10" />
                         <Label text="Celular:" GridPane.columnIndex="2" GridPane.rowIndex="10" />
-                        <TextField fx:id="respCel" GridPane.columnIndex="3" GridPane.rowIndex="10" />
                         <Label text="CPF:" GridPane.columnIndex="2" GridPane.rowIndex="9" />
-                        <TextField fx:id="respCpf" GridPane.columnIndex="3" GridPane.rowIndex="9" />
-                        <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="hbox-title" GridPane.columnSpan="4" GridPane.rowIndex="8">
-                           <children>
-                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../icons/resp.png" />
-                                 </image>
-                              </ImageView>
-                              <Label text="Responsável">
-                                 <font>
-                                    <Font name="System Bold" size="15.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </HBox>
-                        <Separator prefWidth="200.0" GridPane.columnSpan="4" GridPane.rowIndex="7" />
+                        <JFXTabPane GridPane.columnSpan="4" GridPane.rowIndex="8">
+                           <tabs>
+                              <Tab text="Responsável">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icons/resp.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Tab>
+                           </tabs>
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
+                        </JFXTabPane>
+                        <JFXTextField fx:id="clientName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <JFXTextField fx:id="clientTel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <JFXTextField fx:id="address" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <JFXTextField fx:id="complement" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <JFXTextField fx:id="clientCpf" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                        <JFXTextField fx:id="clientCel" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                        <JFXTextField fx:id="number" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                        <JFXTextField fx:id="city" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                        <JFXTextField fx:id="cep" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+                        <JFXTextField fx:id="respName" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                        <JFXTextField fx:id="respTel" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                        <JFXTextField fx:id="respCpf" GridPane.columnIndex="3" GridPane.rowIndex="9" />
+                        <JFXTextField fx:id="respCel" GridPane.columnIndex="3" GridPane.rowIndex="10" />
+                        <JFXComboBox fx:id="state" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <JFXComboBox fx:id="clientTable" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                      </children>
                   </GridPane>
                   <Separator orientation="VERTICAL" HBox.hgrow="NEVER" />
