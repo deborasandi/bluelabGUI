@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -12,6 +14,18 @@ public class MainPanelCtrl {
     
     @FXML
     private HBox mainPanel;
+    
+    @FXML
+    private ToggleButton btnClient;
+
+    @FXML
+    private ToggleGroup menu;
+
+    @FXML
+    private ToggleButton btnTables;
+
+    @FXML
+    private ToggleButton btnJobs;
     
     private AnchorPane clientPanel;
     
@@ -39,12 +53,19 @@ public class MainPanelCtrl {
             mainPanel.getChildren().remove(1);
         
         mainPanel.getChildren().add(clientPanel);
+        
+        if(!btnClient.isSelected()) 
+            btnClient.setSelected(true);
+        
     }
 
     @FXML
     void loadJobPanel() {
         if(mainPanel.getChildren().size() > 1)
             mainPanel.getChildren().remove(1);
+        
+        if(!btnJobs.isSelected()) 
+            btnJobs.setSelected(true);
     }
 
     @FXML
@@ -53,5 +74,8 @@ public class MainPanelCtrl {
             mainPanel.getChildren().remove(1);
         
         mainPanel.getChildren().add(tablePanel);
+        
+        if(!btnTables.isSelected()) 
+            btnTables.setSelected(true);
     }
 }

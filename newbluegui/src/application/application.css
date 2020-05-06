@@ -15,10 +15,10 @@
 }
 
 .button-menu{
-    -fx-padding: 5;
+    -fx-padding: 5.0;
     -fx-border-style: none;
-    -fx-border-width: 0;
-    -fx-border-insets: 0;
+    -fx-border-width: 0.0;
+    -fx-border-insets: 0.0;
 }
 
 .jfx-tab-pane .tab-header-background {
@@ -30,5 +30,16 @@
 }
 
 .jfx-tab-pane .headers-region .tab .tab-container .tab-label {
-    -fx-font-size: 15;
+    -fx-font-size: 15.0;
+}
+
+.button {
+    -fx-background-color: TRANSPARENT, TRANSPARENT, TRANSPARENT, TRANSPARENT;
+    -fx-background-radius: 3px;
+    -fx-background-insets: 0px;
+}
+
+.button:selected{
+	-fx-background-color: #d9d9d9;
+	-fx-font-weight: BOLD;
 }

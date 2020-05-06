@@ -14,7 +14,7 @@
          <children>
             <VBox minWidth="160.0" spacing="5.0" HBox.hgrow="NEVER">
                <children>
-                  <ToggleButton alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#loadClientPanel" text="Cliente">
+                  <ToggleButton fx:id="btnClient" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#loadClientPanel" styleClass="button" text="Cliente">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -26,7 +26,7 @@
                         <ToggleGroup fx:id="menu" />
                      </toggleGroup>
                   </ToggleButton>
-                  <ToggleButton alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#loadTablesPanel" text="Tabelas e Trabalhos" toggleGroup="$menu">
+                  <ToggleButton fx:id="btnTables" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#loadTablesPanel" styleClass="button" text="Tabelas e Trabalhos" toggleGroup="$menu">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -35,7 +35,7 @@
                         </ImageView>
                      </graphic>
                   </ToggleButton>
-                  <ToggleButton alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#loadJobPanel" text="Lançar Trabalho" toggleGroup="$menu">
+                  <ToggleButton fx:id="btnJobs" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#loadJobPanel" styleClass="button" text="Lançar Trabalho" toggleGroup="$menu">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
