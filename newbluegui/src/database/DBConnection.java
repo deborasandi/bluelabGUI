@@ -158,7 +158,7 @@ public class DBConnection {
         }
     }
 
-    public static List<JobType> listJob() {
+    public static List<JobType> listJobType() {
         List<JobType> list = new ArrayList<JobType>();
 
         String query = "SELECT * FROM JobType;";

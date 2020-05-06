@@ -26,20 +26,20 @@
                         <ToggleGroup fx:id="menu" />
                      </toggleGroup>
                   </ToggleButton>
-                  <ToggleButton fx:id="btnTables" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#loadTablesPanel" styleClass="button" text="Tabelas e Trabalhos" toggleGroup="$menu">
-                     <graphic>
-                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../icons/dados.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </ToggleButton>
                   <ToggleButton fx:id="btnJobs" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#loadJobPanel" styleClass="button" text="Lançar Trabalho" toggleGroup="$menu">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../icons/new-job.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </ToggleButton>
+                  <ToggleButton fx:id="btnTables" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#loadTablesPanel" styleClass="button" text="Tabelas e Trabalhos" toggleGroup="$menu">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/dados.png" />
                            </image>
                         </ImageView>
                      </graphic>

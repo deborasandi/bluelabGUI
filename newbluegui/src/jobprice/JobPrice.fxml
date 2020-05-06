@@ -2,6 +2,7 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXTabPane?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TableColumn?>
@@ -14,159 +15,192 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jobprice.JobPriceCtrl">
    <children>
-      <HBox spacing="10.0" styleClass="general-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <HBox spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <JFXTabPane HBox.hgrow="ALWAYS">
-               <tabs>
-                  <Tab text="Tabela">
-                    <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0">
-                           <children>
-                              <HBox styleClass="hbox-table" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <children>
-                                    <TableView fx:id="viewTable" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
-                                      <columns>
-                                        <TableColumn fx:id="colTableId" prefWidth="75.0" text="ID" />
-                                        <TableColumn fx:id="colTableName" prefWidth="75.0" text="Tabela" />
-                                      </columns>
-                                    </TableView>
-                                    <VBox spacing="5.0">
+            <VBox HBox.hgrow="ALWAYS">
+               <children>
+                  <HBox styleClass="button-panel" VBox.vgrow="NEVER">
+                     <children>
+                        <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#newTable">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/novo-documento.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                        <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" disable="true">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/save.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                        <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#deleteTable">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/delete.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                        <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#refresh">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/refresh.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <AnchorPane styleClass="general-pane" VBox.vgrow="ALWAYS">
+                     <children>
+                        <JFXTabPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <tabs>
+                              <Tab fx:id="tabTable" text="Tabela">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0">
                                        <children>
-                                          <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY">
-                                             <graphic>
-                                                <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                                                   <image>
-                                                      <Image url="@../icons/add.png" />
-                                                   </image>
-                                                </ImageView>
-                                             </graphic>
-                                          </JFXButton>
-                                          <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#deleteTable">
-                                             <graphic>
-                                                <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                                                   <image>
-                                                      <Image url="@../icons/delete.png" />
-                                                   </image>
-                                                </ImageView>
-                                             </graphic>
-                                          </JFXButton>
+                                          <TableView fx:id="viewTable" layoutY="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <columns>
+                                              <TableColumn fx:id="colTableId" prefWidth="75.0" text="ID" />
+                                              <TableColumn fx:id="colTableName" prefWidth="75.0" text="Tabela" />
+                                            </columns>
+                                          </TableView>
                                        </children>
-                                    </VBox>
-                                 </children>
-                              </HBox>
-                           </children>
-                        </AnchorPane>
-                    </content>
-                     <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../icons/spreadsheet.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Tab>
-                  <Tab text="Trabalho">
-                    <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0">
-                           <children>
-                              <HBox styleClass="hbox-table" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <children>
-                                    <TableView fx:id="viewJob" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
-                                      <columns>
-                                        <TableColumn fx:id="colJobId" prefWidth="75.0" text="ID" />
-                                        <TableColumn fx:id="colJobName" prefWidth="75.0" text="Trabalho" />
-                                      </columns>
-                                    </TableView>
-                                    <VBox spacing="5.0">
+                                       <padding>
+                                          <Insets top="5.0" />
+                                       </padding>
+                                    </AnchorPane>
+                                </content>
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icons/spreadsheet.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Tab>
+                              <Tab fx:id="tabJob" text="Trabalho">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0">
                                        <children>
-                                          <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#insertJob">
-                                             <graphic>
-                                                <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                                                   <image>
-                                                      <Image url="@../icons/add.png" />
-                                                   </image>
-                                                </ImageView>
-                                             </graphic>
-                                          </JFXButton>
-                                          <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#deleteJob">
-                                             <graphic>
-                                                <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                                                   <image>
-                                                      <Image url="@../icons/delete.png" />
-                                                   </image>
-                                                </ImageView>
-                                             </graphic>
-                                          </JFXButton>
+                                          <TableView fx:id="viewJob" layoutY="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <columns>
+                                              <TableColumn fx:id="colJobId" prefWidth="75.0" text="ID" />
+                                              <TableColumn fx:id="colJobName" prefWidth="75.0" text="Trabalho" />
+                                            </columns>
+                                             <padding>
+                                                <Insets top="5.0" />
+                                             </padding>
+                                          </TableView>
                                        </children>
-                                    </VBox>
-                                 </children>
-                              </HBox>
-                           </children>
-                        </AnchorPane>
-                    </content>
-                     <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../icons/medical.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Tab>
-               </tabs>
-            </JFXTabPane>
+                                    </AnchorPane>
+                                </content>
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icons/medico-plus.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Tab>
+                           </tabs>
+                        </JFXTabPane>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </VBox>
             <Separator orientation="VERTICAL" prefHeight="200.0" HBox.hgrow="NEVER" />
-            <JFXTabPane HBox.hgrow="ALWAYS">
-               <tabs>
-                  <Tab text="Preços">
-                    <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0">
-                           <children>
-                              <HBox styleClass="hbox-table" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <children>
-                                    <TableView fx:id="viewPrice" HBox.hgrow="ALWAYS">
-                                      <columns>
-                                        <TableColumn fx:id="colTable" prefWidth="75.0" text="Tabela" />
-                                        <TableColumn fx:id="colJob" prefWidth="75.0" text="Trabalho" />
-                                          <TableColumn fx:id="colPrice" prefWidth="75.0" text="Preço" />
-                                      </columns>
-                                    </TableView>
-                                    <VBox spacing="5.0" HBox.hgrow="NEVER">
+            <VBox HBox.hgrow="ALWAYS">
+               <children>
+                  <HBox styleClass="button-panel" VBox.vgrow="NEVER">
+                     <children>
+                        <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#insertPrice">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/novo-documento.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                        <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" disable="true">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/save.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                        <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#deletePrice">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/delete.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                        <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#refresh">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/refresh.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <AnchorPane styleClass="general-pane" VBox.vgrow="ALWAYS">
+                     <children>
+                        <JFXTabPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <tabs>
+                              <Tab text="Preços">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0">
                                        <children>
-                                          <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#insertPrice">
-                                             <graphic>
-                                                <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                                                   <image>
-                                                      <Image url="@../icons/add.png" />
-                                                   </image>
-                                                </ImageView>
-                                             </graphic>
-                                          </JFXButton>
-                                          <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#deletePrice">
-                                             <graphic>
-                                                <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                                                   <image>
-                                                      <Image url="@../icons/delete.png" />
-                                                   </image>
-                                                </ImageView>
-                                             </graphic>
-                                          </JFXButton>
+                                          <TableView fx:id="viewPrice" layoutY="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <columns>
+                                              <TableColumn fx:id="colTable" prefWidth="75.0" text="Tabela" />
+                                              <TableColumn fx:id="colJob" prefWidth="75.0" text="Trabalho" />
+                                                <TableColumn fx:id="colPrice" prefWidth="75.0" text="Preço" />
+                                            </columns>
+                                             <padding>
+                                                <Insets top="5.0" />
+                                             </padding>
+                                          </TableView>
                                        </children>
-                                    </VBox>
-                                 </children>
-                              </HBox>
-                           </children>
-                        </AnchorPane>
-                    </content>
-                     <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../icons/business.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Tab>
-               </tabs>
-            </JFXTabPane>
+                                    </AnchorPane>
+                                </content>
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icons/business.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Tab>
+                           </tabs>
+                        </JFXTabPane>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </VBox>
          </children>
       </HBox>
    </children>

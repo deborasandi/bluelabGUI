@@ -52,7 +52,7 @@
                         </ImageView>
                      </graphic>
                   </JFXButton>
-                  <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY">
+                  <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#refresh">
                      <graphic>
                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                            <image>

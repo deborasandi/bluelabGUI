@@ -31,13 +31,17 @@ public class MainPanelCtrl {
     
     private AnchorPane tablePanel;
     
+    private AnchorPane jobPanel;
+    
     public void initialize() {
         try {
            clientPanel = FXMLLoader.load(getClass().getResource("../client/Client.fxml"));
            tablePanel = FXMLLoader.load(getClass().getResource("../jobprice/JobPrice.fxml"));
+           jobPanel = FXMLLoader.load(getClass().getResource("../job/Job.fxml"));
            
            HBox.setHgrow(clientPanel, Priority.ALWAYS);
            HBox.setHgrow(tablePanel, Priority.ALWAYS);
+           HBox.setHgrow(jobPanel, Priority.ALWAYS);
         }
         catch (IOException e) {
             // TODO Auto-generated catch block
@@ -63,6 +67,8 @@ public class MainPanelCtrl {
     void loadJobPanel() {
         if(mainPanel.getChildren().size() > 1)
             mainPanel.getChildren().remove(1);
+        
+        mainPanel.getChildren().add(jobPanel);
         
         if(!btnJobs.isSelected()) 
             btnJobs.setSelected(true);

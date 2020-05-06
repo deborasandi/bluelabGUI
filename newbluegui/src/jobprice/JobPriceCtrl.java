@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
@@ -18,6 +19,12 @@ import pricetable.PriceTable;
 
 
 public class JobPriceCtrl {
+
+    @FXML
+    private Tab tabTable;
+
+    @FXML
+    private Tab tabJob;
 
     @FXML
     private TableView<PriceTable> viewTable;
@@ -63,7 +70,7 @@ public class JobPriceCtrl {
         listPriceTable = FXCollections.observableArrayList(DBConnection.listPriceTable());
         viewTable.getItems().addAll(listPriceTable);
 
-        listJob = FXCollections.observableArrayList(DBConnection.listJob());
+        listJob = FXCollections.observableArrayList(DBConnection.listJobType());
         viewJob.getItems().addAll(listJob);
 
         listPrice = FXCollections.observableArrayList(DBConnection.listJobPrice());
@@ -184,7 +191,7 @@ public class JobPriceCtrl {
     }
 
     private void refreshViewJob() {
-        listJob = FXCollections.observableArrayList(DBConnection.listJob());
+        listJob = FXCollections.observableArrayList(DBConnection.listJobType());
         viewJob.getItems().clear();
         viewJob.getItems().addAll(listJob);
     }
@@ -196,15 +203,15 @@ public class JobPriceCtrl {
     }
 
     @FXML
-    void insertTable() {
-        PriceTable p = new PriceTable();
-        viewTable.getItems().add(p);
-    }
-
-    @FXML
-    void insertJob() {
-        JobType j = new JobType();
-        viewJob.getItems().add(j);
+    void newTable() {
+        if (tabTable.isSelected()) {
+            PriceTable p = new PriceTable();
+            viewTable.getItems().add(p);
+        }
+        else {
+            JobType j = new JobType();
+            viewJob.getItems().add(j);
+        }
     }
 
     @FXML
@@ -215,19 +222,19 @@ public class JobPriceCtrl {
 
     @FXML
     void deleteTable() {
-        PriceTable p = viewTable.getSelectionModel().getSelectedItem();
-        if (p != null && p.getId() != 0)
-            DBConnection.deletePriceTable(p.getId());
-        refreshViewTable();
-        refreshViewPrice();
-    }
+        if (tabTable.isSelected()) {
+            PriceTable p = viewTable.getSelectionModel().getSelectedItem();
+            if (p != null && p.getId() != 0)
+                DBConnection.deletePriceTable(p.getId());
+            refreshViewTable();
+        }
+        else {
+            JobType j = viewJob.getSelectionModel().getSelectedItem();
+            if (j != null && j.getId() != 0)
+                DBConnection.deleteJob(j.getId());
+            refreshViewJob();
+        }
 
-    @FXML
-    void deleteJob() {
-        JobType j = viewJob.getSelectionModel().getSelectedItem();
-        if (j != null && j.getId() != 0)
-            DBConnection.deleteJob(j.getId());
-        refreshViewJob();
         refreshViewPrice();
     }
 
@@ -237,5 +244,12 @@ public class JobPriceCtrl {
         if (jp != null && jp.getId() != 0)
             DBConnection.deleteJobPrice(jp.getId());
         refreshViewPrice();
+    }
+    
+    @FXML
+    void refresh() {
+        refreshViewPrice();
+        refreshViewJob();
+        refreshViewTable();
     }
 }
