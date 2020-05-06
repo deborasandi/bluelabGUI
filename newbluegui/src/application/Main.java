@@ -14,7 +14,7 @@ public class Main extends Application {
 		try {
 		    DBConnection db = new DBConnection();
 		    Parent root = FXMLLoader.load(getClass().getResource("MainPanel.fxml"));
-			Scene scene = new Scene(root,800,500);
+			Scene scene = new Scene(root,960,600);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.show();
