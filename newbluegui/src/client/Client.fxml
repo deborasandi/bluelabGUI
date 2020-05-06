@@ -23,7 +23,7 @@
    <children>
       <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <HBox spacing="5.0" VBox.vgrow="NEVER">
+            <HBox styleClass="button-panel" VBox.vgrow="NEVER">
                <children>
                   <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#newClient">
                      <graphic>
@@ -63,7 +63,7 @@
                   </JFXButton>
                </children>
                <VBox.margin>
-                  <Insets left="5.0" top="5.0" />
+                  <Insets top="5.0" />
                </VBox.margin>
             </HBox>
             <HBox styleClass="general-pane" VBox.vgrow="ALWAYS">
