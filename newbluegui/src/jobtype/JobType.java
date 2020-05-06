@@ -1,13 +1,13 @@
-package job;
+package jobtype;
 
-public class Job {
+public class JobType {
     private int id;
     private String name;
 
-    public Job(int id, String name) {
+    public JobType(int id, String name) {
     }
 
-    public Job() {
+    public JobType() {
     }
 
     public int getId() {

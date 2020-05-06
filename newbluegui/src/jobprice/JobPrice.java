@@ -1,15 +1,15 @@
 package jobprice;
 
-import job.Job;
+import jobtype.JobType;
 import pricetable.PriceTable;
 
 public class JobPrice {
     private int id;
-    private Job job;
+    private JobType job;
     private PriceTable priceTable;
     private double price;
     
-    public JobPrice(int id, Job job, PriceTable priceTable, double price) {
+    public JobPrice(int id, JobType job, PriceTable priceTable, double price) {
         super();
         this.id = id;
         this.job = job;
@@ -29,11 +29,11 @@ public class JobPrice {
         this.id = id;
     }
     
-    public Job getJob() {
+    public JobType getJob() {
         return job;
     }
     
-    public void setJob(Job job) {
+    public void setJob(JobType job) {
         this.job = job;
     }
     

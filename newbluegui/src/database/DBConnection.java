@@ -14,8 +14,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import client.Client;
-import job.Job;
 import jobprice.JobPrice;
+import jobtype.JobType;
 import pricetable.PriceTable;
 
 
@@ -142,8 +142,8 @@ public class DBConnection {
     }
 
     /* Trabalho */
-    public static void insertJob(Job j) {
-        String query = "insert into Job (name) values (?)";
+    public static void insertJob(JobType j) {
+        String query = "insert into JobType (name) values (?)";
 
         try {
             PreparedStatement stmt = connection.prepareStatement(query);
@@ -158,17 +158,17 @@ public class DBConnection {
         }
     }
 
-    public static List<Job> listJob() {
-        List<Job> list = new ArrayList<Job>();
+    public static List<JobType> listJob() {
+        List<JobType> list = new ArrayList<JobType>();
 
-        String query = "SELECT * FROM Job;";
+        String query = "SELECT * FROM JobType;";
 
         try {
             Statement st = connection.createStatement();
             ResultSet rs = st.executeQuery(query);
 
             while (rs.next()) {
-                Job j = new Job();
+                JobType j = new JobType();
                 j.setId(rs.getInt("id"));
                 j.setName(rs.getString("name"));
 
@@ -185,17 +185,17 @@ public class DBConnection {
         return list;
     }
 
-    public static Job getJob(int id) {
-        Job j = null;
+    public static JobType getJob(int id) {
+        JobType j = null;
 
-        String query = "SELECT * FROM Job WHERE id = " + id + ";";
+        String query = "SELECT * FROM JobType WHERE id = " + id + ";";
 
         try {
             Statement st = connection.createStatement();
             ResultSet rs = st.executeQuery(query);
 
             while (rs.next()) {
-                j = new Job();
+                j = new JobType();
                 j.setId(rs.getInt("id"));
                 j.setName(rs.getString("name"));
             }
@@ -211,7 +211,7 @@ public class DBConnection {
     }
 
     public static void deleteJob(int id) {
-        String query = "DELETE FROM Job WHERE id = ?;";
+        String query = "DELETE FROM JobType WHERE id = ?;";
 
         try {
             PreparedStatement stmt = connection.prepareStatement(query);
@@ -226,8 +226,8 @@ public class DBConnection {
         }
     }
 
-    public static void updateJob(Job j) {
-        String query = "UPDATE Job SET name = ? WHERE id = ?;";
+    public static void updateJob(JobType j) {
+        String query = "UPDATE JobType SET name = ? WHERE id = ?;";
 
         try {
             PreparedStatement stmt = connection.prepareStatement(query);

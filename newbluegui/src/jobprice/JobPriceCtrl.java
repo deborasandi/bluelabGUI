@@ -13,7 +13,7 @@ import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.converter.DoubleStringConverter;
-import job.Job;
+import jobtype.JobType;
 import pricetable.PriceTable;
 
 
@@ -29,13 +29,13 @@ public class JobPriceCtrl {
     private TableColumn<PriceTable, String> colTableName;
 
     @FXML
-    private TableView<Job> viewJob;
+    private TableView<JobType> viewJob;
 
     @FXML
-    private TableColumn<Job, Integer> colJobId;
+    private TableColumn<JobType, Integer> colJobId;
 
     @FXML
-    private TableColumn<Job, String> colJobName;
+    private TableColumn<JobType, String> colJobName;
 
     @FXML
     private TableView<JobPrice> viewPrice;
@@ -44,14 +44,14 @@ public class JobPriceCtrl {
     private TableColumn<JobPrice, PriceTable> colTable;
 
     @FXML
-    private TableColumn<JobPrice, Job> colJob;
+    private TableColumn<JobPrice, JobType> colJob;
 
     @FXML
     private TableColumn<JobPrice, Double> colPrice;
 
     private ObservableList<PriceTable> listPriceTable;
 
-    private ObservableList<Job> listJob;
+    private ObservableList<JobType> listJob;
 
     private ObservableList<JobPrice> listPrice;
 
@@ -101,11 +101,11 @@ public class JobPriceCtrl {
 
         colJobName.setCellFactory(TextFieldTableCell.forTableColumn());
 
-        colJobName.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Job, String>>() {
+        colJobName.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<JobType, String>>() {
 
             @Override
-            public void handle(CellEditEvent<Job, String> event) {
-                Job j = event.getTableView().getItems().get(event.getTablePosition().getRow());
+            public void handle(CellEditEvent<JobType, String> event) {
+                JobType j = event.getTableView().getItems().get(event.getTablePosition().getRow());
                 j.setName(event.getNewValue());
 
                 if (j.getId() == 0)
@@ -139,10 +139,10 @@ public class JobPriceCtrl {
 
         colJob.setCellValueFactory(new PropertyValueFactory<>("job"));
         colJob.setCellFactory(ComboBoxTableCell.forTableColumn(listJob));
-        colJob.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<JobPrice, Job>>() {
+        colJob.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<JobPrice, JobType>>() {
 
             @Override
-            public void handle(CellEditEvent<JobPrice, Job> event) {
+            public void handle(CellEditEvent<JobPrice, JobType> event) {
                 JobPrice j = event.getTableView().getItems().get(event.getTablePosition().getRow());
                 j.setJob(event.getNewValue());
 
@@ -203,7 +203,7 @@ public class JobPriceCtrl {
 
     @FXML
     void insertJob() {
-        Job j = new Job();
+        JobType j = new JobType();
         viewJob.getItems().add(j);
     }
 
@@ -224,7 +224,7 @@ public class JobPriceCtrl {
 
     @FXML
     void deleteJob() {
-        Job j = viewJob.getSelectionModel().getSelectedItem();
+        JobType j = viewJob.getSelectionModel().getSelectedItem();
         if (j != null && j.getId() != 0)
             DBConnection.deleteJob(j.getId());
         refreshViewJob();
