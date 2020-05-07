@@ -95,8 +95,10 @@ public class JobPriceCtrl {
 
                 if (p.getId() == 0)
                     DBConnection.insertPriceTable(p);
-                else
+                else {
                     DBConnection.updatePriceTable(p);
+                    refreshViewPrice();
+                }
 
                 refreshViewTable();
             }
@@ -117,8 +119,10 @@ public class JobPriceCtrl {
 
                 if (j.getId() == 0)
                     DBConnection.insertJob(j);
-                else
+                else {
                     DBConnection.updateJob(j);
+                    refreshViewPrice();
+                }
 
                 refreshViewJob();
             }
@@ -139,6 +143,7 @@ public class JobPriceCtrl {
                         DBConnection.insertJobPrice(j);
                     else
                         DBConnection.updateJobPrice(j);
+                    
                     refreshViewPrice();
                 }
             }
@@ -158,6 +163,7 @@ public class JobPriceCtrl {
                         DBConnection.insertJobPrice(j);
                     else
                         DBConnection.updateJobPrice(j);
+                    
                     refreshViewPrice();
                 }
             }
@@ -177,6 +183,7 @@ public class JobPriceCtrl {
                         DBConnection.insertJobPrice(j);
                     else
                         DBConnection.updateJobPrice(j);
+                    
                     refreshViewPrice();
                 }
             }
@@ -188,12 +195,16 @@ public class JobPriceCtrl {
         listPriceTable = FXCollections.observableArrayList(DBConnection.listPriceTable());
         viewTable.getItems().clear();
         viewTable.getItems().addAll(listPriceTable);
+        
+        colTable.setCellFactory(ComboBoxTableCell.forTableColumn(listPriceTable));
     }
 
     private void refreshViewJob() {
         listJob = FXCollections.observableArrayList(DBConnection.listJobType());
         viewJob.getItems().clear();
         viewJob.getItems().addAll(listJob);
+        
+        colJob.setCellFactory(ComboBoxTableCell.forTableColumn(listJob));
     }
 
     private void refreshViewPrice() {

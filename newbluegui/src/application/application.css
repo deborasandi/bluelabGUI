@@ -2,21 +2,26 @@
 
 .general-pane{
 	-fx-padding: 10.0px;
-	-fx-spacing: 15.0px;
+}
+
+.menu-panel{
+	-fx-padding: 5.0 0.0 0.0 5.0;
 }
 
 .button-panel{
-	-fx-padding: 0.0 5.0 0.0 5.0;
-	-fx-spacing: 5.0px;
+	-fx-padding: 0.0 0.0 5.0 0.0;
+}
+
+.hbox-main{
+	-fx-spacing: 15.0px;
+}
+
+.table-panel{
+	-fx-padding: 5.0 0.0 0.0 0.0;
 }
 
 .label{
 	-fx-padding: 0.0 5.0 0.0 5.0;
-}
-
-.hbox-table{
-	-fx-spacing: 5.0px;
-	-fx-padding: 5.0 0.0 0.0 0.0;
 }
 
 .jfx-tab-pane .tab-header-background {
@@ -37,7 +42,7 @@
     -fx-background-insets: 0px;
 }
 
-.button:selected{
+.button:selected, .button:hover{
 	-fx-background-color: #d9d9d9;
 	-fx-font-weight: BOLD;
 }

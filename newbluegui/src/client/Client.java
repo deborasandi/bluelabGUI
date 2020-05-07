@@ -4,17 +4,17 @@ import pricetable.PriceTable;
 
 public class Client {
     private int id;
-    private String clientName;
-    private String clientCpf;
-    private String clientTel;
-    private String clientCel;
+    private String name;
+    private String cpf;
+    private String tel;
+    private String cel;
     private String respName;
     private String respCpf;
     private String respTel;
     private String respCel;
     private String address;
     private int number;
-    private String complement;
+    private String compl;
     private String city;
     private String state;
     private String cep;
@@ -36,32 +36,32 @@ public class Client {
 
     
     public String getClientName() {
-        return clientName;
+        return name;
     }
 
     
     public void setClientName(String clientName) {
-        this.clientName = clientName;
+        this.name = clientName;
     }
 
     
     public String getClientCpf() {
-        return clientCpf;
+        return cpf;
     }
 
     
     public void setClientCpf(String clientCpf) {
-        this.clientCpf = clientCpf;
+        this.cpf = clientCpf;
     }
 
     
     public String getClientTel() {
-        return clientTel;
+        return tel;
     }
 
     
     public void setClientTel(String clientTel) {
-        this.clientTel = clientTel;
+        this.tel = clientTel;
     }
 
     
@@ -116,12 +116,12 @@ public class Client {
 
     
     public String getComplement() {
-        return complement;
+        return compl;
     }
 
     
     public void setComplement(String complement) {
-        this.complement = complement;
+        this.compl = complement;
     }
 
     
@@ -166,12 +166,12 @@ public class Client {
 
 
     public String getClientCel() {
-        return clientCel;
+        return cel;
     }
 
 
     public void setClientCel(String clientCel) {
-        this.clientCel = clientCel;
+        this.cel = clientCel;
     }
 
 
@@ -187,6 +187,6 @@ public class Client {
 
     @Override
     public String toString() {
-        return this.clientName;
+        return this.name;
     }
 }

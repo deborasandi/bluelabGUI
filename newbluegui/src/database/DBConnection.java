@@ -21,9 +21,9 @@ import pricetable.PriceTable;
 
 public class DBConnection {
 
-    private static String url = "jdbc:mysql://remotemysql.com:3306/C7e4RLuFgL?useTimezone=true&serverTimezone=UTC";
-    private static String user = "C7e4RLuFgL";
-    private static String password = "G8dSrzSuXN";
+    private static String url = "jdbc:mysql://bluelabdb.c7tsyx37zboh.us-east-2.rds.amazonaws.com:3306/bluelabdb?useTimezone=true&serverTimezone=UTC";
+    private static String user = "bluelabadmin";
+    private static String password = "bluelabadmin";
 
     private static Connection connection;
 
@@ -41,7 +41,7 @@ public class DBConnection {
 
     /* Tabela de Preços */
     public static void insertPriceTable(PriceTable p) {
-        String query = "insert into PriceTable (name) values (?)";
+        String query = "insert into price_table (name) values (?)";
 
         try {
             PreparedStatement stmt = connection.prepareStatement(query);
@@ -59,7 +59,7 @@ public class DBConnection {
     public static List<PriceTable> listPriceTable() {
         List<PriceTable> list = new ArrayList<PriceTable>();
 
-        String query = "SELECT * FROM PriceTable;";
+        String query = "SELECT * FROM price_table;";
 
         try {
             Statement st = connection.createStatement();
@@ -86,7 +86,7 @@ public class DBConnection {
     public static PriceTable getPriceTable(int id) {
         PriceTable p = null;
 
-        String query = "SELECT * FROM PriceTable WHERE id = " + id + ";";
+        String query = "SELECT * FROM price_table WHERE id = " + id + ";";
 
         try {
             Statement st = connection.createStatement();
@@ -109,7 +109,7 @@ public class DBConnection {
     }
 
     public static void deletePriceTable(int id) {
-        String query = "DELETE FROM PriceTable WHERE id = ?;";
+        String query = "DELETE FROM price_table WHERE id = ?;";
 
         try {
             PreparedStatement stmt = connection.prepareStatement(query);
@@ -125,7 +125,7 @@ public class DBConnection {
     }
 
     public static void updatePriceTable(PriceTable p) {
-        String query = "UPDATE PriceTable SET name = ? WHERE id = ?;";
+        String query = "UPDATE price_table SET name = ? WHERE id = ?;";
 
         try {
             PreparedStatement stmt = connection.prepareStatement(query);
@@ -143,7 +143,7 @@ public class DBConnection {
 
     /* Trabalho */
     public static void insertJob(JobType j) {
-        String query = "insert into JobType (name) values (?)";
+        String query = "insert into job_type (name) values (?)";
 
         try {
             PreparedStatement stmt = connection.prepareStatement(query);
@@ -161,7 +161,7 @@ public class DBConnection {
     public static List<JobType> listJobType() {
         List<JobType> list = new ArrayList<JobType>();
 
-        String query = "SELECT * FROM JobType;";
+        String query = "SELECT * FROM job_type;";
 
         try {
             Statement st = connection.createStatement();
@@ -188,7 +188,7 @@ public class DBConnection {
     public static JobType getJob(int id) {
         JobType j = null;
 
-        String query = "SELECT * FROM JobType WHERE id = " + id + ";";
+        String query = "SELECT * FROM job_type WHERE id = " + id + ";";
 
         try {
             Statement st = connection.createStatement();
@@ -211,7 +211,7 @@ public class DBConnection {
     }
 
     public static void deleteJob(int id) {
-        String query = "DELETE FROM JobType WHERE id = ?;";
+        String query = "DELETE FROM job_type WHERE id = ?;";
 
         try {
             PreparedStatement stmt = connection.prepareStatement(query);
@@ -227,13 +227,13 @@ public class DBConnection {
     }
 
     public static void updateJob(JobType j) {
-        String query = "UPDATE JobType SET name = ? WHERE id = ?;";
+        String query = "UPDATE job_type SET name = ? WHERE id = ?;";
 
         try {
             PreparedStatement stmt = connection.prepareStatement(query);
 
             stmt.setString(1, j.getName());
-            stmt.setInt(1, j.getId());
+            stmt.setInt(2, j.getId());
 
             stmt.execute();
             stmt.close();
@@ -245,7 +245,7 @@ public class DBConnection {
 
     /* Preço */
     public static void insertJobPrice(JobPrice j) {
-        String query = "insert into JobPrice (table_id, job_id, price) values (?, ?, ?)";
+        String query = "insert into job_price (price_table_id, job_type_id, price) values (?, ?, ?)";
 
         try {
             PreparedStatement stmt = connection.prepareStatement(query);
@@ -265,7 +265,7 @@ public class DBConnection {
     public static List<JobPrice> listJobPrice() {
         List<JobPrice> list = new ArrayList<JobPrice>();
 
-        String query = "SELECT * FROM JobPrice;";
+        String query = "SELECT * FROM job_price;";
 
         try {
             Statement st = connection.createStatement();
@@ -274,8 +274,8 @@ public class DBConnection {
             while (rs.next()) {
                 JobPrice j = new JobPrice();
                 j.setId(rs.getInt("id"));
-                j.setPriceTable(getPriceTable(rs.getInt("table_id")));
-                j.setJob(getJob(rs.getInt("job_id")));
+                j.setPriceTable(getPriceTable(rs.getInt("price_table_id")));
+                j.setJob(getJob(rs.getInt("job_type_id")));
                 j.setPrice(rs.getDouble("price"));
 
                 list.add(j);
@@ -292,7 +292,7 @@ public class DBConnection {
     }
 
     public static void deleteJobPrice(int id) {
-        String query = "DELETE FROM JobPrice WHERE id = ?;";
+        String query = "DELETE FROM job_price WHERE id = ?;";
 
         try {
             PreparedStatement stmt = connection.prepareStatement(query);
@@ -308,7 +308,7 @@ public class DBConnection {
     }
 
     public static void updateJobPrice(JobPrice j) {
-        String query = "UPDATE JobPrice SET table_id=?, job_id=?,price=? WHERE id = ?;";
+        String query = "UPDATE job_price SET price_table_id=?, job_type_id=?,price=? WHERE id = ?;";
 
         try {
             PreparedStatement stmt = connection.prepareStatement(query);
@@ -328,7 +328,8 @@ public class DBConnection {
 
     /* Cliente */
     public static boolean insertClient(Client c) {
-        String query = "INSERT INTO Client (clientName, clientCpf, clientTel, clientCel, respName, respCpf, respTel, respCel, address, number, complement, city, state, cep, pricetable_id) VALUES"
+        String query = "INSERT INTO client (name, cpf, tel, cel, resp_name, resp_cpf, resp_tel, resp_cel, address, number, compl, "
+                + "city, state, cep, price_table_id) VALUES"
                 + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
         try {
@@ -363,7 +364,7 @@ public class DBConnection {
     public static List<Client> listClients() {
         List<Client> list = new ArrayList<Client>();
 
-        String query = "SELECT * FROM Client;";
+        String query = "SELECT * FROM client;";
 
         try {
             Statement st = connection.createStatement();
@@ -372,21 +373,21 @@ public class DBConnection {
             while (rs.next()) {
                 Client c = new Client();
                 c.setId(rs.getInt("id"));
-                c.setClientName(rs.getString("clientName"));
-                c.setClientCpf(rs.getString("clientCpf"));
-                c.setClientTel(rs.getString("clientTel"));
-                c.setClientCel(rs.getString("clientCel"));
-                c.setRespName(rs.getString("respName"));
-                c.setRespCpf(rs.getString("respCpf"));
-                c.setRespTel(rs.getString("respTel"));
-                c.setRespCel(rs.getString("respCel"));
+                c.setClientName(rs.getString("name"));
+                c.setClientCpf(rs.getString("cpf"));
+                c.setClientTel(rs.getString("tel"));
+                c.setClientCel(rs.getString("cel"));
+                c.setRespName(rs.getString("resp_name"));
+                c.setRespCpf(rs.getString("resp_cpf"));
+                c.setRespTel(rs.getString("resp_tel"));
+                c.setRespCel(rs.getString("resp_cel"));
                 c.setAddress(rs.getString("address"));
                 c.setNumber(rs.getInt("number"));
-                c.setComplement(rs.getString("complement"));
+                c.setComplement(rs.getString("compl"));
                 c.setCity(rs.getString("city"));
                 c.setState(rs.getString("state"));
                 c.setCep(rs.getString("cep"));
-                c.setPriceTable(getPriceTable(rs.getInt("pricetable_id")));
+                c.setPriceTable(getPriceTable(rs.getInt("price_table_id")));
 
                 list.add(c);
             }
@@ -402,7 +403,8 @@ public class DBConnection {
     }
     
     public static boolean updateClient(Client c) {
-        String query = "UPDATE Client SET clientName = ?, clientCpf = ?, clientTel = ?, clientCel = ?, respName = ?, respCpf = ?, respTel = ?, respCel = ?, address = ?, number = ?, complement = ?, city = ?, state = ?, cep = ?, pricetable_id = ? WHERE id = ?";
+        String query = "UPDATE client SET name = ?, cpf = ?, tel = ?, cel = ?, resp_name = ?, resp_cpf = ?, resp_tel = ?, resp_cel = ?, "
+                + "address = ?, number = ?, compl = ?, city = ?, state = ?, cep = ?, price_table_id = ? WHERE id = ?";
     
         try {
             PreparedStatement stmt = connection.prepareStatement(query);

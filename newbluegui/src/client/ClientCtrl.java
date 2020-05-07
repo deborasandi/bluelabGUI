@@ -5,16 +5,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXTextField;
+
 import database.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import pricetable.PriceTable;
 
@@ -22,49 +23,49 @@ import pricetable.PriceTable;
 public class ClientCtrl {
 
     @FXML
-    private TextField clientName;
+    private JFXTextField name;
 
     @FXML
-    private TextField clientCpf;
+    private JFXTextField tel;
 
     @FXML
-    private TextField clientTel;
+    private JFXTextField address;
 
     @FXML
-    private TextField clientCel;
+    private JFXTextField complement;
 
     @FXML
-    private TextField address;
+    private JFXTextField cpf;
 
     @FXML
-    private TextField number;
+    private JFXTextField cel;
 
     @FXML
-    private TextField complement;
+    private JFXTextField number;
 
     @FXML
-    private TextField city;
+    private JFXTextField city;
 
     @FXML
-    private ComboBox<String> state;
+    private JFXTextField cep;
 
     @FXML
-    private ComboBox<PriceTable> clientTable;
+    private JFXTextField respName;
 
     @FXML
-    private TextField cep;
+    private JFXTextField respTel;
 
     @FXML
-    private TextField respName;
+    private JFXTextField respCpf;
 
     @FXML
-    private TextField respTel;
+    private JFXTextField respCel;
 
     @FXML
-    private TextField respCel;
+    private JFXComboBox<String> state;
 
     @FXML
-    private TextField respCpf;
+    private JFXComboBox<PriceTable> priceTable;
 
     @FXML
     private TableView<Client> viewClient;
@@ -93,8 +94,8 @@ public class ClientCtrl {
 
         listTables = FXCollections.observableArrayList(DBConnection.listPriceTable());
 
-        clientTable.getItems().addAll(listTables);
-        clientTable.getSelectionModel().select(0);
+        priceTable.getItems().addAll(listTables);
+        priceTable.getSelectionModel().select(0);
 
         String siglasEstados[] = { "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA",
                 "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO" };
@@ -123,10 +124,10 @@ public class ClientCtrl {
     }
 
     private void loadClient(Client c) {
-        clientName.setText(c.getClientName());
-        clientCpf.setText(c.getClientCpf());
-        clientTel.setText(c.getClientTel());
-        clientCel.setText(c.getClientCel());
+        name.setText(c.getClientName());
+        cpf.setText(c.getClientCpf());
+        tel.setText(c.getClientTel());
+        cel.setText(c.getClientCel());
         address.setText(c.getAddress());
         number.setText(String.valueOf(c.getNumber()));
         complement.setText(c.getComplement());
@@ -149,10 +150,10 @@ public class ClientCtrl {
     void newClient() {
         currentClient = null;
 
-        clientName.clear();
-        clientCpf.clear();
-        clientTel.clear();
-        clientCel.clear();
+        name.clear();
+        cpf.clear();
+        tel.clear();
+        cel.clear();
         respName.clear();
         respCpf.clear();
         respTel.clear();
@@ -163,17 +164,18 @@ public class ClientCtrl {
         city.clear();
         state.getSelectionModel().select(0);
         cep.clear();
-        clientTable.getSelectionModel().select(0);
+        priceTable.getSelectionModel().select(0);
     }
 
     @FXML
     void saveClient() {
-        Client c = new Client();;
+        Client c = new Client();
+        ;
 
-        c.setClientName(clientName.getText());
-        c.setClientCpf(clientCpf.getText());
-        c.setClientTel(clientTel.getText());
-        c.setClientCel(clientCel.getText());
+        c.setClientName(name.getText());
+        c.setClientCpf(cpf.getText());
+        c.setClientTel(tel.getText());
+        c.setClientCel(cel.getText());
         c.setRespName(respName.getText());
         c.setRespCpf(respCpf.getText());
         c.setRespTel(respTel.getText());
@@ -184,15 +186,15 @@ public class ClientCtrl {
         c.setCity(city.getText());
         c.setState(state.getSelectionModel().getSelectedItem());
         c.setCep(cep.getText());
-        c.setPriceTable(clientTable.getSelectionModel().getSelectedItem());
+        c.setPriceTable(priceTable.getSelectionModel().getSelectedItem());
 
         if (currentClient != null) {
             c.setId(currentClient.getId());
             DBConnection.updateClient(c);
-        }else {
+        }
+        else {
             DBConnection.insertClient(c);
-        }      
-        
+        }
 
         listClient = FXCollections.observableArrayList(DBConnection.listClients());
         viewClient.getItems().clear();
@@ -206,14 +208,14 @@ public class ClientCtrl {
         viewClient.getItems().addAll(listClient);
 
         listTables = FXCollections.observableArrayList(DBConnection.listPriceTable());
-        clientTable.getItems().clear();
-        clientTable.getItems().addAll(listTables);
+        priceTable.getItems().clear();
+        priceTable.getItems().addAll(listTables);
     }
 
     private void findTable(PriceTable p) {
         for (PriceTable p1 : listTables) {
             if (p1.getId() == p.getId())
-                clientTable.getSelectionModel().select(p1);
+                priceTable.getSelectionModel().select(p1);
         }
     }
 }

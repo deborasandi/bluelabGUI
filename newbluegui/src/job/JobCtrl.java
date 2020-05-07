@@ -1,8 +1,10 @@
 package job;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
 
 import client.Client;
@@ -21,6 +23,9 @@ public class JobCtrl {
 
     @FXML
     private JFXTextField shipping;
+    
+    @FXML
+    private JFXDatePicker date;
 
     @FXML
     private JFXComboBox<Client> client;
@@ -53,6 +58,8 @@ public class JobCtrl {
         
         listJobType = FXCollections.observableArrayList(DBConnection.listJobType());
         jobType.getItems().addAll(listJobType);
+        
+        date.setValue(LocalDate.now());
         
     }
     

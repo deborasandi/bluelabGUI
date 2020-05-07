@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.image.Image?>
@@ -12,7 +13,7 @@
    <children>
       <HBox fx:id="mainPanel" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <VBox minWidth="160.0" spacing="5.0" HBox.hgrow="NEVER">
+            <VBox minWidth="170.0" styleClass="menu-panel" HBox.hgrow="NEVER">
                <children>
                   <ToggleButton fx:id="btnClient" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#loadClientPanel" styleClass="button" text="Cliente">
                      <graphic>
@@ -45,6 +46,9 @@
                      </graphic>
                   </ToggleButton>
                </children>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
             </VBox>
          </children>
       </HBox>
