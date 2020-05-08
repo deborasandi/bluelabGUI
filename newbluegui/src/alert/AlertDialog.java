@@ -13,10 +13,10 @@ import pricetable.PriceTable;
 
 public class AlertDialog {
 
-    public static boolean showSaveTable(PriceTable p) {
+    public static boolean showSaveTable(PriceTable p, String old) {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Tabela");
-        alert.setHeaderText("Salvar Tabela " + p.getName() + "?");
+        alert.setHeaderText("Deseja alterar tabela " + old + " para " + p.getName() + "?");
 
         Optional<ButtonType> result = alert.showAndWait();
 
@@ -33,10 +33,10 @@ public class AlertDialog {
         return result.get() == ButtonType.OK ? true : false;
     }
 
-    public static boolean showSaveJobType(JobType j) {
+    public static boolean showSaveJobType(JobType j, String old) {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Trabalho");
-        alert.setHeaderText("Salvar Trabalho " + j.getName() + "?");
+        alert.setHeaderText("Deseja alterar trabalho " + old + " para " + j.getName() + "?");
 
         Optional<ButtonType> result = alert.showAndWait();
 
@@ -57,7 +57,7 @@ public class AlertDialog {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Preço");
         alert.setHeaderText(
-                "Salvar " + j.getPriceTable().getName() + " - " + j.getJob().getName() + " - " + j.getPrice() + "?");
+                "Deseja alterar " + j.getPriceTable().getName() + " - " + j.getJob().getName() + " - " + j.getPrice() + "?");
 
         Optional<ButtonType> result = alert.showAndWait();
 
@@ -73,5 +73,13 @@ public class AlertDialog {
         Optional<ButtonType> result = alert.showAndWait();
 
         return result.get() == ButtonType.OK ? true : false;
+    }
+    
+    public static void showUpdateSuccess() {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Preço");
+        alert.setHeaderText("Preços Salvos com Sucesso!");
+
+        alert.showAndWait();
     }
 }

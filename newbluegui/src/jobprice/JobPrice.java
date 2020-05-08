@@ -17,8 +17,14 @@ public class JobPrice {
         this.price = price;
     }
     
+    public JobPrice(JobType job, PriceTable priceTable, double price) {
+        this.job = job;
+        this.priceTable = priceTable;
+        this.price = price;
+    }
+
     public JobPrice() {
-        
+        // TODO Auto-generated constructor stub
     }
 
     public int getId() {

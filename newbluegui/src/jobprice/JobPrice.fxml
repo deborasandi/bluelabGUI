@@ -4,6 +4,7 @@
 <?import com.jfoenix.controls.JFXTabPane?>
 <?import java.lang.String?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TableColumn?>
@@ -12,7 +13,9 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jobprice.JobPriceCtrl">
    <children>
@@ -31,7 +34,7 @@
                               </ImageView>
                            </graphic>
                         </JFXButton>
-                        <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY">
+                        <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" disable="true">
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -73,8 +76,8 @@
                                        <children>
                                           <TableView fx:id="viewTable" layoutY="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
-                                              <TableColumn fx:id="colTableId" prefWidth="75.0" text="ID" />
-                                              <TableColumn fx:id="colTableName" prefWidth="75.0" text="Tabela" />
+                                              <TableColumn fx:id="colTableId" minWidth="50.0" prefWidth="50.0" text="ID" />
+                                              <TableColumn fx:id="colTableName" prefWidth="180.0" text="Tabela" />
                                             </columns>
                                           </TableView>
                                        </children>
@@ -94,8 +97,8 @@
                                        <children>
                                           <TableView fx:id="viewJob" layoutY="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
-                                              <TableColumn fx:id="colJobId" prefWidth="75.0" text="ID" />
-                                              <TableColumn fx:id="colJobName" prefWidth="75.0" text="Trabalho" />
+                                              <TableColumn fx:id="colJobId" prefWidth="50.0" text="ID" />
+                                              <TableColumn fx:id="colJobName" prefWidth="180.0" text="Trabalho" />
                                             </columns>
                                           </TableView>
                                        </children>
@@ -118,7 +121,7 @@
             <Separator orientation="VERTICAL" prefHeight="200.0" />
             <VBox HBox.hgrow="ALWAYS">
                <children>
-                  <HBox styleClass="button-panel" VBox.vgrow="NEVER">
+                  <HBox fx:id="paneInfo" styleClass="button-panel" VBox.vgrow="NEVER">
                      <children>
                         <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#insertPrice">
                            <graphic>
@@ -129,7 +132,7 @@
                               </ImageView>
                            </graphic>
                         </JFXButton>
-                        <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY">
+                        <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#savePrice">
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -156,6 +159,12 @@
                               </ImageView>
                            </graphic>
                         </JFXButton>
+                        <Pane HBox.hgrow="ALWAYS" />
+                        <Label fx:id="labelNotif" alignment="CENTER" maxHeight="1.7976931348623157E308" text="Há alterações não salvas na tabela" textFill="#f00000b7" HBox.hgrow="NEVER">
+                           <font>
+                              <Font name="System Italic" size="12.0" />
+                           </font>
+                        </Label>
                      </children>
                      <VBox.margin>
                         <Insets />
@@ -171,8 +180,8 @@
                                        <children>
                                           <TableView fx:id="viewPrice" layoutY="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
-                                              <TableColumn fx:id="colTable" prefWidth="75.0" text="Tabela" />
-                                              <TableColumn fx:id="colJob" prefWidth="75.0" text="Trabalho" />
+                                              <TableColumn fx:id="colTable" prefWidth="180.0" text="Tabela" />
+                                              <TableColumn fx:id="colJob" prefWidth="180.0" text="Trabalho" />
                                                 <TableColumn fx:id="colPrice" prefWidth="75.0" text="Preço" />
                                             </columns>
                                           </TableView>

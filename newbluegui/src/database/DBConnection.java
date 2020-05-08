@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -108,6 +107,31 @@ public class DBConnection {
         return p;
     }
 
+    public static PriceTable getPriceTable(String name) {
+        PriceTable p = null;
+
+        String query = "SELECT * FROM price_table WHERE name = \"" + name + "\";";
+
+        try {
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
+
+            while (rs.next()) {
+                p = new PriceTable();
+                p.setId(rs.getInt("id"));
+                p.setName(rs.getString("name"));
+            }
+
+            st.close();
+        }
+        catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return p;
+    }
+
     public static void deletePriceTable(int id) {
         String query = "DELETE FROM price_table WHERE id = ?;";
 
@@ -142,7 +166,7 @@ public class DBConnection {
     }
 
     /* Trabalho */
-    public static void insertJob(JobType j) {
+    public static void insertJobType(JobType j) {
         String query = "insert into job_type (name) values (?)";
 
         try {
@@ -185,10 +209,35 @@ public class DBConnection {
         return list;
     }
 
-    public static JobType getJob(int id) {
+    public static JobType getJobType(int id) {
         JobType j = null;
 
         String query = "SELECT * FROM job_type WHERE id = " + id + ";";
+
+        try {
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
+
+            while (rs.next()) {
+                j = new JobType();
+                j.setId(rs.getInt("id"));
+                j.setName(rs.getString("name"));
+            }
+
+            st.close();
+        }
+        catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return j;
+    }
+    
+    public static JobType getJobType(String name) {
+        JobType j = null;
+
+        String query = "SELECT * FROM job_type WHERE name = \"" + name + "\";";
 
         try {
             Statement st = connection.createStatement();
@@ -244,15 +293,44 @@ public class DBConnection {
     }
 
     /* Preço */
-    public static void insertJobPrice(JobPrice j) {
+    public static void insertJobPrice(List<JobPrice> list) {
+        String query = "insert into job_price (price_table_id, job_type_id, price) values (?, ?, ?)";
+
+        for (int i = 1; i < list.size(); i++) {
+            query += ",(?, ?, ?)";
+        }
+
+        query += ";";
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            int i = 0;
+            for (JobPrice j : list) {
+                stmt.setInt(i + 1, j.getPriceTable().getId());
+                stmt.setInt(i + 2, j.getJob().getId());
+                stmt.setDouble(i + 3, j.getPrice());
+
+                i += 3;
+            }
+
+            stmt.execute();
+            stmt.close();
+        }
+        catch (SQLException u) {
+            throw new RuntimeException(u);
+        }
+    }
+
+    public static void insertJobPrice(JobPrice jp) {
         String query = "insert into job_price (price_table_id, job_type_id, price) values (?, ?, ?)";
 
         try {
             PreparedStatement stmt = connection.prepareStatement(query);
 
-            stmt.setInt(1, j.getPriceTable().getId());
-            stmt.setInt(2, j.getJob().getId());
-            stmt.setDouble(3, j.getPrice());
+            stmt.setInt(1, jp.getPriceTable().getId());
+            stmt.setInt(2, jp.getJob().getId());
+            stmt.setDouble(3, jp.getPrice());
 
             stmt.execute();
             stmt.close();
@@ -275,7 +353,7 @@ public class DBConnection {
                 JobPrice j = new JobPrice();
                 j.setId(rs.getInt("id"));
                 j.setPriceTable(getPriceTable(rs.getInt("price_table_id")));
-                j.setJob(getJob(rs.getInt("job_type_id")));
+                j.setJob(getJobType(rs.getInt("job_type_id")));
                 j.setPrice(rs.getDouble("price"));
 
                 list.add(j);
@@ -329,8 +407,7 @@ public class DBConnection {
     /* Cliente */
     public static boolean insertClient(Client c) {
         String query = "INSERT INTO client (name, cpf, tel, cel, resp_name, resp_cpf, resp_tel, resp_cel, address, number, compl, "
-                + "city, state, cep, price_table_id) VALUES"
-                + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+                + "city, state, cep, price_table_id) VALUES" + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
         try {
             PreparedStatement stmt = connection.prepareStatement(query);
@@ -360,7 +437,7 @@ public class DBConnection {
             throw new RuntimeException(u);
         }
     }
-    
+
     public static List<Client> listClients() {
         List<Client> list = new ArrayList<Client>();
 
@@ -401,11 +478,11 @@ public class DBConnection {
 
         return list;
     }
-    
+
     public static boolean updateClient(Client c) {
         String query = "UPDATE client SET name = ?, cpf = ?, tel = ?, cel = ?, resp_name = ?, resp_cpf = ?, resp_tel = ?, resp_cel = ?, "
                 + "address = ?, number = ?, compl = ?, city = ?, state = ?, cep = ?, price_table_id = ? WHERE id = ?";
-    
+
         try {
             PreparedStatement stmt = connection.prepareStatement(query);
 
@@ -428,7 +505,7 @@ public class DBConnection {
 
             boolean r = stmt.execute();
             stmt.close();
-            
+
             return r;
         }
         catch (SQLException u) {

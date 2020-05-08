@@ -1,12 +1,16 @@
 package jobprice;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import alert.AlertDialog;
 import database.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
@@ -14,12 +18,19 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.HBox;
 import javafx.util.converter.DoubleStringConverter;
 import jobtype.JobType;
 import pricetable.PriceTable;
 
 
 public class JobPriceCtrl {
+
+    @FXML
+    private Label labelNotif;
+
+    @FXML
+    private HBox paneInfo;
 
     @FXML
     private Tab tabTable;
@@ -63,6 +74,8 @@ public class JobPriceCtrl {
 
     private ObservableList<JobPrice> listPrice;
 
+    private List<JobPrice> newPrices;
+
     public void initialize() {
         viewTable.setEditable(true);
         viewJob.setEditable(true);
@@ -77,7 +90,11 @@ public class JobPriceCtrl {
         listPrice = FXCollections.observableArrayList(DBConnection.listJobPrice());
         viewPrice.getItems().addAll(listPrice);
 
+        newPrices = new ArrayList<JobPrice>();
+
         createColumns();
+        
+        paneInfo.getChildren().remove(labelNotif);
     }
 
     private void createColumns() {
@@ -92,21 +109,36 @@ public class JobPriceCtrl {
             @Override
             public void handle(CellEditEvent<PriceTable, String> event) {
                 PriceTable p = event.getTableView().getItems().get(event.getTablePosition().getRow());
+                String old = new String(p.getName());
                 p.setName(event.getNewValue());
 
                 if (p.getId() == 0) {
                     DBConnection.insertPriceTable(p);
+
+                    p = DBConnection.getPriceTable(p.getName());
+
+                    List<JobPrice> list = new ArrayList<JobPrice>();
+
+                    for (JobType jobType : listJob) {
+                        list.add(new JobPrice(jobType, p, 0.0));
+                    }
+
+                    DBConnection.insertJobPrice(list);
+
+                    refreshViewPrice();
                 }
                 else {
-                    if (AlertDialog.showSaveTable(p)) {
+                    if (AlertDialog.showSaveTable(p, old)) {
                         DBConnection.updatePriceTable(p);
                         refreshViewPrice();
                     }
                     else {
-                        p.setName(event.getOldValue());
+                        p.setName(old);
+                        viewTable.refresh();
                     }
+                    
                 }
-                refreshViewTable();
+                
             }
         });
 
@@ -121,21 +153,35 @@ public class JobPriceCtrl {
             @Override
             public void handle(CellEditEvent<JobType, String> event) {
                 JobType j = event.getTableView().getItems().get(event.getTablePosition().getRow());
+                String old = new String(j.getName());
                 j.setName(event.getNewValue());
 
                 if (j.getId() == 0) {
-                    DBConnection.insertJob(j);
+                    DBConnection.insertJobType(j);
+
+                    j = DBConnection.getJobType(j.getName());
+
+                    List<JobPrice> list = new ArrayList<JobPrice>();
+
+                    for (PriceTable p : listPriceTable) {
+                        list.add(new JobPrice(j, p, 0.0));
+                    }
+
+                    DBConnection.insertJobPrice(list);
+
+                    refreshViewPrice();
                 }
                 else {
-                    if (AlertDialog.showSaveJobType(j)) {
+                    if (AlertDialog.showSaveJobType(j, old)) {
                         DBConnection.updateJob(j);
                         refreshViewPrice();
                     }
                     else {
-                        j.setName(event.getOldValue());
+                        j.setName(old);
+                        refreshViewJob();
                     }
                 }
-                refreshViewJob();
+                
             }
         });
 
@@ -148,21 +194,11 @@ public class JobPriceCtrl {
             public void handle(CellEditEvent<JobPrice, PriceTable> event) {
                 JobPrice j = event.getTableView().getItems().get(event.getTablePosition().getRow());
                 j.setPriceTable(event.getNewValue());
+                newPrices.add(j);
+                viewPrice.refresh();
 
-                if (j.getJob() != null && j.getPrice() > 0) {
-                    if (j.getId() == 0) {
-                        DBConnection.insertJobPrice(j);
-                    }
-                    else {
-                        if (AlertDialog.showSavePrice(j)) {
-                            DBConnection.updateJobPrice(j);
-                        }
-                        else {
-                            j.setPriceTable(event.getOldValue());
-                        }
-                    }
-                }
-                refreshViewPrice();
+                if (!paneInfo.getChildren().contains(labelNotif))
+                    paneInfo.getChildren().add(labelNotif);
             }
         });
 
@@ -174,23 +210,11 @@ public class JobPriceCtrl {
             public void handle(CellEditEvent<JobPrice, JobType> event) {
                 JobPrice j = event.getTableView().getItems().get(event.getTablePosition().getRow());
                 j.setJob(event.getNewValue());
+                newPrices.add(j);
+                viewPrice.refresh();
 
-                if (j.getPriceTable() != null && j.getPrice() > 0) {
-                    if (j.getId() == 0) {
-                        DBConnection.insertJobPrice(j);
-                        refreshViewPrice();
-                    }
-                    else {
-                        if (AlertDialog.showSavePrice(j)) {
-                            DBConnection.updateJobPrice(j);
-                            refreshViewPrice();
-                        }
-                        else {
-                            j.setJob(event.getOldValue());
-                        }
-                    }
-                }
-                refreshViewPrice();
+                if (!paneInfo.getChildren().contains(labelNotif))
+                    paneInfo.getChildren().add(labelNotif);
             }
         });
 
@@ -202,23 +226,12 @@ public class JobPriceCtrl {
             public void handle(CellEditEvent<JobPrice, Double> event) {
                 JobPrice j = event.getTableView().getItems().get(event.getTablePosition().getRow());
                 j.setPrice(event.getNewValue());
+                newPrices.add(j);
+                viewPrice.refresh();
 
-                if (j.getPriceTable() != null && j.getJob() != null) {
-                    if (j.getId() == 0) {
-                        DBConnection.insertJobPrice(j);
-                    }
-                    else {
-                        if (AlertDialog.showSavePrice(j)) {
-                            DBConnection.updateJobPrice(j);
-                        }
-                        else {
-                            j.setPrice(event.getOldValue());
-                        }
-                    }
-                }
-                refreshViewPrice();
+                if (!paneInfo.getChildren().contains(labelNotif))
+                    paneInfo.getChildren().add(labelNotif);
             }
-
         });
     }
 
@@ -297,4 +310,19 @@ public class JobPriceCtrl {
         refreshViewJob();
         refreshViewTable();
     }
+
+    @FXML
+    void savePrice() {
+        for (JobPrice jp : newPrices) {
+            DBConnection.updateJobPrice(jp);
+        }
+        
+        if (paneInfo.getChildren().contains(labelNotif))
+            paneInfo.getChildren().remove(labelNotif);
+
+        AlertDialog.showUpdateSuccess();
+
+        newPrices.clear();
+    }
+
 }
