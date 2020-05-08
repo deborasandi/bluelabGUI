@@ -8,11 +8,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import client.Client;
+import job.Job;
 import jobprice.JobPrice;
 import jobtype.JobType;
 import pricetable.PriceTable;
@@ -259,7 +261,7 @@ public class DBConnection {
         return j;
     }
 
-    public static void deleteJob(int id) {
+    public static void deleteJobType(int id) {
         String query = "DELETE FROM job_type WHERE id = ?;";
 
         try {
@@ -513,8 +515,150 @@ public class DBConnection {
         }
     }
 
+    public static Client getClient(int id) {
+        Client c = null;
+
+        String query = "SELECT * FROM client WHERE id = " + id + ";";
+
+        try {
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
+
+            while (rs.next()) {
+                c = new Client();
+                c.setId(rs.getInt("id"));
+                c.setClientName(rs.getString("name"));
+                c.setClientCpf(rs.getString("cpf"));
+                c.setClientTel(rs.getString("tel"));
+                c.setClientCel(rs.getString("cel"));
+                c.setRespName(rs.getString("resp_name"));
+                c.setRespCpf(rs.getString("resp_cpf"));
+                c.setRespTel(rs.getString("resp_tel"));
+                c.setRespCel(rs.getString("resp_cel"));
+                c.setAddress(rs.getString("address"));
+                c.setNumber(rs.getInt("number"));
+                c.setComplement(rs.getString("compl"));
+                c.setCity(rs.getString("city"));
+                c.setState(rs.getString("state"));
+                c.setCep(rs.getString("cep"));
+                c.setPriceTable(getPriceTable(rs.getInt("price_table_id")));
+            }
+
+            st.close();
+        }
+        catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return c;
+    }
+
     public static void deleteClient(int id) {
         String query = "DELETE FROM client WHERE id = ?;";
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            stmt.setInt(1, id);
+
+            stmt.execute();
+            stmt.close();
+        }
+        catch (SQLException u) {
+            throw new RuntimeException(u);
+        }
+    }
+
+    /* Job */
+    public static boolean insertJob(Job j) {
+        String query = "INSERT INTO job (client_id, job_type_id, qtd, shipping, date, repetion, nocost, paid) VALUES"
+                + "(?, ?, ?, ?, ?, ?, ?, ?);";
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            stmt.setInt(1, j.getClient().getId());
+            stmt.setInt(2, j.getJobType().getId());
+            stmt.setInt(3, j.getQtd());
+            stmt.setDouble(4, j.getShipping());
+            stmt.setDate(5, j.getDate());
+            stmt.setBoolean(6, j.isRepetion());
+            stmt.setBoolean(7, j.isNocost());
+            stmt.setBoolean(8, j.isPaid());
+
+            boolean result = stmt.execute();
+            stmt.close();
+
+            return result;
+        }
+        catch (SQLException u) {
+            throw new RuntimeException(u);
+        }
+    }
+
+    public static List<Job> listJobs() {
+        List<Job> list = new ArrayList<Job>();
+
+        String query = "SELECT * FROM job";
+
+        try {
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
+
+            while (rs.next()) {
+                Job j = new Job();
+
+                j.setId(rs.getInt("id"));
+                j.setClient(getClient(rs.getInt("client_id")));
+                j.setJobType(getJobType(rs.getInt("job_type_id")));
+                j.setQtd(rs.getInt("qtd"));
+                j.setShipping(rs.getDouble("shipping"));
+                j.setDate(rs.getDate("date", Calendar.getInstance()));
+                j.setRepetion(rs.getBoolean("repetion"));
+                j.setNocost(rs.getBoolean("nocost"));
+                j.setPaid(rs.getBoolean("paid"));
+
+                list.add(j);
+            }
+
+            st.close();
+        }
+        catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    public static boolean updateJob(Job j) {
+        String query = "UPDATE job SET client_id = ?, job_type_id = ?, qtd = ?, shipping = ?, date = ?, repetion = ?, nocost = ?, paid = ? WHERE id = ?";
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            stmt.setInt(1, j.getClient().getId());
+            stmt.setInt(2, j.getJobType().getId());
+            stmt.setInt(3, j.getQtd());
+            stmt.setDouble(4, j.getShipping());
+            stmt.setDate(5, j.getDate());
+            stmt.setBoolean(6, j.isRepetion());
+            stmt.setBoolean(7, j.isNocost());
+            stmt.setBoolean(8, j.isPaid());
+
+            boolean r = stmt.execute();
+            stmt.close();
+
+            return r;
+        }
+        catch (SQLException u) {
+            throw new RuntimeException(u);
+        }
+    }
+
+    public static void deleteJob(int id) {
+        String query = "DELETE FROM job WHERE id = ?;";
 
         try {
             PreparedStatement stmt = connection.prepareStatement(query);

@@ -112,7 +112,6 @@ public class ClientCtrl {
     }
 
     private void createColumns() {
-        /* Colunas Tipo de Tabela */
         colClient.setCellValueFactory(new PropertyValueFactory<>("clientName"));
         colTable.setCellValueFactory(new PropertyValueFactory<>("priceTable"));
     }
@@ -158,7 +157,7 @@ public class ClientCtrl {
     @FXML
     void deleteClient() {
         if (currentClient != null) {
-            if (AlertDialog.showDeleteClient(currentClient)) {
+            if (AlertDialog.showDelete(currentClient)) {
                 DBConnection.deleteClient(currentClient.getId());
                 refreshViewClient();
             }

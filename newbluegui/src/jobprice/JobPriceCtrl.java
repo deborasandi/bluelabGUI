@@ -288,7 +288,7 @@ public class JobPriceCtrl {
         else {
             JobType j = viewJob.getSelectionModel().getSelectedItem();
             if (j != null && j.getId() != 0 && AlertDialog.showDeleteJobType(j)) {
-                DBConnection.deleteJob(j.getId());
+                DBConnection.deleteJobType(j.getId());
                 refreshViewJob();
                 refreshViewPrice();
             }
