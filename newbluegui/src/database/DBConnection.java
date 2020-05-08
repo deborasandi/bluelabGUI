@@ -58,7 +58,7 @@ public class DBConnection {
     public static List<PriceTable> listPriceTable() {
         List<PriceTable> list = new ArrayList<PriceTable>();
 
-        String query = "SELECT * FROM price_table;";
+        String query = "SELECT * FROM price_table order by name";
 
         try {
             Statement st = connection.createStatement();
@@ -185,7 +185,7 @@ public class DBConnection {
     public static List<JobType> listJobType() {
         List<JobType> list = new ArrayList<JobType>();
 
-        String query = "SELECT * FROM job_type;";
+        String query = "SELECT * FROM job_type order by name";
 
         try {
             Statement st = connection.createStatement();
@@ -233,7 +233,7 @@ public class DBConnection {
 
         return j;
     }
-    
+
     public static JobType getJobType(String name) {
         JobType j = null;
 
@@ -343,7 +343,7 @@ public class DBConnection {
     public static List<JobPrice> listJobPrice() {
         List<JobPrice> list = new ArrayList<JobPrice>();
 
-        String query = "SELECT * FROM job_price;";
+        String query = "SELECT * FROM job_price inner join price_table where job_price.price_table_id = price_table.id order by price_table.name";
 
         try {
             Statement st = connection.createStatement();
@@ -441,7 +441,7 @@ public class DBConnection {
     public static List<Client> listClients() {
         List<Client> list = new ArrayList<Client>();
 
-        String query = "SELECT * FROM client;";
+        String query = "SELECT * FROM client order by name;";
 
         try {
             Statement st = connection.createStatement();
@@ -507,6 +507,22 @@ public class DBConnection {
             stmt.close();
 
             return r;
+        }
+        catch (SQLException u) {
+            throw new RuntimeException(u);
+        }
+    }
+
+    public static void deleteClient(int id) {
+        String query = "DELETE FROM client WHERE id = ?;";
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            stmt.setInt(1, id);
+
+            stmt.execute();
+            stmt.close();
         }
         catch (SQLException u) {
             throw new RuntimeException(u);

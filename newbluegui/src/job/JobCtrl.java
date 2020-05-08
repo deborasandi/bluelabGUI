@@ -82,5 +82,9 @@ public class JobCtrl {
     void saveJob(ActionEvent event) {
 
     }
+    
+    @FXML
+    void editJob() {
+    }
 
 }

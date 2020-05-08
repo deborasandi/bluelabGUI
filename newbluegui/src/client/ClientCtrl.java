@@ -8,6 +8,7 @@ import java.util.List;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 
+import alert.AlertDialog;
 import database.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -74,12 +75,6 @@ public class ClientCtrl {
     private TableColumn<Client, String> colClient;
 
     @FXML
-    private TableColumn<Client, String> colResp;
-
-    @FXML
-    private TableColumn<Client, String> colCity;
-
-    @FXML
     private TableColumn<Client, PriceTable> colTable;
 
     private ObservableList<Client> listClient;
@@ -101,7 +96,7 @@ public class ClientCtrl {
                 "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO" };
         List<String> stringList = new ArrayList<String>(Arrays.asList(siglasEstados));
         state.getItems().addAll(stringList);
-        state.getSelectionModel().select(0);
+        state.getSelectionModel().select("PR");
 
         createColumns();
 
@@ -110,7 +105,8 @@ public class ClientCtrl {
             @Override
             public void handle(Event event) {
                 currentClient = viewClient.getSelectionModel().getSelectedItem();
-                loadClient(currentClient);
+                if (currentClient != null)
+                    loadClient(currentClient);
             }
         });
     }
@@ -118,8 +114,6 @@ public class ClientCtrl {
     private void createColumns() {
         /* Colunas Tipo de Tabela */
         colClient.setCellValueFactory(new PropertyValueFactory<>("clientName"));
-        colResp.setCellValueFactory(new PropertyValueFactory<>("respName"));
-        colCity.setCellValueFactory(new PropertyValueFactory<>("city"));
         colTable.setCellValueFactory(new PropertyValueFactory<>("priceTable"));
     }
 
@@ -129,7 +123,7 @@ public class ClientCtrl {
         tel.setText(c.getClientTel());
         cel.setText(c.getClientCel());
         address.setText(c.getAddress());
-        number.setText(String.valueOf(c.getNumber()));
+        number.setText(c.getNumber() == 0 ? "" : String.valueOf(c.getNumber()));
         complement.setText(c.getComplement());
         city.setText(c.getCity());
         state.getSelectionModel().select(c.getState());
@@ -139,17 +133,47 @@ public class ClientCtrl {
         respCpf.setText(c.getRespCpf());
         respTel.setText(c.getRespTel());
         respCel.setText(c.getRespCel());
+
+        disableFields(true);
+    }
+
+    private void disableFields(boolean d) {
+        name.setDisable(d);
+        cpf.setDisable(d);
+        tel.setDisable(d);
+        cel.setDisable(d);
+        address.setDisable(d);
+        number.setDisable(d);
+        complement.setDisable(d);
+        city.setDisable(d);
+        state.setDisable(d);
+        cep.setDisable(d);
+        priceTable.setDisable(d);
+        respName.setDisable(d);
+        respCpf.setDisable(d);
+        respTel.setDisable(d);
+        respCel.setDisable(d);
     }
 
     @FXML
     void deleteClient() {
-
+        if (currentClient != null) {
+            if (AlertDialog.showDeleteClient(currentClient)) {
+                DBConnection.deleteClient(currentClient.getId());
+                refreshViewClient();
+            }
+        }
     }
 
     @FXML
     void newClient() {
         currentClient = null;
 
+        clearFields();
+        disableFields(false);
+    }
+
+    private void clearFields() {
         name.clear();
         cpf.clear();
         tel.clear();
@@ -162,7 +186,7 @@ public class ClientCtrl {
         number.clear();
         complement.clear();
         city.clear();
-        state.getSelectionModel().select(0);
+        state.getSelectionModel().select("PR");
         cep.clear();
         priceTable.getSelectionModel().select(0);
     }
@@ -170,7 +194,6 @@ public class ClientCtrl {
     @FXML
     void saveClient() {
         Client c = new Client();
-        ;
 
         c.setClientName(name.getText());
         c.setClientCpf(cpf.getText());
@@ -189,23 +212,35 @@ public class ClientCtrl {
         c.setPriceTable(priceTable.getSelectionModel().getSelectedItem());
 
         if (currentClient != null) {
-            c.setId(currentClient.getId());
-            DBConnection.updateClient(c);
+            if (AlertDialog.showSaveUpdate(c)) {
+                c.setId(currentClient.getId());
+                DBConnection.updateClient(c);
+            }
         }
         else {
-            DBConnection.insertClient(c);
+            if (AlertDialog.showSaveNew(c))
+                DBConnection.insertClient(c);
         }
 
+        clearFields();
+
+        refreshViewClient();
+    }
+
+    private void refreshViewClient() {
         listClient = FXCollections.observableArrayList(DBConnection.listClients());
         viewClient.getItems().clear();
         viewClient.getItems().addAll(listClient);
     }
 
     @FXML
+    void editClient() {
+        disableFields(false);
+    }
+
+    @FXML
     void refresh() {
-        listClient = FXCollections.observableArrayList(DBConnection.listClients());
-        viewClient.getItems().clear();
-        viewClient.getItems().addAll(listClient);
+        refreshViewClient();
 
         listTables = FXCollections.observableArrayList(DBConnection.listPriceTable());
         priceTable.getItems().clear();

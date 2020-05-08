@@ -3,6 +3,7 @@ package alert;
 
 import java.util.Optional;
 
+import client.Client;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -81,5 +82,38 @@ public class AlertDialog {
         alert.setHeaderText("Preços Salvos com Sucesso!");
 
         alert.showAndWait();
+    }
+    
+    public static boolean showSaveNew(Client c) {
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Cliente");
+        alert.setHeaderText("Novo cliente");
+        alert.setContentText("Deseja salvar " + c.getClientName() + "?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        return result.get() == ButtonType.OK ? true : false;
+    }
+    
+    public static boolean showSaveUpdate(Client c) {
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Cliente");
+        alert.setHeaderText("Alterar cliente");
+        alert.setContentText("Deseja alterar " + c.getClientName() + "?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        return result.get() == ButtonType.OK ? true : false;
+    }
+
+    public static boolean showDeleteClient(Client c) {
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Cliente");
+        alert.setHeaderText("Excluir cliente");
+        alert.setContentText("Excluir " + c.getClientName() + "?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        return result.get() == ButtonType.OK ? true : false;
     }
 }

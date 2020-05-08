@@ -34,6 +34,15 @@
                         </ImageView>
                      </graphic>
                   </JFXButton>
+                  <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#editClient">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/editar.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
                   <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#saveClient">
                      <graphic>
                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
@@ -151,12 +160,10 @@
                      </children>
                   </GridPane>
                   <Separator orientation="VERTICAL" HBox.hgrow="NEVER" />
-                  <TableView fx:id="viewClient" HBox.hgrow="ALWAYS">
+                  <TableView fx:id="viewClient" HBox.hgrow="SOMETIMES">
                     <columns>
-                      <TableColumn fx:id="colClient" prefWidth="75.0" text="Cliente" />
-                      <TableColumn fx:id="colResp" prefWidth="75.0" text="Responsável" />
-                        <TableColumn fx:id="colCity" prefWidth="75.0" text="Cidade" />
-                        <TableColumn fx:id="colTable" prefWidth="75.0" text="Tabela" />
+                      <TableColumn fx:id="colClient" prefWidth="150.0" text="Cliente" />
+                        <TableColumn fx:id="colTable" prefWidth="150.0" text="Tabela" />
                     </columns>
                   </TableView>
                </children>
