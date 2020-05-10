@@ -160,6 +160,7 @@ public class ClientCtrl {
             if (AlertDialog.showDelete(currentClient)) {
                 DBConnection.deleteClient(currentClient.getId());
                 refreshViewClient();
+                clearFields();
             }
         }
     }

@@ -21,7 +21,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import jobtype.JobType;
-import pricetable.PriceTable;
 
 public class JobCtrl {
     @FXML
@@ -100,7 +99,13 @@ public class JobCtrl {
     
     @FXML
     void deleteJob(ActionEvent event) {
-
+        if (currentJob != null) {
+            if (AlertDialog.showDelete(currentJob)) {
+                DBConnection.deleteClient(currentJob.getId());
+                refreshViewJob();
+                clearFields();
+            }
+        }
     }
 
     @FXML
@@ -130,7 +135,7 @@ public class JobCtrl {
         if (currentJob != null) {
             if (AlertDialog.showSaveUpdate(j)) {
                 j.setId(currentJob.getId());
-//                DBConnection.updateJob(j);
+                DBConnection.updateJob(j);
             }
         }
         else {
