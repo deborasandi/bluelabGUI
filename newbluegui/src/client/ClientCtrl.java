@@ -84,10 +84,10 @@ public class ClientCtrl {
     private Client currentClient;
 
     public void initialize() {
-        listClient = FXCollections.observableArrayList(DBConnection.listClients());
+        listClient = FXCollections.observableArrayList(DBConnection.getListClient(false));
         viewClient.getItems().addAll(listClient);
 
-        listTables = FXCollections.observableArrayList(DBConnection.listPriceTable());
+        listTables = FXCollections.observableArrayList(DBConnection.getListPriceTable(false));
 
         priceTable.getItems().addAll(listTables);
         priceTable.getSelectionModel().select(0);
@@ -228,7 +228,7 @@ public class ClientCtrl {
     }
 
     private void refreshViewClient() {
-        listClient = FXCollections.observableArrayList(DBConnection.listClients());
+        listClient = FXCollections.observableArrayList(DBConnection.getListClient(true));
         viewClient.getItems().clear();
         viewClient.getItems().addAll(listClient);
     }
@@ -242,7 +242,7 @@ public class ClientCtrl {
     void refresh() {
         refreshViewClient();
 
-        listTables = FXCollections.observableArrayList(DBConnection.listPriceTable());
+        listTables = FXCollections.observableArrayList(DBConnection.getListPriceTable(true));
         priceTable.getItems().clear();
         priceTable.getItems().addAll(listTables);
     }

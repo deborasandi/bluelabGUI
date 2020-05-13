@@ -70,7 +70,7 @@ public class JobPriceCtrl {
 
     private ObservableList<PriceTable> listPriceTable;
 
-    private ObservableList<JobType> listJob;
+    private ObservableList<JobType> listJobType;
 
     private ObservableList<JobPrice> listPrice;
 
@@ -81,13 +81,13 @@ public class JobPriceCtrl {
         viewJob.setEditable(true);
         viewPrice.setEditable(true);
 
-        listPriceTable = FXCollections.observableArrayList(DBConnection.listPriceTable());
+        listPriceTable = FXCollections.observableArrayList(DBConnection.getListPriceTable(false));
         viewTable.getItems().addAll(listPriceTable);
 
-        listJob = FXCollections.observableArrayList(DBConnection.listJobType());
-        viewJob.getItems().addAll(listJob);
+        listJobType = FXCollections.observableArrayList(DBConnection.getListJobType(false));
+        viewJob.getItems().addAll(listJobType);
 
-        listPrice = FXCollections.observableArrayList(DBConnection.listJobPrice());
+        listPrice = FXCollections.observableArrayList(DBConnection.getListJobPrice(false));
         viewPrice.getItems().addAll(listPrice);
 
         newPrices = new ArrayList<JobPrice>();
@@ -119,7 +119,7 @@ public class JobPriceCtrl {
 
                     List<JobPrice> list = new ArrayList<JobPrice>();
 
-                    for (JobType jobType : listJob) {
+                    for (JobType jobType : listJobType) {
                         list.add(new JobPrice(jobType, p, 0.0));
                     }
 
@@ -203,7 +203,7 @@ public class JobPriceCtrl {
         });
 
         colJob.setCellValueFactory(new PropertyValueFactory<>("job"));
-        colJob.setCellFactory(ComboBoxTableCell.forTableColumn(listJob));
+        colJob.setCellFactory(ComboBoxTableCell.forTableColumn(listJobType));
         colJob.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<JobPrice, JobType>>() {
 
             @Override
@@ -236,7 +236,7 @@ public class JobPriceCtrl {
     }
 
     private void refreshViewTable() {
-        listPriceTable = FXCollections.observableArrayList(DBConnection.listPriceTable());
+        listPriceTable = FXCollections.observableArrayList(DBConnection.getListPriceTable(true));
         viewTable.getItems().clear();
         viewTable.getItems().addAll(listPriceTable);
 
@@ -244,15 +244,15 @@ public class JobPriceCtrl {
     }
 
     private void refreshViewJob() {
-        listJob = FXCollections.observableArrayList(DBConnection.listJobType());
+        listJobType = FXCollections.observableArrayList(DBConnection.getListJobType(true));
         viewJob.getItems().clear();
-        viewJob.getItems().addAll(listJob);
+        viewJob.getItems().addAll(listJobType);
 
-        colJob.setCellFactory(ComboBoxTableCell.forTableColumn(listJob));
+        colJob.setCellFactory(ComboBoxTableCell.forTableColumn(listJobType));
     }
 
     private void refreshViewPrice() {
-        listPrice = FXCollections.observableArrayList(DBConnection.listJobPrice());
+        listPrice = FXCollections.observableArrayList(DBConnection.getListJobPrice(true));
         viewPrice.getItems().clear();
         viewPrice.getItems().addAll(listPrice);
     }

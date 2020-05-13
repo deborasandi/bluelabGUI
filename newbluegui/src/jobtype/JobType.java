@@ -10,6 +10,10 @@ public class JobType {
     public JobType() {
     }
 
+    public JobType(String name) {
+        this.name = name;
+    }
+
     public int getId() {
         return id;
     }

@@ -27,21 +27,28 @@ public class MainPanelCtrl {
     @FXML
     private ToggleButton btnJobs;
     
+    @FXML
+    private ToggleButton btnInvoice;
+    
     private AnchorPane clientPanel;
     
     private AnchorPane tablePanel;
     
     private AnchorPane jobPanel;
     
+    private AnchorPane invoicePanel;
+    
     public void initialize() {
         try {
            clientPanel = FXMLLoader.load(getClass().getResource("../client/Client.fxml"));
            tablePanel = FXMLLoader.load(getClass().getResource("../jobprice/JobPrice.fxml"));
            jobPanel = FXMLLoader.load(getClass().getResource("../job/Job.fxml"));
+           invoicePanel = FXMLLoader.load(getClass().getResource("../invoice/Invoice.fxml"));
            
            HBox.setHgrow(clientPanel, Priority.ALWAYS);
            HBox.setHgrow(tablePanel, Priority.ALWAYS);
            HBox.setHgrow(jobPanel, Priority.ALWAYS);
+           HBox.setHgrow(invoicePanel, Priority.ALWAYS);
         }
         catch (IOException e) {
             // TODO Auto-generated catch block
@@ -52,7 +59,7 @@ public class MainPanelCtrl {
     }
     
     @FXML
-    void loadClientPanel() {
+    void loadClient() {
         if(mainPanel.getChildren().size() > 1)
             mainPanel.getChildren().remove(1);
         
@@ -64,7 +71,7 @@ public class MainPanelCtrl {
     }
 
     @FXML
-    void loadJobPanel() {
+    void loadJob() {
         if(mainPanel.getChildren().size() > 1)
             mainPanel.getChildren().remove(1);
         
@@ -75,7 +82,7 @@ public class MainPanelCtrl {
     }
 
     @FXML
-    void loadTablesPanel() {
+    void loadTables() {
         if(mainPanel.getChildren().size() > 1)
             mainPanel.getChildren().remove(1);
         
@@ -83,5 +90,16 @@ public class MainPanelCtrl {
         
         if(!btnTables.isSelected()) 
             btnTables.setSelected(true);
+    }
+    
+    @FXML
+    void loadInvoice() {
+        if(mainPanel.getChildren().size() > 1)
+            mainPanel.getChildren().remove(1);
+        
+        mainPanel.getChildren().add(invoicePanel);
+        
+        if(!btnInvoice.isSelected()) 
+            btnInvoice.setSelected(true);
     }
 }

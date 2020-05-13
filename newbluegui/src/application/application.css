@@ -36,6 +36,10 @@
     -fx-font-size: 15.0;
 }
 
+.hbox-tab {
+    -fx-font-size: 12.0;
+}
+
 .button {
     -fx-background-color: TRANSPARENT, TRANSPARENT, TRANSPARENT, TRANSPARENT;
     -fx-background-radius: 3px;

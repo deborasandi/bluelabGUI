@@ -4,6 +4,8 @@ package job;
 import java.sql.Date;
 
 import client.Client;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import jobtype.JobType;
 
 
@@ -15,9 +17,11 @@ public class Job {
     private int qtd;
     private double shipping;
     private Date date;
-    private boolean repetion;
+    private boolean repetition;
     private boolean nocost;
     private boolean paid;
+
+    private BooleanProperty paidProperty = new SimpleBooleanProperty();
 
     public Job() {
         super();
@@ -71,12 +75,18 @@ public class Job {
         this.date = date;
     }
 
-    public boolean isRepetion() {
-        return repetion;
+    public boolean isRepetition() {
+        return repetition;
     }
 
-    public void setRepetion(boolean repetion) {
-        this.repetion = repetion;
+    public void setRepetition(boolean repetition) {
+        this.repetition = repetition;
+        paidProperty.set(paid);
+    }
+
+    public BooleanProperty paidProperty() {
+        paidProperty.set(paid);
+        return paidProperty;
     }
 
     public boolean isNocost() {
@@ -95,4 +105,11 @@ public class Job {
         this.paid = paid;
     }
 
+    public BooleanProperty getPaidProperty() {
+        return paidProperty;
+    }
+
+    public void setPaidProperty(BooleanProperty paidProperty) {
+        this.paidProperty = paidProperty;
+    }
 }

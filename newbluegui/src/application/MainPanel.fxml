@@ -15,7 +15,7 @@
          <children>
             <VBox minWidth="170.0" styleClass="menu-panel" HBox.hgrow="NEVER">
                <children>
-                  <ToggleButton fx:id="btnClient" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#loadClientPanel" styleClass="button" text="Cliente">
+                  <ToggleButton fx:id="btnClient" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#loadClient" styleClass="button" text="Cliente">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -27,7 +27,7 @@
                         <ToggleGroup fx:id="menu" />
                      </toggleGroup>
                   </ToggleButton>
-                  <ToggleButton fx:id="btnJobs" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#loadJobPanel" styleClass="button" text="Lançar Trabalho" toggleGroup="$menu">
+                  <ToggleButton fx:id="btnJobs" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#loadJob" styleClass="button" text="Lançar Trabalho" toggleGroup="$menu">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -36,11 +36,20 @@
                         </ImageView>
                      </graphic>
                   </ToggleButton>
-                  <ToggleButton fx:id="btnTables" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#loadTablesPanel" styleClass="button" text="Tabelas e Trabalhos" toggleGroup="$menu">
+                  <ToggleButton fx:id="btnTables" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#loadTables" styleClass="button" text="Tabelas e Trabalhos" toggleGroup="$menu">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../icons/dados.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </ToggleButton>
+                  <ToggleButton fx:id="btnInvoice" alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#loadInvoice" styleClass="button" text="Faturamento" toggleGroup="$menu">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/dinheiro.png" />
                            </image>
                         </ImageView>
                      </graphic>

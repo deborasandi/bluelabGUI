@@ -9,7 +9,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,6 +30,12 @@ public class DBConnection {
 
     private static Connection connection;
 
+    private static List<PriceTable> listPriceTable;
+    private static List<Client> listClient;
+    private static List<JobType> listJobType;
+    private static List<JobPrice> listJobPrice;
+    private static List<Job> listJob;
+
     public DBConnection() {
 
         try {
@@ -38,6 +46,12 @@ public class DBConnection {
             Logger lgr = Logger.getLogger(DBConnection.class.getName());
             lgr.log(Level.SEVERE, ex.getMessage(), ex);
         }
+
+        listPriceTable = listPriceTable();
+        listClient = listClient();
+        listJobType = listJobType();
+        listJobPrice = listJobPrice();
+        listJob = listJob();
     }
 
     /* Tabela de Preços */
@@ -57,7 +71,34 @@ public class DBConnection {
         }
     }
 
-    public static List<PriceTable> listPriceTable() {
+    private static Map<Integer, PriceTable> mapPriceTable() {
+        Map<Integer, PriceTable> list = new HashMap<Integer, PriceTable>();
+
+        String query = "SELECT * FROM price_table";
+
+        try {
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
+
+            while (rs.next()) {
+                PriceTable p = new PriceTable();
+                p.setId(rs.getInt("id"));
+                p.setName(rs.getString("name"));
+
+                list.put(p.getId(), p);
+            }
+
+            st.close();
+        }
+        catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    private static List<PriceTable> listPriceTable() {
         List<PriceTable> list = new ArrayList<PriceTable>();
 
         String query = "SELECT * FROM price_table order by name";
@@ -84,7 +125,7 @@ public class DBConnection {
         return list;
     }
 
-    public static PriceTable getPriceTable(int id) {
+    private static PriceTable getPriceTable(int id) {
         PriceTable p = null;
 
         String query = "SELECT * FROM price_table WHERE id = " + id + ";";
@@ -184,7 +225,34 @@ public class DBConnection {
         }
     }
 
-    public static List<JobType> listJobType() {
+    private static Map<Integer, JobType> mapJobType() {
+        Map<Integer, JobType> list = new HashMap<Integer, JobType>();
+
+        String query = "SELECT * FROM job_type";
+
+        try {
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
+
+            while (rs.next()) {
+                JobType j = new JobType();
+                j.setId(rs.getInt("id"));
+                j.setName(rs.getString("name"));
+
+                list.put(j.getId(), j);
+            }
+
+            st.close();
+        }
+        catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    private static List<JobType> listJobType() {
         List<JobType> list = new ArrayList<JobType>();
 
         String query = "SELECT * FROM job_type order by name";
@@ -211,7 +279,7 @@ public class DBConnection {
         return list;
     }
 
-    public static JobType getJobType(int id) {
+    private static JobType getJobType(int id) {
         JobType j = null;
 
         String query = "SELECT * FROM job_type WHERE id = " + id + ";";
@@ -342,7 +410,7 @@ public class DBConnection {
         }
     }
 
-    public static List<JobPrice> listJobPrice() {
+    private static List<JobPrice> listJobPrice() {
         List<JobPrice> list = new ArrayList<JobPrice>();
 
         String query = "SELECT * FROM job_price inner join price_table where job_price.price_table_id = price_table.id order by price_table.name";
@@ -440,7 +508,49 @@ public class DBConnection {
         }
     }
 
-    public static List<Client> listClients() {
+    private static Map<Integer, Client> mapClients() {
+        Map<Integer, Client> list = new HashMap<Integer, Client>();
+        Map<Integer, PriceTable> pt = mapPriceTable();
+
+        String query = "SELECT * FROM client";
+
+        try {
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
+
+            while (rs.next()) {
+                Client c = new Client();
+                c.setId(rs.getInt("id"));
+                c.setClientName(rs.getString("name"));
+                c.setClientCpf(rs.getString("cpf"));
+                c.setClientTel(rs.getString("tel"));
+                c.setClientCel(rs.getString("cel"));
+                c.setRespName(rs.getString("resp_name"));
+                c.setRespCpf(rs.getString("resp_cpf"));
+                c.setRespTel(rs.getString("resp_tel"));
+                c.setRespCel(rs.getString("resp_cel"));
+                c.setAddress(rs.getString("address"));
+                c.setNumber(rs.getInt("number"));
+                c.setComplement(rs.getString("compl"));
+                c.setCity(rs.getString("city"));
+                c.setState(rs.getString("state"));
+                c.setCep(rs.getString("cep"));
+                c.setPriceTable(pt.get(rs.getInt("price_table_id")));
+
+                list.put(c.getId(), c);
+            }
+
+            st.close();
+        }
+        catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    private static List<Client> listClient() {
         List<Client> list = new ArrayList<Client>();
 
         String query = "SELECT * FROM client order by name;";
@@ -515,7 +625,7 @@ public class DBConnection {
         }
     }
 
-    public static Client getClient(int id) {
+    private static Client getClient(int id) {
         Client c = null;
 
         String query = "SELECT * FROM client WHERE id = " + id + ";";
@@ -572,7 +682,7 @@ public class DBConnection {
 
     /* Job */
     public static boolean insertJob(Job j) {
-        String query = "INSERT INTO job (client_id, job_type_id, qtd, shipping, date, repetion, nocost, paid) VALUES"
+        String query = "INSERT INTO job (client_id, job_type_id, qtd, shipping, date, repetition, nocost, paid) VALUES"
                 + "(?, ?, ?, ?, ?, ?, ?, ?);";
 
         try {
@@ -583,7 +693,7 @@ public class DBConnection {
             stmt.setInt(3, j.getQtd());
             stmt.setDouble(4, j.getShipping());
             stmt.setDate(5, j.getDate());
-            stmt.setBoolean(6, j.isRepetion());
+            stmt.setBoolean(6, j.isRepetition());
             stmt.setBoolean(7, j.isNocost());
             stmt.setBoolean(8, j.isPaid());
 
@@ -597,8 +707,11 @@ public class DBConnection {
         }
     }
 
-    public static List<Job> listJobs() {
+    private static List<Job> listJob() {
         List<Job> list = new ArrayList<Job>();
+
+        Map<Integer, Client> mapCliente = mapClients();
+        Map<Integer, JobType> mapJobType = mapJobType();
 
         String query = "SELECT * FROM job";
 
@@ -610,12 +723,12 @@ public class DBConnection {
                 Job j = new Job();
 
                 j.setId(rs.getInt("id"));
-                j.setClient(getClient(rs.getInt("client_id")));
-                j.setJobType(getJobType(rs.getInt("job_type_id")));
+                j.setClient(mapCliente.get(rs.getInt("client_id")));
+                j.setJobType(mapJobType.get(rs.getInt("job_type_id")));
                 j.setQtd(rs.getInt("qtd"));
                 j.setShipping(rs.getDouble("shipping"));
                 j.setDate(rs.getDate("date", Calendar.getInstance()));
-                j.setRepetion(rs.getBoolean("repetion"));
+                j.setRepetition(rs.getBoolean("repetition"));
                 j.setNocost(rs.getBoolean("nocost"));
                 j.setPaid(rs.getBoolean("paid"));
 
@@ -633,7 +746,7 @@ public class DBConnection {
     }
 
     public static boolean updateJob(Job j) {
-        String query = "UPDATE job SET client_id = ?, job_type_id = ?, qtd = ?, shipping = ?, date = ?, repetion = ?, nocost = ?, paid = ? WHERE id = ?";
+        String query = "UPDATE job SET client_id = ?, job_type_id = ?, qtd = ?, shipping = ?, date = ?, repetition = ?, nocost = ?, paid = ? WHERE id = ?";
 
         try {
             PreparedStatement stmt = connection.prepareStatement(query);
@@ -643,9 +756,29 @@ public class DBConnection {
             stmt.setInt(3, j.getQtd());
             stmt.setDouble(4, j.getShipping());
             stmt.setDate(5, j.getDate());
-            stmt.setBoolean(6, j.isRepetion());
+            stmt.setBoolean(6, j.isRepetition());
             stmt.setBoolean(7, j.isNocost());
             stmt.setBoolean(8, j.isPaid());
+            stmt.setInt(9, j.getId());
+
+            boolean r = stmt.execute();
+            stmt.close();
+
+            return r;
+        }
+        catch (SQLException u) {
+            throw new RuntimeException(u);
+        }
+    }
+
+    public static boolean updateJobPaid(Job j) {
+        String query = "UPDATE job SET paid = ? WHERE id = ?";
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            stmt.setBoolean(1, j.isPaid());
+            stmt.setInt(2, j.getId());
 
             boolean r = stmt.execute();
             stmt.close();
@@ -672,4 +805,39 @@ public class DBConnection {
             throw new RuntimeException(u);
         }
     }
+
+    public static List<PriceTable> getListPriceTable(boolean refresh) {
+        if (refresh)
+            listPriceTable = listPriceTable();
+
+        return listPriceTable;
+    }
+
+    public static List<Client> getListClient(boolean refresh) {
+        if (refresh)
+            listClient = listClient();
+
+        return listClient;
+    }
+
+    public static List<JobType> getListJobType(boolean refresh) {
+        if (refresh)
+            listJobType = listJobType();
+
+        return listJobType;
+    }
+
+    public static List<JobPrice> getListJobPrice(boolean refresh) {
+        if (refresh)
+            listJobPrice = listJobPrice();
+        
+        return listJobPrice;
+    }
+
+    public static List<Job> getListJob(boolean refresh) {
+        if (refresh)
+            listJob = listJob();
+        return listJob;
+    }
+
 }
