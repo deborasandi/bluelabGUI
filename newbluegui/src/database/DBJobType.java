@@ -118,11 +118,12 @@ public class DBJobType extends DBConnection {
             throw new RuntimeException(u);
         }
     }
+    
+    public static void updateList() {
+        listJobType = getMap();
+    }
 
-    public static List<JobType> getList(boolean refresh) {
-        if (refresh)
-            listJobType = getMap();
-
+    public static List<JobType> getList() {
         List<JobType> list = new ArrayList<JobType>(listJobType.values());
         list.sort(new Comparator<JobType>() {
 

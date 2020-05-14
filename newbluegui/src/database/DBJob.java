@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -136,12 +137,22 @@ public class DBJob extends DBConnection{
             throw new RuntimeException(u);
         }
     }
+    
+    public static void updateList() {
+        listJob = getMap();
+    }
 
-    public static List<Job> getList(boolean refresh) {
-        if (refresh)
-            listJob = getMap();
-        
+    public static List<Job> getList() {
         List<Job> list = new ArrayList<Job>(listJob.values());
+        
+        list.sort(new Comparator<Job>() {
+
+            @Override
+            public int compare(Job o1, Job o2) {
+                return o1.getClient().getClientName().compareToIgnoreCase(o2.getClient().getClientName());
+            }
+        });
+        
         return list;
     }
 }

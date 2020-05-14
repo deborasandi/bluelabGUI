@@ -1,17 +1,23 @@
 package database;
 
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jobprice.JobPrice;
 
-public class DBJobPrice extends DBConnection{
-    private static List<JobPrice> listJobPrice;
-    
+
+public class DBJobPrice extends DBConnection {
+
+    private static Map<Integer, JobPrice> listJobPrice;
+
     public static void insert(List<JobPrice> list) {
         String query = "insert into job_price (price_table_id, job_type_id, price) values (?, ?, ?)";
 
@@ -58,24 +64,24 @@ public class DBJobPrice extends DBConnection{
             throw new RuntimeException(u);
         }
     }
+    
+    public static Map<Integer, JobPrice> getMap() {
+        Map<Integer, JobPrice> list = new HashMap<Integer, JobPrice>();
 
-    private static List<JobPrice> getList() {
-        List<JobPrice> list = new ArrayList<JobPrice>();
-
-        String query = "SELECT * FROM job_price inner join price_table where job_price.price_table_id = price_table.id order by price_table.name";
+        String query = "SELECT * FROM job_price";
 
         try {
             Statement st = connection.createStatement();
             ResultSet rs = st.executeQuery(query);
 
             while (rs.next()) {
-                JobPrice j = new JobPrice();
-                j.setId(rs.getInt("id"));
-                j.setPriceTable(DBPriceTable.get(rs.getInt("price_table_id")));
-                j.setJob(DBJobType.get(rs.getInt("job_type_id")));
-                j.setPrice(rs.getDouble("price"));
+                JobPrice p = new JobPrice();
+                p.setId(rs.getInt("id"));
+                p.setPriceTable(DBPriceTable.get(rs.getInt("price_table_id")));
+                p.setJob(DBJobType.get(rs.getInt("job_type_id")));
+                p.setPrice(rs.getDouble("price"));
 
-                list.add(j);
+                list.put(p.getId(), p);
             }
 
             st.close();
@@ -122,11 +128,22 @@ public class DBJobPrice extends DBConnection{
             throw new RuntimeException(u);
         }
     }
-    
-    public static List<JobPrice> getList(boolean refresh) {
-        if (refresh)
-            listJobPrice = getList();
+
+    public static void updateList() {
+        listJobPrice = getMap();
+    }
+
+    public static List<JobPrice> getList() {
+        List<JobPrice> list = new ArrayList<JobPrice>(listJobPrice.values());
         
-        return listJobPrice;
+        list.sort(new Comparator<JobPrice>() {
+
+            @Override
+            public int compare(JobPrice o1, JobPrice o2) {
+                return o1.getPriceTable().getName().compareToIgnoreCase(o2.getPriceTable().getName());
+            }
+        });
+        
+        return list;
     }
 }

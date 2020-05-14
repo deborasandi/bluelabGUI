@@ -15,8 +15,6 @@ public class DBConnection {
     private static String password = "bluelabadmin";
 
     protected static Connection connection;
-    
-    
 
     public DBConnection() {
 
@@ -28,11 +26,11 @@ public class DBConnection {
             Logger lgr = Logger.getLogger(DBConnection.class.getName());
             lgr.log(Level.SEVERE, ex.getMessage(), ex);
         }
-
-        DBPriceTable.getList(true);
-        DBJobType.getList(true);
-        DBJobPrice.getList(true);
-        DBClient.getList(true);
-        DBJob.getList(true);
+        
+        DBPriceTable.updateList();
+        DBJobType.updateList();
+        DBJobPrice.updateList();
+        DBClient.updateList();
+        DBJob.updateList();
     }
 }

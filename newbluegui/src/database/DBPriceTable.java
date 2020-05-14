@@ -119,12 +119,14 @@ public class DBPriceTable extends DBConnection {
         }
     }
 
-    public static List<PriceTable> getList(boolean refresh) {
-        if (refresh)
-            listPriceTable = getMap();
-        
+    public static void updateList() {
+        listPriceTable = getMap();
+    }
+
+    public static List<PriceTable> getList() {
         List<PriceTable> list = new ArrayList<PriceTable>(listPriceTable.values());
         list.sort(new Comparator<PriceTable>() {
+
             @Override
             public int compare(PriceTable o1, PriceTable o2) {
                 return o1.getName().compareToIgnoreCase(o2.getName());

@@ -96,17 +96,17 @@ public class InvoiceCtrl {
 
     public void initialize() {
         viewJob.setEditable(true);
-        listClient = FXCollections.observableArrayList(DBClient.getList(false));
+        listClient = FXCollections.observableArrayList(DBClient.getList());
         listClient.add(0, new Client("Todos"));
         client.getItems().addAll(listClient);
         client.getSelectionModel().select(0);
 
-        listJobType = FXCollections.observableArrayList(DBJobType.getList(false));
+        listJobType = FXCollections.observableArrayList(DBJobType.getList());
         listJobType.add(0, new JobType("Todos"));
         jobType.getItems().addAll(listJobType);
         jobType.getSelectionModel().select(0);
 
-        listJobs = FXCollections.observableArrayList(DBJob.getList(false));
+        listJobs = FXCollections.observableArrayList(DBJob.getList());
         viewJob.getItems().addAll(listJobs);
 
         List<String> listAux = new ArrayList<String>();
@@ -205,7 +205,7 @@ public class InvoiceCtrl {
     }
 
     public void refreshClients() {
-        listClient = FXCollections.observableArrayList(DBClient.getList(true));
+        listClient = FXCollections.observableArrayList(DBClient.getList());
         listClient.add(0, new Client("Todos"));
         client.getItems().clear();
         client.getItems().addAll(listClient);
@@ -213,7 +213,7 @@ public class InvoiceCtrl {
     }
 
     public void refreshJobs() {
-        listJobs = FXCollections.observableArrayList(DBJob.getList(false));
+        listJobs = FXCollections.observableArrayList(DBJob.getList());
         viewJob.getItems().clear();
         viewJob.getItems().addAll(listJobs);
     }

@@ -142,10 +142,11 @@ public class DBClient extends DBConnection {
         }
     }
 
-    public static List<Client> getList(boolean refresh) {
-        if (refresh)
-            listClient = getMap();
-
+    public static void updateList() {
+        listClient = getMap();
+    }
+    
+    public static List<Client> getList() {
         List<Client> list = new ArrayList<Client>(listClient.values());
         list.sort(new Comparator<Client>() {
             @Override

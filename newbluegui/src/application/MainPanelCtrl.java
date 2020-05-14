@@ -4,6 +4,11 @@ package application;
 import java.io.IOException;
 
 import client.ClientCtrl;
+import database.DBClient;
+import database.DBConnection;
+import database.DBJob;
+import database.DBJobType;
+import database.DBPriceTable;
 import invoice.InvoiceCtrl;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -122,15 +127,18 @@ public class MainPanelCtrl {
     }
 
     public void refreshClients() {
+        DBClient.updateList();
         invoiceCtrl.refreshClients();
         jobCtrl.refreshClients();
     }
 
     public void refreshPriceTables() {
+        DBPriceTable.updateList();
         clientCtrl.refreshPriceTables();
     }
 
     public void refreshJobTypes() {
+        DBJobType.updateList();
         jobCtrl.refreshJobTypes();
     }
 
@@ -139,6 +147,7 @@ public class MainPanelCtrl {
     }
 
     public void refreshJobs() {
+        DBJob.updateList();
         invoiceCtrl.refreshJobs();
     }
 }

@@ -71,13 +71,13 @@ public class JobCtrl {
     private Job currentJob;
 
     public void initialize() {
-        listClient = FXCollections.observableArrayList(DBClient.getList(false));
+        listClient = FXCollections.observableArrayList(DBClient.getList());
         client.getItems().addAll(listClient);
 
-        listJobType = FXCollections.observableArrayList(DBJobType.getList(false));
+        listJobType = FXCollections.observableArrayList(DBJobType.getList());
         jobType.getItems().addAll(listJobType);
 
-        listJobs = FXCollections.observableArrayList(DBJob.getList(false));
+        listJobs = FXCollections.observableArrayList(DBJob.getList());
         viewJob.getItems().addAll(listJobs);
 
         date.setValue(LocalDate.now());
@@ -171,7 +171,7 @@ public class JobCtrl {
     }
 
     private void refreshViewJob() {
-        listJobs = FXCollections.observableArrayList(DBJob.getList(true));
+        listJobs = FXCollections.observableArrayList(DBJob.getList());
         viewJob.getItems().clear();
         viewJob.getItems().addAll(listJobs);
     }
@@ -213,14 +213,14 @@ public class JobCtrl {
     }
 
     public void refreshClients() {
-        listClient = FXCollections.observableArrayList(DBClient.getList(true));
+        listClient = FXCollections.observableArrayList(DBClient.getList());
         client.getItems().clear();
         client.getItems().addAll(listClient);
         client.getSelectionModel().select(0);
     }
 
     public void refreshJobTypes() {
-        listJobType = FXCollections.observableArrayList(DBJobType.getList(true));
+        listJobType = FXCollections.observableArrayList(DBJobType.getList());
         jobType.getItems().clear();
         jobType.getItems().addAll(listJobType);
         jobType.getSelectionModel().select(0);

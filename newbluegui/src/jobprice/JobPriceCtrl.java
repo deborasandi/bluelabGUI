@@ -84,13 +84,13 @@ public class JobPriceCtrl {
         viewJob.setEditable(true);
         viewPrice.setEditable(true);
 
-        listPriceTable = FXCollections.observableArrayList(DBPriceTable.getList(false));
+        listPriceTable = FXCollections.observableArrayList(DBPriceTable.getList());
         viewTable.getItems().addAll(listPriceTable);
 
-        listJobType = FXCollections.observableArrayList(DBJobType.getList(false));
+        listJobType = FXCollections.observableArrayList(DBJobType.getList());
         viewJob.getItems().addAll(listJobType);
 
-        listPrice = FXCollections.observableArrayList(DBJobPrice.getList(false));
+        listPrice = FXCollections.observableArrayList(DBJobPrice.getList());
         viewPrice.getItems().addAll(listPrice);
 
         newPrices = new ArrayList<JobPrice>();
@@ -242,7 +242,7 @@ public class JobPriceCtrl {
     }
 
     private void refreshViewTable() {
-        listPriceTable = FXCollections.observableArrayList(DBPriceTable.getList(true));
+        listPriceTable = FXCollections.observableArrayList(DBPriceTable.getList());
         viewTable.getItems().clear();
         viewTable.getItems().addAll(listPriceTable);
 
@@ -250,7 +250,7 @@ public class JobPriceCtrl {
     }
 
     private void refreshViewJob() {
-        listJobType = FXCollections.observableArrayList(DBJobType.getList(true));
+        listJobType = FXCollections.observableArrayList(DBJobType.getList());
         viewJob.getItems().clear();
         viewJob.getItems().addAll(listJobType);
 
@@ -258,7 +258,7 @@ public class JobPriceCtrl {
     }
 
     private void refreshViewPrice() {
-        listPrice = FXCollections.observableArrayList(DBJobPrice.getList(true));
+        listPrice = FXCollections.observableArrayList(DBJobPrice.getList());
         viewPrice.getItems().clear();
         viewPrice.getItems().addAll(listPrice);
     }
