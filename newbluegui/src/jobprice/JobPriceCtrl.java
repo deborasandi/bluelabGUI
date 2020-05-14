@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import alert.AlertDialog;
+import application.Main;
 import database.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -126,6 +127,8 @@ public class JobPriceCtrl {
                     DBConnection.insertJobPrice(list);
 
                     refreshViewPrice();
+                    
+                    Main.refreshPriceTables();
                 }
                 else {
                     if (AlertDialog.showSaveTable(p, old)) {
@@ -170,6 +173,8 @@ public class JobPriceCtrl {
                     DBConnection.insertJobPrice(list);
 
                     refreshViewPrice();
+                    
+                    Main.refreshJobTypes();
                 }
                 else {
                     if (AlertDialog.showSaveJobType(j, old)) {
@@ -324,5 +329,4 @@ public class JobPriceCtrl {
 
         newPrices.clear();
     }
-
 }

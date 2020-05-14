@@ -19,6 +19,7 @@ public class Job {
     private Date date;
     private boolean repetition;
     private boolean nocost;
+    private double total;
     private boolean paid;
 
     private BooleanProperty paidProperty = new SimpleBooleanProperty();
@@ -111,5 +112,13 @@ public class Job {
 
     public void setPaidProperty(BooleanProperty paidProperty) {
         this.paidProperty = paidProperty;
+    }
+    
+    public double getTotal() {
+        return total;
+    }
+    
+    public void setTotal(double total) {
+        this.total = total;
     }
 }

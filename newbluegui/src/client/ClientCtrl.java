@@ -9,6 +9,7 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 
 import alert.AlertDialog;
+import application.Main;
 import database.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -88,7 +89,6 @@ public class ClientCtrl {
         viewClient.getItems().addAll(listClient);
 
         listTables = FXCollections.observableArrayList(DBConnection.getListPriceTable(false));
-
         priceTable.getItems().addAll(listTables);
         priceTable.getSelectionModel().select(0);
 
@@ -159,7 +159,7 @@ public class ClientCtrl {
         if (currentClient != null) {
             if (AlertDialog.showDelete(currentClient)) {
                 DBConnection.deleteClient(currentClient.getId());
-                refreshViewClient();
+                refreshView();
                 clearFields();
             }
         }
@@ -224,10 +224,12 @@ public class ClientCtrl {
 
         clearFields();
 
-        refreshViewClient();
+        refreshView();
+        
+        Main.refreshClients();
     }
 
-    private void refreshViewClient() {
+    private void refreshView() {
         listClient = FXCollections.observableArrayList(DBConnection.getListClient(true));
         viewClient.getItems().clear();
         viewClient.getItems().addAll(listClient);
@@ -240,7 +242,7 @@ public class ClientCtrl {
 
     @FXML
     void refresh() {
-        refreshViewClient();
+        refreshView();
 
         listTables = FXCollections.observableArrayList(DBConnection.getListPriceTable(true));
         priceTable.getItems().clear();
@@ -252,5 +254,12 @@ public class ClientCtrl {
             if (p1.getId() == p.getId())
                 priceTable.getSelectionModel().select(p1);
         }
+    }
+
+    public void refreshPriceTables() {
+        listTables = FXCollections.observableArrayList(DBConnection.getListPriceTable(true));
+        priceTable.getItems().clear();
+        priceTable.getItems().addAll(listTables);
+        priceTable.getSelectionModel().select(0);
     }
 }

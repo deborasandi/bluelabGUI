@@ -207,4 +207,18 @@ public class JobCtrl {
                 jobType.getSelectionModel().select(j1);
         }
     }
+    
+    public void refreshClients() {
+        listClient = FXCollections.observableArrayList(DBConnection.getListClient(true));
+        client.getItems().clear();
+        client.getItems().addAll(listClient);
+        client.getSelectionModel().select(0);
+    }
+
+    public void refreshJobTypes() {
+        listJobType = FXCollections.observableArrayList(DBConnection.getListJobType(false));
+        jobType.getItems().clear();
+        jobType.getItems().addAll(listJobType);  
+        jobType.getSelectionModel().select(0);
+    }
 }

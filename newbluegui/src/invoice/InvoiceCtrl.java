@@ -204,4 +204,18 @@ public class InvoiceCtrl {
     void filterRepetition(ActionEvent event) {
 
     }
+    
+    public void refreshClients() {
+        listClient = FXCollections.observableArrayList(DBConnection.getListClient(true));
+        listClient.add(0, new Client("Todos"));
+        client.getItems().clear();
+        client.getItems().addAll(listClient);
+        client.getSelectionModel().select(0);
+    }
+
+    public void refreshJobs() {
+        listJobs = FXCollections.observableArrayList(DBConnection.getListJob(false));
+        viewJob.getItems().clear();
+        viewJob.getItems().addAll(listJobs);        
+    }
 }
