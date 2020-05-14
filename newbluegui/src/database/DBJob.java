@@ -1,5 +1,6 @@
 package database;
 
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,24 +14,27 @@ import java.util.Map;
 
 import job.Job;
 
-public class DBJob extends DBConnection{
+
+public class DBJob extends DBConnection {
+
     private static Map<Integer, Job> listJob;
-    
+
     public static boolean insert(Job j) {
-        String query = "INSERT INTO job (client_id, job_type_id, qtd, shipping, date, repetition, nocost, paid) VALUES"
+        String query = "INSERT INTO job (client_id, job_price_id, qtd, shipping, date, repetition, nocost, paid, total) VALUES"
                 + "(?, ?, ?, ?, ?, ?, ?, ?);";
 
         try {
             PreparedStatement stmt = connection.prepareStatement(query);
 
             stmt.setInt(1, j.getClient().getId());
-            stmt.setInt(2, j.getJobType().getId());
+            stmt.setInt(2, j.getJobPrice().getId());
             stmt.setInt(3, j.getQtd());
             stmt.setDouble(4, j.getShipping());
             stmt.setDate(5, j.getDate());
             stmt.setBoolean(6, j.isRepetition());
             stmt.setBoolean(7, j.isNocost());
             stmt.setBoolean(8, j.isPaid());
+            stmt.setDouble(9, j.getTotal());
 
             boolean result = stmt.execute();
             stmt.close();
@@ -56,14 +60,14 @@ public class DBJob extends DBConnection{
 
                 j.setId(rs.getInt("id"));
                 j.setClient(DBClient.get(rs.getInt("client_id")));
-                j.setJobType(DBJobType.get(rs.getInt("job_type_id")));
+                j.setJobPrice(DBJobPrice.get(rs.getInt("job_price_id")));
                 j.setQtd(rs.getInt("qtd"));
                 j.setShipping(rs.getDouble("shipping"));
                 j.setDate(rs.getDate("date", Calendar.getInstance()));
                 j.setRepetition(rs.getBoolean("repetition"));
                 j.setNocost(rs.getBoolean("nocost"));
                 j.setPaid(rs.getBoolean("paid"));
-
+                j.setTotal(rs.getDouble("total"));
                 list.put(j.getId(), j);
             }
 
@@ -76,22 +80,23 @@ public class DBJob extends DBConnection{
 
         return list;
     }
-
+    
     public static boolean update(Job j) {
-        String query = "UPDATE job SET client_id = ?, job_type_id = ?, qtd = ?, shipping = ?, date = ?, repetition = ?, nocost = ?, paid = ? WHERE id = ?";
+        String query = "UPDATE job SET client_id = ?, job_price_id = ?, qtd = ?, shipping = ?, date = ?, repetition = ?, nocost = ?, paid = ?, total = ? WHERE id = ?";
 
         try {
             PreparedStatement stmt = connection.prepareStatement(query);
 
             stmt.setInt(1, j.getClient().getId());
-            stmt.setInt(2, j.getJobType().getId());
+            stmt.setInt(2, j.getJobPrice().getId());
             stmt.setInt(3, j.getQtd());
             stmt.setDouble(4, j.getShipping());
             stmt.setDate(5, j.getDate());
             stmt.setBoolean(6, j.isRepetition());
             stmt.setBoolean(7, j.isNocost());
             stmt.setBoolean(8, j.isPaid());
-            stmt.setInt(9, j.getId());
+            stmt.setDouble(9, j.getTotal());
+            stmt.setInt(10, j.getId());
 
             boolean r = stmt.execute();
             stmt.close();
@@ -137,14 +142,14 @@ public class DBJob extends DBConnection{
             throw new RuntimeException(u);
         }
     }
-    
+
     public static void updateList() {
         listJob = getMap();
     }
 
     public static List<Job> getList() {
         List<Job> list = new ArrayList<Job>(listJob.values());
-        
+
         list.sort(new Comparator<Job>() {
 
             @Override
@@ -152,7 +157,7 @@ public class DBJob extends DBConnection{
                 return o1.getClient().getClientName().compareToIgnoreCase(o2.getClient().getClientName());
             }
         });
-        
+
         return list;
     }
 }

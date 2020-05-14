@@ -5,20 +5,20 @@ import pricetable.PriceTable;
 
 public class JobPrice {
     private int id;
-    private JobType job;
+    private JobType jobType;
     private PriceTable priceTable;
     private double price;
     
     public JobPrice(int id, JobType job, PriceTable priceTable, double price) {
         super();
         this.id = id;
-        this.job = job;
+        this.jobType = job;
         this.priceTable = priceTable;
         this.price = price;
     }
     
     public JobPrice(JobType job, PriceTable priceTable, double price) {
-        this.job = job;
+        this.jobType = job;
         this.priceTable = priceTable;
         this.price = price;
     }
@@ -35,12 +35,12 @@ public class JobPrice {
         this.id = id;
     }
     
-    public JobType getJob() {
-        return job;
+    public JobType getJobType() {
+        return jobType;
     }
     
-    public void setJob(JobType job) {
-        this.job = job;
+    public void setJobType(JobType jobType) {
+        this.jobType = jobType;
     }
     
     public PriceTable getPriceTable() {
@@ -59,6 +59,11 @@ public class JobPrice {
     
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return this.getJobType().getName();
     }
     
     

@@ -6,14 +6,14 @@ import java.sql.Date;
 import client.Client;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import jobtype.JobType;
+import jobprice.JobPrice;
 
 
 public class Job {
 
     private int id;
     private Client client;
-    private JobType jobType;
+    private JobPrice jobPrice;
     private int qtd;
     private double shipping;
     private Date date;
@@ -44,12 +44,12 @@ public class Job {
         this.client = client;
     }
 
-    public JobType getJobType() {
-        return jobType;
+    public JobPrice getJobPrice() {
+        return jobPrice;
     }
 
-    public void setJobType(JobType jobType) {
-        this.jobType = jobType;
+    public void setJobPrice(JobPrice jobPrice) {
+        this.jobPrice = jobPrice;
     }
 
     public int getQtd() {

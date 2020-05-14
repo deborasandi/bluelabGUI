@@ -7,33 +7,35 @@ import java.util.Date;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
-import com.jfoenix.controls.JFXTextField;
 
 import alert.AlertDialog;
 import application.Main;
 import client.Client;
 import database.DBClient;
 import database.DBJob;
-import database.DBJobType;
+import database.DBJobPrice;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import jobtype.JobType;
+import jobprice.JobPrice;
 
 
 public class JobCtrl {
 
     @FXML
-    private JFXTextField jobQtd;
+    private Spinner<Integer> jobQtd;
 
     @FXML
-    private JFXTextField shipping;
+    private Spinner<Double> shipping;
 
     @FXML
     private JFXDatePicker date;
@@ -42,7 +44,7 @@ public class JobCtrl {
     private JFXComboBox<Client> client;
 
     @FXML
-    private JFXComboBox<JobType> jobType;
+    private JFXComboBox<JobPrice> jobPrice;
 
     @FXML
     private TableView<Job> viewJob;
@@ -62,9 +64,12 @@ public class JobCtrl {
     @FXML
     private JFXCheckBox nocost;
 
+    @FXML
+    private Label lblTotal;
+
     private ObservableList<Client> listClient;
 
-    private ObservableList<JobType> listJobType;
+    private ObservableList<JobPrice> listJobPrice;
 
     private ObservableList<Job> listJobs;
 
@@ -74,8 +79,7 @@ public class JobCtrl {
         listClient = FXCollections.observableArrayList(DBClient.getList());
         client.getItems().addAll(listClient);
 
-        listJobType = FXCollections.observableArrayList(DBJobType.getList());
-        jobType.getItems().addAll(listJobType);
+        listJobPrice = FXCollections.observableArrayList(DBJobPrice.getList());
 
         listJobs = FXCollections.observableArrayList(DBJob.getList());
         viewJob.getItems().addAll(listJobs);
@@ -94,11 +98,18 @@ public class JobCtrl {
             }
         });
 
+        jobQtd.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10));
+        jobQtd.getValueFactory().setValue(1);
+        jobQtd.valueProperty().addListener((obs, oldValue, newValue) -> calcTotal());
+
+        shipping.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 1000));
+        shipping.getValueFactory().setValue(0.0);
+        shipping.valueProperty().addListener((obs, oldValue, newValue) -> calcTotal());
     }
 
     private void createColumns() {
         colClient.setCellValueFactory(new PropertyValueFactory<>("client"));
-        colJobType.setCellValueFactory(new PropertyValueFactory<>("jobType"));
+        colJobType.setCellValueFactory(new PropertyValueFactory<>("jobPrice"));
         colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
     }
 
@@ -131,12 +142,13 @@ public class JobCtrl {
         Job j = new Job();
 
         j.setClient(client.getValue());
-        j.setJobType(jobType.getValue());
-        j.setQtd(jobQtd.getText().isEmpty() ? 0 : Integer.parseInt(jobQtd.getText()));
-        j.setShipping(shipping.getText().isEmpty() ? 0 : Double.parseDouble(shipping.getText()));
+        j.setJobPrice(jobPrice.getValue());
+        j.setQtd(jobQtd.getValue());
+        j.setShipping(shipping.getValue());
         j.setDate(java.sql.Date.valueOf(date.getValue()));
         j.setRepetition(repetition.isSelected());
         j.setNocost(nocost.isSelected());
+        j.setTotal(Double.parseDouble(lblTotal.getText()));
 
         if (currentJob != null) {
             if (AlertDialog.showSaveUpdate(j)) {
@@ -161,9 +173,9 @@ public class JobCtrl {
 
     private void clearFields() {
         client.getSelectionModel().clearSelection();
-        jobType.getSelectionModel().clearSelection();
-        jobQtd.clear();
-        shipping.clear();
+        jobPrice.getSelectionModel().clearSelection();
+        jobQtd.getValueFactory().setValue(1);
+        shipping.getValueFactory().setValue(0.0);
         date.setValue(LocalDate.now());
         repetition.setSelected(false);
         nocost.setSelected(false);
@@ -177,7 +189,7 @@ public class JobCtrl {
 
     private void disableFields(boolean d) {
         client.setDisable(d);
-        jobType.setDisable(d);
+        jobPrice.setDisable(d);
         jobQtd.setDisable(d);
         shipping.setDisable(d);
         date.setDisable(d);
@@ -187,9 +199,9 @@ public class JobCtrl {
 
     private void loadJob(Job j) {
         findClient(j.getClient());
-        findJobType(j.getJobType());
-        jobQtd.setText(String.valueOf(j.getQtd()));
-        shipping.setText(String.valueOf(j.getShipping()));
+        findJobPrice(j.getJobPrice());
+        jobQtd.getValueFactory().setValue(j.getQtd());
+        shipping.getValueFactory().setValue(j.getShipping());
         date.setValue(j.getDate().toLocalDate());
         repetition.setSelected(j.isRepetition());
         nocost.setSelected(j.isNocost());
@@ -204,10 +216,10 @@ public class JobCtrl {
         }
     }
 
-    private void findJobType(JobType j) {
-        for (JobType j1 : listJobType) {
+    private void findJobPrice(JobPrice j) {
+        for (JobPrice j1 : listJobPrice) {
             if (j1.getId() == j.getId())
-                jobType.getSelectionModel().select(j1);
+                jobPrice.getSelectionModel().select(j1);
         }
     }
 
@@ -219,9 +231,45 @@ public class JobCtrl {
     }
 
     public void refreshJobTypes() {
-        listJobType = FXCollections.observableArrayList(DBJobType.getList());
-        jobType.getItems().clear();
-        jobType.getItems().addAll(listJobType);
-        jobType.getSelectionModel().select(0);
+        listJobPrice = FXCollections.observableArrayList(DBJobPrice.getList());
+        jobPrice.getItems().clear();
+        jobPrice.getItems().addAll(listJobPrice);
+        jobPrice.getSelectionModel().select(0);
+    }
+
+    @FXML
+    void loadJobPrice() {
+        Client c = client.getSelectionModel().getSelectedItem();
+
+        if (c == null)
+            return;
+
+        jobPrice.getItems().clear();
+        for (JobPrice jp : listJobPrice) {
+            if (jp.getPriceTable().getId() == c.getPriceTable().getId())
+                jobPrice.getItems().add(jp);
+        }
+    }
+
+    @FXML
+    void calcTotal() {
+        JobPrice jp = jobPrice.getSelectionModel().getSelectedItem();
+
+        if (jp == null)
+            return;
+
+        if (jobQtd.getValue() == null)
+            jobQtd.getValueFactory().setValue(0);
+
+        if (shipping.getValue() == null)
+            shipping.getValueFactory().setValue(0.0);
+
+        if (nocost.isSelected()) {
+            lblTotal.setText(String.valueOf(0));
+        }
+        else {
+            double total = jp.getPrice() * jobQtd.getValue() + shipping.getValue();
+            lblTotal.setText(String.valueOf(total));
+        }
     }
 }

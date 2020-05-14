@@ -58,7 +58,7 @@ public class AlertDialog {
     public static boolean showSavePrice(JobPrice j) {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Preço");
-        alert.setHeaderText("Deseja alterar " + j.getPriceTable().getName() + " - " + j.getJob().getName() + " - "
+        alert.setHeaderText("Deseja alterar " + j.getPriceTable().getName() + " - " + j.getJobType().getName() + " - "
                 + j.getPrice() + "?");
 
         Optional<ButtonType> result = alert.showAndWait();
@@ -69,8 +69,8 @@ public class AlertDialog {
     public static boolean showDeletePrice(JobPrice j) {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Preço");
-        alert.setHeaderText(
-                "Excluir " + j.getPriceTable().getName() + " - " + j.getJob().getName() + " - " + j.getPrice() + "?");
+        alert.setHeaderText("Excluir " + j.getPriceTable().getName() + " - " + j.getJobType().getName() + " - "
+                + j.getPrice() + "?");
 
         Optional<ButtonType> result = alert.showAndWait();
 
@@ -122,7 +122,8 @@ public class AlertDialog {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Trabalho");
         alert.setHeaderText("Novo Trabalho");
-        alert.setContentText("Deseja salvar " + j.getClient().getClientName() + " - " + j.getJobType().getName() + "?");
+        alert.setContentText("Deseja salvar " + j.getClient().getClientName() + " - "
+                + j.getJobPrice().getJobType().getName() + "?");
 
         Optional<ButtonType> result = alert.showAndWait();
 
@@ -133,7 +134,8 @@ public class AlertDialog {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Trabalho");
         alert.setHeaderText("Alterar Trabalho");
-        alert.setContentText("Deseja alterar " + j.getClient().getClientName() + " - " + j.getJobType().getName() + "?");
+        alert.setContentText("Deseja alterar " + j.getClient().getClientName() + " - "
+                + j.getJobPrice().getJobType().getName() + "?");
 
         Optional<ButtonType> result = alert.showAndWait();
 
@@ -144,7 +146,8 @@ public class AlertDialog {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Trabalho");
         alert.setHeaderText("Excluir Trabalho");
-        alert.setContentText("Excluir " + j.getClient().getClientName() + " - " + j.getJobType().getName() + "?");
+        alert.setContentText(
+                "Excluir " + j.getClient().getClientName() + " - " + j.getJobPrice().getJobType().getName() + "?");
 
         Optional<ButtonType> result = alert.showAndWait();
 

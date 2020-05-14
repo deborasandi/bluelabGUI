@@ -207,14 +207,14 @@ public class JobPriceCtrl {
             }
         });
 
-        colJob.setCellValueFactory(new PropertyValueFactory<>("job"));
+        colJob.setCellValueFactory(new PropertyValueFactory<>("jobType"));
         colJob.setCellFactory(ComboBoxTableCell.forTableColumn(listJobType));
         colJob.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<JobPrice, JobType>>() {
 
             @Override
             public void handle(CellEditEvent<JobPrice, JobType> event) {
                 JobPrice j = event.getTableView().getItems().get(event.getTablePosition().getRow());
-                j.setJob(event.getNewValue());
+                j.setJobType(event.getNewValue());
                 newPrices.add(j);
                 viewPrice.refresh();
 

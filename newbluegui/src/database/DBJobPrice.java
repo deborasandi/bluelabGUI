@@ -33,7 +33,7 @@ public class DBJobPrice extends DBConnection {
             int i = 0;
             for (JobPrice j : list) {
                 stmt.setInt(i + 1, j.getPriceTable().getId());
-                stmt.setInt(i + 2, j.getJob().getId());
+                stmt.setInt(i + 2, j.getJobType().getId());
                 stmt.setDouble(i + 3, j.getPrice());
 
                 i += 3;
@@ -54,7 +54,7 @@ public class DBJobPrice extends DBConnection {
             PreparedStatement stmt = connection.prepareStatement(query);
 
             stmt.setInt(1, jp.getPriceTable().getId());
-            stmt.setInt(2, jp.getJob().getId());
+            stmt.setInt(2, jp.getJobType().getId());
             stmt.setDouble(3, jp.getPrice());
 
             stmt.execute();
@@ -78,7 +78,7 @@ public class DBJobPrice extends DBConnection {
                 JobPrice p = new JobPrice();
                 p.setId(rs.getInt("id"));
                 p.setPriceTable(DBPriceTable.get(rs.getInt("price_table_id")));
-                p.setJob(DBJobType.get(rs.getInt("job_type_id")));
+                p.setJobType(DBJobType.get(rs.getInt("job_type_id")));
                 p.setPrice(rs.getDouble("price"));
 
                 list.put(p.getId(), p);
@@ -117,7 +117,7 @@ public class DBJobPrice extends DBConnection {
             PreparedStatement stmt = connection.prepareStatement(query);
 
             stmt.setInt(1, j.getPriceTable().getId());
-            stmt.setInt(2, j.getJob().getId());
+            stmt.setInt(2, j.getJobType().getId());
             stmt.setDouble(3, j.getPrice());
             stmt.setInt(4, j.getId());
 
@@ -145,5 +145,9 @@ public class DBJobPrice extends DBConnection {
         });
         
         return list;
+    }
+
+    public static JobPrice get(int id) {
+        return listJobPrice.get(id);
     }
 }

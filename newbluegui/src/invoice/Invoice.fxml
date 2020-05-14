@@ -126,6 +126,7 @@
                                                 </VBox>
                                              </graphic>
                                           </TableColumn>
+                                          <TableColumn fx:id="colTotal" prefWidth="75.0" text="Total" />
                                           <TableColumn fx:id="colPaid" prefWidth="100.0" style="-fx-alignment: CENTER;">
                                              <graphic>
                                                 <VBox alignment="CENTER">

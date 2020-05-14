@@ -84,6 +84,9 @@ public class InvoiceCtrl {
 
     @FXML
     private TableColumn<Job, Boolean> colNoCost;
+    
+    @FXML
+    private TableColumn<Job, Double> colTotal;
 
     @FXML
     private TableColumn<Job, Boolean> colPaid;
@@ -126,12 +129,13 @@ public class InvoiceCtrl {
 
     private void createColumns() {
         colClient.setCellValueFactory(new PropertyValueFactory<>("client"));
-        colJobType.setCellValueFactory(new PropertyValueFactory<>("jobType"));
+        colJobType.setCellValueFactory(new PropertyValueFactory<>("jobPrice"));
         colQtd.setCellValueFactory(new PropertyValueFactory<>("qtd"));
         colShipping.setCellValueFactory(new PropertyValueFactory<>("shipping"));
         colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
         colRepetion.setCellValueFactory(new PropertyValueFactory<>("repetition"));
         colNoCost.setCellValueFactory(new PropertyValueFactory<>("nocost"));
+        colTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
         colPaid.setCellValueFactory(new PropertyValueFactory<>("paid"));
 
         colPaid.setCellFactory(new Callback<TableColumn<Job, Boolean>, TableCell<Job, Boolean>>() {
