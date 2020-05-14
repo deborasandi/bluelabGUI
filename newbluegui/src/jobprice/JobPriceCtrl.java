@@ -126,14 +126,13 @@ public class JobPriceCtrl {
                     }
 
                     DBJobPrice.insert(list);
-
-                    refreshViewPrice();
-
                     Main.refreshPriceTables();
+                    refreshViewPrice();
                 }
                 else {
                     if (AlertDialog.showSaveTable(p, old)) {
                         DBPriceTable.update(p);
+                        Main.refreshPriceTables();
                         refreshViewPrice();
                     }
                     else {
@@ -173,13 +172,13 @@ public class JobPriceCtrl {
 
                     DBJobPrice.insert(list);
 
-                    refreshViewPrice();
-
                     Main.refreshJobTypes();
+                    refreshViewPrice();
                 }
                 else {
                     if (AlertDialog.showSaveJobType(j, old)) {
                         DBJobType.update(j);
+                        Main.refreshJobTypes();
                         refreshViewPrice();
                     }
                     else {
@@ -287,6 +286,7 @@ public class JobPriceCtrl {
             PriceTable p = viewTable.getSelectionModel().getSelectedItem();
             if (p != null && p.getId() != 0 && AlertDialog.showDeleteTable(p)) {
                 DBPriceTable.delete(p.getId());
+                Main.refreshPriceTables();
                 refreshViewTable();
                 refreshViewPrice();
             }
@@ -295,6 +295,7 @@ public class JobPriceCtrl {
             JobType j = viewJob.getSelectionModel().getSelectedItem();
             if (j != null && j.getId() != 0 && AlertDialog.showDeleteJobType(j)) {
                 DBJobType.delete(j.getId());
+                Main.refreshJobTypes();
                 refreshViewJob();
                 refreshViewPrice();
             }
@@ -306,6 +307,7 @@ public class JobPriceCtrl {
         JobPrice jp = viewPrice.getSelectionModel().getSelectedItem();
         if (jp != null && jp.getId() != 0 && AlertDialog.showDeletePrice(jp)) {
             DBJobPrice.delete(jp.getId());
+            Main.refreshPriceTables();
             refreshViewPrice();
         }
     }
@@ -314,6 +316,8 @@ public class JobPriceCtrl {
     void savePrice() {
         for (JobPrice jp : newPrices) {
             DBJobPrice.update(jp);
+            Main.refreshPriceTables();
+            refreshViewPrice();
         }
 
         if (paneInfo.getChildren().contains(labelNotif))

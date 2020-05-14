@@ -100,7 +100,6 @@ public class JobCtrl {
         colClient.setCellValueFactory(new PropertyValueFactory<>("client"));
         colJobType.setCellValueFactory(new PropertyValueFactory<>("jobType"));
         colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
-        // colReceived.setCellFactory(CheckBoxTableCell.forTableColumn(new TableColumn<Job, Boolean>()));
     }
 
     @FXML
@@ -108,9 +107,9 @@ public class JobCtrl {
         if (currentJob != null) {
             if (AlertDialog.showDelete(currentJob)) {
                 DBJob.delete(currentJob.getId());
-                refreshViewJob();
                 clearFields();
                 Main.refreshJobs();
+                refreshViewJob();
             }
         }
     }
@@ -151,8 +150,8 @@ public class JobCtrl {
         }
 
         clearFields();
-        refreshViewJob();
         Main.refreshJobs();
+        refreshViewJob();
     }
 
     @FXML
