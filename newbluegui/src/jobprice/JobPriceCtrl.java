@@ -6,7 +6,9 @@ import java.util.List;
 
 import alert.AlertDialog;
 import application.Main;
-import database.DBConnection;
+import database.DBJobPrice;
+import database.DBJobType;
+import database.DBPriceTable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -82,19 +84,19 @@ public class JobPriceCtrl {
         viewJob.setEditable(true);
         viewPrice.setEditable(true);
 
-        listPriceTable = FXCollections.observableArrayList(DBConnection.getListPriceTable(false));
+        listPriceTable = FXCollections.observableArrayList(DBPriceTable.getList(false));
         viewTable.getItems().addAll(listPriceTable);
 
-        listJobType = FXCollections.observableArrayList(DBConnection.getListJobType(false));
+        listJobType = FXCollections.observableArrayList(DBJobType.getList(false));
         viewJob.getItems().addAll(listJobType);
 
-        listPrice = FXCollections.observableArrayList(DBConnection.getListJobPrice(false));
+        listPrice = FXCollections.observableArrayList(DBJobPrice.getList(false));
         viewPrice.getItems().addAll(listPrice);
 
         newPrices = new ArrayList<JobPrice>();
 
         createColumns();
-        
+
         paneInfo.getChildren().remove(labelNotif);
     }
 
@@ -114,9 +116,8 @@ public class JobPriceCtrl {
                 p.setName(event.getNewValue());
 
                 if (p.getId() == 0) {
-                    DBConnection.insertPriceTable(p);
-
-                    p = DBConnection.getPriceTable(p.getName());
+                    DBPriceTable.insert(p);
+                    p = DBPriceTable.get(p.getName());
 
                     List<JobPrice> list = new ArrayList<JobPrice>();
 
@@ -124,24 +125,24 @@ public class JobPriceCtrl {
                         list.add(new JobPrice(jobType, p, 0.0));
                     }
 
-                    DBConnection.insertJobPrice(list);
+                    DBJobPrice.insert(list);
 
                     refreshViewPrice();
-                    
+
                     Main.refreshPriceTables();
                 }
                 else {
                     if (AlertDialog.showSaveTable(p, old)) {
-                        DBConnection.updatePriceTable(p);
+                        DBPriceTable.update(p);
                         refreshViewPrice();
                     }
                     else {
                         p.setName(old);
                         viewTable.refresh();
                     }
-                    
+
                 }
-                
+
             }
         });
 
@@ -160,9 +161,9 @@ public class JobPriceCtrl {
                 j.setName(event.getNewValue());
 
                 if (j.getId() == 0) {
-                    DBConnection.insertJobType(j);
+                    DBJobType.insert(j);
 
-                    j = DBConnection.getJobType(j.getName());
+                    j = DBJobType.get(j.getName());
 
                     List<JobPrice> list = new ArrayList<JobPrice>();
 
@@ -170,15 +171,15 @@ public class JobPriceCtrl {
                         list.add(new JobPrice(j, p, 0.0));
                     }
 
-                    DBConnection.insertJobPrice(list);
+                    DBJobPrice.insert(list);
 
                     refreshViewPrice();
-                    
+
                     Main.refreshJobTypes();
                 }
                 else {
                     if (AlertDialog.showSaveJobType(j, old)) {
-                        DBConnection.updateJob(j);
+                        DBJobType.update(j);
                         refreshViewPrice();
                     }
                     else {
@@ -186,7 +187,7 @@ public class JobPriceCtrl {
                         refreshViewJob();
                     }
                 }
-                
+
             }
         });
 
@@ -241,7 +242,7 @@ public class JobPriceCtrl {
     }
 
     private void refreshViewTable() {
-        listPriceTable = FXCollections.observableArrayList(DBConnection.getListPriceTable(true));
+        listPriceTable = FXCollections.observableArrayList(DBPriceTable.getList(true));
         viewTable.getItems().clear();
         viewTable.getItems().addAll(listPriceTable);
 
@@ -249,7 +250,7 @@ public class JobPriceCtrl {
     }
 
     private void refreshViewJob() {
-        listJobType = FXCollections.observableArrayList(DBConnection.getListJobType(true));
+        listJobType = FXCollections.observableArrayList(DBJobType.getList(true));
         viewJob.getItems().clear();
         viewJob.getItems().addAll(listJobType);
 
@@ -257,7 +258,7 @@ public class JobPriceCtrl {
     }
 
     private void refreshViewPrice() {
-        listPrice = FXCollections.observableArrayList(DBConnection.getListJobPrice(true));
+        listPrice = FXCollections.observableArrayList(DBJobPrice.getList(true));
         viewPrice.getItems().clear();
         viewPrice.getItems().addAll(listPrice);
     }
@@ -285,7 +286,7 @@ public class JobPriceCtrl {
         if (tabTable.isSelected()) {
             PriceTable p = viewTable.getSelectionModel().getSelectedItem();
             if (p != null && p.getId() != 0 && AlertDialog.showDeleteTable(p)) {
-                DBConnection.deletePriceTable(p.getId());
+                DBPriceTable.delete(p.getId());
                 refreshViewTable();
                 refreshViewPrice();
             }
@@ -293,7 +294,7 @@ public class JobPriceCtrl {
         else {
             JobType j = viewJob.getSelectionModel().getSelectedItem();
             if (j != null && j.getId() != 0 && AlertDialog.showDeleteJobType(j)) {
-                DBConnection.deleteJobType(j.getId());
+                DBJobType.delete(j.getId());
                 refreshViewJob();
                 refreshViewPrice();
             }
@@ -304,24 +305,17 @@ public class JobPriceCtrl {
     void deletePrice() {
         JobPrice jp = viewPrice.getSelectionModel().getSelectedItem();
         if (jp != null && jp.getId() != 0 && AlertDialog.showDeletePrice(jp)) {
-            DBConnection.deleteJobPrice(jp.getId());
+            DBJobPrice.delete(jp.getId());
             refreshViewPrice();
         }
     }
 
     @FXML
-    void refresh() {
-        refreshViewPrice();
-        refreshViewJob();
-        refreshViewTable();
-    }
-
-    @FXML
     void savePrice() {
         for (JobPrice jp : newPrices) {
-            DBConnection.updateJobPrice(jp);
+            DBJobPrice.update(jp);
         }
-        
+
         if (paneInfo.getChildren().contains(labelNotif))
             paneInfo.getChildren().remove(labelNotif);
 

@@ -10,8 +10,11 @@ import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
 
 import alert.AlertDialog;
+import application.Main;
 import client.Client;
-import database.DBConnection;
+import database.DBClient;
+import database.DBJob;
+import database.DBJobType;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -68,13 +71,13 @@ public class JobCtrl {
     private Job currentJob;
 
     public void initialize() {
-        listClient = FXCollections.observableArrayList(DBConnection.getListClient(false));
+        listClient = FXCollections.observableArrayList(DBClient.getList(false));
         client.getItems().addAll(listClient);
 
-        listJobType = FXCollections.observableArrayList(DBConnection.getListJobType(false));
+        listJobType = FXCollections.observableArrayList(DBJobType.getList(false));
         jobType.getItems().addAll(listJobType);
 
-        listJobs = FXCollections.observableArrayList(DBConnection.getListJob(false));
+        listJobs = FXCollections.observableArrayList(DBJob.getList(false));
         viewJob.getItems().addAll(listJobs);
 
         date.setValue(LocalDate.now());
@@ -104,9 +107,10 @@ public class JobCtrl {
     void deleteJob(ActionEvent event) {
         if (currentJob != null) {
             if (AlertDialog.showDelete(currentJob)) {
-                DBConnection.deleteJob(currentJob.getId());
+                DBJob.delete(currentJob.getId());
                 refreshViewJob();
                 clearFields();
+                Main.refreshJobs();
             }
         }
     }
@@ -138,17 +142,17 @@ public class JobCtrl {
         if (currentJob != null) {
             if (AlertDialog.showSaveUpdate(j)) {
                 j.setId(currentJob.getId());
-                DBConnection.updateJob(j);
+                DBJob.update(j);
             }
         }
         else {
             if (AlertDialog.showSaveNew(j))
-                DBConnection.insertJob(j);
+                DBJob.insert(j);
         }
 
         clearFields();
-
         refreshViewJob();
+        Main.refreshJobs();
     }
 
     @FXML
@@ -167,7 +171,7 @@ public class JobCtrl {
     }
 
     private void refreshViewJob() {
-        listJobs = FXCollections.observableArrayList(DBConnection.getListJob(true));
+        listJobs = FXCollections.observableArrayList(DBJob.getList(true));
         viewJob.getItems().clear();
         viewJob.getItems().addAll(listJobs);
     }
@@ -207,18 +211,18 @@ public class JobCtrl {
                 jobType.getSelectionModel().select(j1);
         }
     }
-    
+
     public void refreshClients() {
-        listClient = FXCollections.observableArrayList(DBConnection.getListClient(true));
+        listClient = FXCollections.observableArrayList(DBClient.getList(true));
         client.getItems().clear();
         client.getItems().addAll(listClient);
         client.getSelectionModel().select(0);
     }
 
     public void refreshJobTypes() {
-        listJobType = FXCollections.observableArrayList(DBConnection.getListJobType(false));
+        listJobType = FXCollections.observableArrayList(DBJobType.getList(true));
         jobType.getItems().clear();
-        jobType.getItems().addAll(listJobType);  
+        jobType.getItems().addAll(listJobType);
         jobType.getSelectionModel().select(0);
     }
 }

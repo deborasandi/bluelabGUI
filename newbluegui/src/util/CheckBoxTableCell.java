@@ -2,7 +2,7 @@ package util;
 
 
 import alert.AlertDialog;
-import database.DBConnection;
+import database.DBJob;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.CheckBox;
@@ -46,7 +46,7 @@ public class CheckBoxTableCell extends TableCell<Job, Boolean> {
     
     private void updateValue(Job j, boolean old) {
         if (AlertDialog.showSaveUpdate(j)) {
-            DBConnection.updateJobPaid(j);
+            DBJob.update(j.getId(), j.isPaid());
         }
         else {
             j.setPaid(old);

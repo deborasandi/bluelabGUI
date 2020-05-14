@@ -10,7 +10,8 @@ import com.jfoenix.controls.JFXTextField;
 
 import alert.AlertDialog;
 import application.Main;
-import database.DBConnection;
+import database.DBClient;
+import database.DBPriceTable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
@@ -85,10 +86,10 @@ public class ClientCtrl {
     private Client currentClient;
 
     public void initialize() {
-        listClient = FXCollections.observableArrayList(DBConnection.getListClient(false));
+        listClient = FXCollections.observableArrayList(DBClient.getList(false));
         viewClient.getItems().addAll(listClient);
 
-        listTables = FXCollections.observableArrayList(DBConnection.getListPriceTable(false));
+        listTables = FXCollections.observableArrayList(DBPriceTable.getList(false));
         priceTable.getItems().addAll(listTables);
         priceTable.getSelectionModel().select(0);
 
@@ -158,9 +159,10 @@ public class ClientCtrl {
     void deleteClient() {
         if (currentClient != null) {
             if (AlertDialog.showDelete(currentClient)) {
-                DBConnection.deleteClient(currentClient.getId());
+                DBClient.delete(currentClient.getId());
                 refreshView();
                 clearFields();
+                Main.refreshClients();
             }
         }
     }
@@ -214,23 +216,23 @@ public class ClientCtrl {
         if (currentClient != null) {
             if (AlertDialog.showSaveUpdate(c)) {
                 c.setId(currentClient.getId());
-                DBConnection.updateClient(c);
+                DBClient.update(c);
             }
         }
         else {
             if (AlertDialog.showSaveNew(c))
-                DBConnection.insertClient(c);
+                DBClient.insert(c);
         }
 
         clearFields();
 
         refreshView();
-        
+
         Main.refreshClients();
     }
 
     private void refreshView() {
-        listClient = FXCollections.observableArrayList(DBConnection.getListClient(true));
+        listClient = FXCollections.observableArrayList(DBClient.getList(true));
         viewClient.getItems().clear();
         viewClient.getItems().addAll(listClient);
     }
@@ -238,15 +240,6 @@ public class ClientCtrl {
     @FXML
     void editClient() {
         disableFields(false);
-    }
-
-    @FXML
-    void refresh() {
-        refreshView();
-
-        listTables = FXCollections.observableArrayList(DBConnection.getListPriceTable(true));
-        priceTable.getItems().clear();
-        priceTable.getItems().addAll(listTables);
     }
 
     private void findTable(PriceTable p) {
@@ -257,7 +250,7 @@ public class ClientCtrl {
     }
 
     public void refreshPriceTables() {
-        listTables = FXCollections.observableArrayList(DBConnection.getListPriceTable(true));
+        listTables = FXCollections.observableArrayList(DBPriceTable.getList(true));
         priceTable.getItems().clear();
         priceTable.getItems().addAll(listTables);
         priceTable.getSelectionModel().select(0);

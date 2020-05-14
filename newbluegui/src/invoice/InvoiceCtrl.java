@@ -9,7 +9,9 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
 
 import client.Client;
-import database.DBConnection;
+import database.DBClient;
+import database.DBJob;
+import database.DBJobType;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -28,7 +30,7 @@ import util.ImageTableCell;
 
 
 public class InvoiceCtrl {
-    
+
     @FXML
     private JFXComboBox<Client> client;
 
@@ -49,10 +51,10 @@ public class InvoiceCtrl {
 
     @FXML
     private JFXComboBox<String> isPaid;
-    
+
     @FXML
     private VBox contentPane;
-    
+
     @FXML
     private HBox filterPane;
 
@@ -94,24 +96,24 @@ public class InvoiceCtrl {
 
     public void initialize() {
         viewJob.setEditable(true);
-        listClient = FXCollections.observableArrayList(DBConnection.getListClient(false));
+        listClient = FXCollections.observableArrayList(DBClient.getList(false));
         listClient.add(0, new Client("Todos"));
         client.getItems().addAll(listClient);
         client.getSelectionModel().select(0);
 
-        listJobType = FXCollections.observableArrayList(DBConnection.getListJobType(false));
+        listJobType = FXCollections.observableArrayList(DBJobType.getList(false));
         listJobType.add(0, new JobType("Todos"));
         jobType.getItems().addAll(listJobType);
         jobType.getSelectionModel().select(0);
 
-        listJobs = FXCollections.observableArrayList(DBConnection.getListJob(false));
+        listJobs = FXCollections.observableArrayList(DBJob.getList(false));
         viewJob.getItems().addAll(listJobs);
-        
+
         List<String> listAux = new ArrayList<String>();
         listAux.add("Todos");
         listAux.add("Sim");
         listAux.add("Não");
-        
+
         isRepetition.getItems().addAll(listAux);
         isRepetition.getSelectionModel().select(0);
         isNoCost.getItems().addAll(listAux);
@@ -133,43 +135,40 @@ public class InvoiceCtrl {
         colPaid.setCellValueFactory(new PropertyValueFactory<>("paid"));
 
         colPaid.setCellFactory(new Callback<TableColumn<Job, Boolean>, TableCell<Job, Boolean>>() {
+
             @Override
             public TableCell<Job, Boolean> call(TableColumn<Job, Boolean> param) {
                 return new util.CheckBoxTableCell();
             }
         });
-        
-        colRepetion.setCellFactory(new Callback<TableColumn<Job, Boolean>, TableCell<Job, Boolean>>() {          
+
+        colRepetion.setCellFactory(new Callback<TableColumn<Job, Boolean>, TableCell<Job, Boolean>>() {
+
             @Override
             public TableCell<Job, Boolean> call(TableColumn<Job, Boolean> arg0) {
                 return new ImageTableCell();
-            }            
+            }
         });
-        
-        colNoCost.setCellFactory(new Callback<TableColumn<Job, Boolean>, TableCell<Job, Boolean>>() {          
+
+        colNoCost.setCellFactory(new Callback<TableColumn<Job, Boolean>, TableCell<Job, Boolean>>() {
+
             @Override
             public TableCell<Job, Boolean> call(TableColumn<Job, Boolean> arg0) {
                 return new ImageTableCell();
-            }            
+            }
         });
     }
 
     @FXML
-    void refresh() {
-        listJobs = FXCollections.observableArrayList(DBConnection.getListJob(true));
-        viewJob.getItems().clear();
-        viewJob.getItems().addAll(listJobs);
-    }
-    
-    @FXML
     void menu() {
-        if(contentPane.getChildren().contains(filterPane)) {
+        if (contentPane.getChildren().contains(filterPane)) {
             contentPane.getChildren().remove(filterPane);
-        }else {
+        }
+        else {
             contentPane.getChildren().add(0, filterPane);
         }
     }
-    
+
     @FXML
     void filterClient(ActionEvent event) {
 
@@ -204,9 +203,9 @@ public class InvoiceCtrl {
     void filterRepetition(ActionEvent event) {
 
     }
-    
+
     public void refreshClients() {
-        listClient = FXCollections.observableArrayList(DBConnection.getListClient(true));
+        listClient = FXCollections.observableArrayList(DBClient.getList(true));
         listClient.add(0, new Client("Todos"));
         client.getItems().clear();
         client.getItems().addAll(listClient);
@@ -214,8 +213,8 @@ public class InvoiceCtrl {
     }
 
     public void refreshJobs() {
-        listJobs = FXCollections.observableArrayList(DBConnection.getListJob(false));
+        listJobs = FXCollections.observableArrayList(DBJob.getList(false));
         viewJob.getItems().clear();
-        viewJob.getItems().addAll(listJobs);        
+        viewJob.getItems().addAll(listJobs);
     }
 }
