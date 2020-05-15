@@ -14,6 +14,7 @@ import client.Client;
 import database.DBClient;
 import database.DBJob;
 import database.DBJobPrice;
+import database.DBProductColor;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -27,6 +28,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import jobprice.JobPrice;
+import productcolor.ProductColor;
 
 
 public class JobCtrl {
@@ -47,6 +49,9 @@ public class JobCtrl {
     private JFXComboBox<JobPrice> jobPrice;
 
     @FXML
+    private JFXComboBox<ProductColor> productColor;
+
+    @FXML
     private TableView<Job> viewJob;
 
     @FXML
@@ -54,6 +59,9 @@ public class JobCtrl {
 
     @FXML
     private TableColumn<Job, Job> colJobType;
+    
+    @FXML
+    private TableColumn<Job, ProductColor> colProductColor;
 
     @FXML
     private TableColumn<Job, Date> colDate;
@@ -71,7 +79,9 @@ public class JobCtrl {
 
     private ObservableList<JobPrice> listJobPrice;
 
-    private ObservableList<Job> listJobs;
+    private ObservableList<ProductColor> listProductColor;
+
+    private ObservableList<Job> listJob;
 
     private Job currentJob;
 
@@ -81,8 +91,11 @@ public class JobCtrl {
 
         listJobPrice = FXCollections.observableArrayList(DBJobPrice.getList());
 
-        listJobs = FXCollections.observableArrayList(DBJob.getList());
-        viewJob.getItems().addAll(listJobs);
+        listProductColor = FXCollections.observableArrayList(DBProductColor.getList());
+        productColor.getItems().addAll(listProductColor);
+
+        listJob = FXCollections.observableArrayList(DBJob.getList());
+        viewJob.getItems().addAll(listJob);
 
         date.setValue(LocalDate.now());
 
@@ -110,6 +123,7 @@ public class JobCtrl {
     private void createColumns() {
         colClient.setCellValueFactory(new PropertyValueFactory<>("client"));
         colJobType.setCellValueFactory(new PropertyValueFactory<>("jobPrice"));
+        colProductColor.setCellValueFactory(new PropertyValueFactory<>("productColor"));
         colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
     }
 
@@ -143,6 +157,7 @@ public class JobCtrl {
 
         j.setClient(client.getValue());
         j.setJobPrice(jobPrice.getValue());
+        j.setProductColor(productColor.getValue());
         j.setQtd(jobQtd.getValue());
         j.setShipping(shipping.getValue());
         j.setDate(java.sql.Date.valueOf(date.getValue()));
@@ -174,6 +189,7 @@ public class JobCtrl {
     private void clearFields() {
         client.getSelectionModel().clearSelection();
         jobPrice.getSelectionModel().clearSelection();
+        productColor.getSelectionModel().clearSelection();
         jobQtd.getValueFactory().setValue(1);
         shipping.getValueFactory().setValue(0.0);
         date.setValue(LocalDate.now());
@@ -182,14 +198,15 @@ public class JobCtrl {
     }
 
     private void refreshViewJob() {
-        listJobs = FXCollections.observableArrayList(DBJob.getList());
+        listJob = FXCollections.observableArrayList(DBJob.getList());
         viewJob.getItems().clear();
-        viewJob.getItems().addAll(listJobs);
+        viewJob.getItems().addAll(listJob);
     }
 
     private void disableFields(boolean d) {
         client.setDisable(d);
         jobPrice.setDisable(d);
+        productColor.setDisable(d);
         jobQtd.setDisable(d);
         shipping.setDisable(d);
         date.setDisable(d);
@@ -200,6 +217,7 @@ public class JobCtrl {
     private void loadJob(Job j) {
         findClient(j.getClient());
         findJobPrice(j.getJobPrice());
+        findProductColor(j.getProductColor());
         jobQtd.getValueFactory().setValue(j.getQtd());
         shipping.getValueFactory().setValue(j.getShipping());
         date.setValue(j.getDate().toLocalDate());
@@ -210,6 +228,9 @@ public class JobCtrl {
     }
 
     private void findClient(Client c) {
+        if(c == null)
+            return;
+        
         for (Client c1 : listClient) {
             if (c1.getId() == c.getId())
                 client.getSelectionModel().select(c1);
@@ -217,9 +238,22 @@ public class JobCtrl {
     }
 
     private void findJobPrice(JobPrice j) {
+        if(j == null)
+            return;
+        
         for (JobPrice j1 : listJobPrice) {
             if (j1.getId() == j.getId())
                 jobPrice.getSelectionModel().select(j1);
+        }
+    }
+
+    private void findProductColor(ProductColor p) {
+        if(p == null)
+            return;
+        
+        for (ProductColor p1 : listProductColor) {
+            if (p1.getId() == p.getId())
+                productColor.getSelectionModel().select(p1);
         }
     }
 
@@ -227,14 +261,21 @@ public class JobCtrl {
         listClient = FXCollections.observableArrayList(DBClient.getList());
         client.getItems().clear();
         client.getItems().addAll(listClient);
-        client.getSelectionModel().select(0);
+        client.getSelectionModel().clearSelection();
     }
 
-    public void refreshJobTypes() {
+    public void refreshJobPrice() {
         listJobPrice = FXCollections.observableArrayList(DBJobPrice.getList());
         jobPrice.getItems().clear();
         jobPrice.getItems().addAll(listJobPrice);
-        jobPrice.getSelectionModel().select(0);
+        jobPrice.getSelectionModel().clearSelection();
+    }
+
+    public void refreshProductColor() {
+        listProductColor = FXCollections.observableArrayList(DBProductColor.getList());
+        productColor.getItems().clear();
+        productColor.getItems().addAll(listProductColor);
+        productColor.getSelectionModel().clearSelection();
     }
 
     @FXML
@@ -264,12 +305,9 @@ public class JobCtrl {
         if (shipping.getValue() == null)
             shipping.getValueFactory().setValue(0.0);
 
-        if (nocost.isSelected()) {
-            lblTotal.setText(String.valueOf(0));
-        }
-        else {
-            double total = jp.getPrice() * jobQtd.getValue() + shipping.getValue();
-            lblTotal.setText(String.valueOf(total));
-        }
+        int nc = (nocost.isSelected() || repetition.isSelected()) ? 0 : 1;
+
+        double total = ((jp.getPrice() * jobQtd.getValue()) * nc) + shipping.getValue();
+        lblTotal.setText(String.valueOf(total));
     }
 }

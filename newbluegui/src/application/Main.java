@@ -45,6 +45,10 @@ public class Main extends Application {
         mainCtrl.refreshJobTypes();
     }
 	
+	   public static void refreshJobPrices() {
+	        mainCtrl.refreshJobPrices();
+	    }
+	
 	public static void refreshJobs() {
         mainCtrl.refreshJobs();
     }

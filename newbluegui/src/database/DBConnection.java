@@ -29,6 +29,7 @@ public class DBConnection {
         
         DBPriceTable.updateList();
         DBJobType.updateList();
+        DBProductColor.updateList();
         DBJobPrice.updateList();
         DBClient.updateList();
         DBJob.updateList();

@@ -127,12 +127,14 @@ public class JobPriceCtrl {
 
                     DBJobPrice.insert(list);
                     Main.refreshPriceTables();
+                    Main.refreshJobPrices();
                     refreshViewPrice();
                 }
                 else {
                     if (AlertDialog.showSaveTable(p, old)) {
                         DBPriceTable.update(p);
                         Main.refreshPriceTables();
+                        Main.refreshJobPrices();
                         refreshViewPrice();
                     }
                     else {
@@ -173,12 +175,14 @@ public class JobPriceCtrl {
                     DBJobPrice.insert(list);
 
                     Main.refreshJobTypes();
+                    Main.refreshJobPrices();
                     refreshViewPrice();
                 }
                 else {
                     if (AlertDialog.showSaveJobType(j, old)) {
                         DBJobType.update(j);
                         Main.refreshJobTypes();
+                        Main.refreshJobPrices();
                         refreshViewPrice();
                     }
                     else {
@@ -287,6 +291,7 @@ public class JobPriceCtrl {
             if (p != null && p.getId() != 0 && AlertDialog.showDeleteTable(p)) {
                 DBPriceTable.delete(p.getId());
                 Main.refreshPriceTables();
+                Main.refreshJobPrices();
                 refreshViewTable();
                 refreshViewPrice();
             }
@@ -296,6 +301,7 @@ public class JobPriceCtrl {
             if (j != null && j.getId() != 0 && AlertDialog.showDeleteJobType(j)) {
                 DBJobType.delete(j.getId());
                 Main.refreshJobTypes();
+                Main.refreshJobPrices();
                 refreshViewJob();
                 refreshViewPrice();
             }
@@ -308,6 +314,7 @@ public class JobPriceCtrl {
         if (jp != null && jp.getId() != 0 && AlertDialog.showDeletePrice(jp)) {
             DBJobPrice.delete(jp.getId());
             Main.refreshPriceTables();
+            Main.refreshJobPrices();
             refreshViewPrice();
         }
     }

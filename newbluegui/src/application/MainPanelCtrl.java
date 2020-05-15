@@ -5,8 +5,8 @@ import java.io.IOException;
 
 import client.ClientCtrl;
 import database.DBClient;
-import database.DBConnection;
 import database.DBJob;
+import database.DBJobPrice;
 import database.DBJobType;
 import database.DBPriceTable;
 import invoice.InvoiceCtrl;
@@ -139,11 +139,12 @@ public class MainPanelCtrl {
 
     public void refreshJobTypes() {
         DBJobType.updateList();
-        jobCtrl.refreshJobTypes();
+        invoiceCtrl.refreshJobTypes();
     }
 
     public void refreshJobPrices() {
-
+        DBJobPrice.updateList();
+        jobCtrl.refreshJobPrice();
     }
 
     public void refreshJobs() {

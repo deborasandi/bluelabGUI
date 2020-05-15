@@ -20,7 +20,7 @@ public class DBJob extends DBConnection {
     private static Map<Integer, Job> listJob;
 
     public static boolean insert(Job j) {
-        String query = "INSERT INTO job (client_id, job_price_id, qtd, shipping, date, repetition, nocost, paid, total) VALUES"
+        String query = "INSERT INTO job (client_id, job_price_id, color_id, qtd, shipping, date, repetition, nocost, paid, total) VALUES"
                 + "(?, ?, ?, ?, ?, ?, ?, ?);";
 
         try {
@@ -28,13 +28,14 @@ public class DBJob extends DBConnection {
 
             stmt.setInt(1, j.getClient().getId());
             stmt.setInt(2, j.getJobPrice().getId());
-            stmt.setInt(3, j.getQtd());
-            stmt.setDouble(4, j.getShipping());
-            stmt.setDate(5, j.getDate());
-            stmt.setBoolean(6, j.isRepetition());
-            stmt.setBoolean(7, j.isNocost());
-            stmt.setBoolean(8, j.isPaid());
-            stmt.setDouble(9, j.getTotal());
+            stmt.setInt(3, j.getProductColor().getId());
+            stmt.setInt(4, j.getQtd());
+            stmt.setDouble(5, j.getShipping());
+            stmt.setDate(6, j.getDate());
+            stmt.setBoolean(7, j.isRepetition());
+            stmt.setBoolean(8, j.isNocost());
+            stmt.setBoolean(9, j.isPaid());
+            stmt.setDouble(10, j.getTotal());
 
             boolean result = stmt.execute();
             stmt.close();
@@ -61,6 +62,7 @@ public class DBJob extends DBConnection {
                 j.setId(rs.getInt("id"));
                 j.setClient(DBClient.get(rs.getInt("client_id")));
                 j.setJobPrice(DBJobPrice.get(rs.getInt("job_price_id")));
+                j.setProductColor(DBProductColor.get(rs.getInt("color_id")));
                 j.setQtd(rs.getInt("qtd"));
                 j.setShipping(rs.getDouble("shipping"));
                 j.setDate(rs.getDate("date", Calendar.getInstance()));
@@ -82,21 +84,21 @@ public class DBJob extends DBConnection {
     }
     
     public static boolean update(Job j) {
-        String query = "UPDATE job SET client_id = ?, job_price_id = ?, qtd = ?, shipping = ?, date = ?, repetition = ?, nocost = ?, paid = ?, total = ? WHERE id = ?";
+        String query = "UPDATE job SET client_id = ?, job_price_id = ?, color_id = ?, qtd = ?, shipping = ?, date = ?, repetition = ?, nocost = ?, paid = ?, total = ? WHERE id = ?";
 
         try {
             PreparedStatement stmt = connection.prepareStatement(query);
 
             stmt.setInt(1, j.getClient().getId());
             stmt.setInt(2, j.getJobPrice().getId());
-            stmt.setInt(3, j.getQtd());
-            stmt.setDouble(4, j.getShipping());
-            stmt.setDate(5, j.getDate());
-            stmt.setBoolean(6, j.isRepetition());
-            stmt.setBoolean(7, j.isNocost());
-            stmt.setBoolean(8, j.isPaid());
-            stmt.setDouble(9, j.getTotal());
-            stmt.setInt(10, j.getId());
+            stmt.setInt(3, j.getProductColor().getId());
+            stmt.setInt(4, j.getQtd());
+            stmt.setDouble(5, j.getShipping());
+            stmt.setDate(6, j.getDate());
+            stmt.setBoolean(7, j.isRepetition());
+            stmt.setBoolean(8, j.isNocost());
+            stmt.setBoolean(9, j.isPaid());
+            stmt.setDouble(10, j.getTotal());
 
             boolean r = stmt.execute();
             stmt.close();

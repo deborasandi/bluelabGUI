@@ -12,9 +12,9 @@ import client.Client;
 import database.DBClient;
 import database.DBJob;
 import database.DBJobType;
+import database.DBProductColor;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableCell;
@@ -26,6 +26,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import job.Job;
 import jobtype.JobType;
+import productcolor.ProductColor;
 import util.ImageTableCell;
 
 
@@ -36,6 +37,9 @@ public class InvoiceCtrl {
 
     @FXML
     private JFXComboBox<JobType> jobType;
+    
+    @FXML
+    private JFXComboBox<ProductColor> productColor;
 
     @FXML
     private JFXDatePicker initDate;
@@ -69,6 +73,9 @@ public class InvoiceCtrl {
 
     @FXML
     private TableColumn<Job, JobType> colJobType;
+    
+    @FXML
+    private TableColumn<Job, ProductColor> colProductColor;
 
     @FXML
     private TableColumn<Job, Integer> colQtd;
@@ -94,8 +101,10 @@ public class InvoiceCtrl {
     private ObservableList<Client> listClient;
 
     private ObservableList<JobType> listJobType;
+    
+    private ObservableList<ProductColor> listProductColor;
 
-    private ObservableList<Job> listJobs;
+    private ObservableList<Job> listJob;
 
     public void initialize() {
         viewJob.setEditable(true);
@@ -108,9 +117,14 @@ public class InvoiceCtrl {
         listJobType.add(0, new JobType("Todos"));
         jobType.getItems().addAll(listJobType);
         jobType.getSelectionModel().select(0);
+        
+        listProductColor = FXCollections.observableArrayList(DBProductColor.getList());
+        listProductColor.add(0, new ProductColor("Todos"));
+        productColor.getItems().addAll(listProductColor);
+        productColor.getSelectionModel().select(0);
 
-        listJobs = FXCollections.observableArrayList(DBJob.getList());
-        viewJob.getItems().addAll(listJobs);
+        listJob = FXCollections.observableArrayList(DBJob.getList());
+        viewJob.getItems().addAll(listJob);
 
         List<String> listAux = new ArrayList<String>();
         listAux.add("Todos");
@@ -130,6 +144,7 @@ public class InvoiceCtrl {
     private void createColumns() {
         colClient.setCellValueFactory(new PropertyValueFactory<>("client"));
         colJobType.setCellValueFactory(new PropertyValueFactory<>("jobPrice"));
+        colProductColor.setCellValueFactory(new PropertyValueFactory<>("productColor"));
         colQtd.setCellValueFactory(new PropertyValueFactory<>("qtd"));
         colShipping.setCellValueFactory(new PropertyValueFactory<>("shipping"));
         colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
@@ -164,48 +179,24 @@ public class InvoiceCtrl {
     }
 
     @FXML
-    void menu() {
-        if (contentPane.getChildren().contains(filterPane)) {
-            contentPane.getChildren().remove(filterPane);
+    void filter() {
+        Client c = client.getSelectionModel().getSelectedItem();
+        
+        List<Job> filter = new ArrayList<Job>();
+        if(c.getId() != 0) {
+            
+            for (Job j : listJob) {
+                if(j.getClient().getId() == c.getId()) {
+                    filter.add(j);
+                }
+            }
+        }else {
+            // todos os clientes
         }
-        else {
-            contentPane.getChildren().add(0, filterPane);
-        }
-    }
-
-    @FXML
-    void filterClient(ActionEvent event) {
-
-    }
-
-    @FXML
-    void filterEndDate(ActionEvent event) {
-
-    }
-
-    @FXML
-    void filterInitDate(ActionEvent event) {
-
-    }
-
-    @FXML
-    void filterJobType(ActionEvent event) {
-
-    }
-
-    @FXML
-    void filterNoCost(ActionEvent event) {
-
-    }
-
-    @FXML
-    void filterPaid(ActionEvent event) {
-
-    }
-
-    @FXML
-    void filterRepetition(ActionEvent event) {
-
+        
+        listJob = FXCollections.observableArrayList(filter);
+        viewJob.getItems().clear();
+        viewJob.getItems().addAll(listJob);
     }
 
     public void refreshClients() {
@@ -215,10 +206,17 @@ public class InvoiceCtrl {
         client.getItems().addAll(listClient);
         client.getSelectionModel().select(0);
     }
+    
+    public void refreshJobTypes() {
+        listJobType = FXCollections.observableArrayList(DBJobType.getList());
+        jobType.getItems().clear();
+        jobType.getItems().addAll(listJobType);
+        jobType.getSelectionModel().clearSelection();
+    }
 
     public void refreshJobs() {
-        listJobs = FXCollections.observableArrayList(DBJob.getList());
+        listJob = FXCollections.observableArrayList(DBJob.getList());
         viewJob.getItems().clear();
-        viewJob.getItems().addAll(listJobs);
+        viewJob.getItems().addAll(listJob);
     }
 }

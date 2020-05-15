@@ -24,9 +24,9 @@ public class CheckBoxTableCell extends TableCell<Job, Boolean> {
                 commitEdit(checkBox.isSelected());
                 updateItem(checkBox.isSelected(), false);
                 Job j = (Job) getTableView().getItems().get(getTableRow().getIndex());
-//                boolean old = j.isPaid();
+                boolean old = j.isPaid();
                 j.setPaid(checkBox.isSelected());
-//                updateValue(j, old);
+                updateValue(j, old);
             }
         });
         setGraphic(checkBox);

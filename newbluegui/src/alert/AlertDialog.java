@@ -141,6 +141,24 @@ public class AlertDialog {
 
         return result.get() == ButtonType.OK ? true : false;
     }
+    
+    public static boolean showSavePaid(Job j) {
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Trabalho");
+        
+        if(j.isPaid()) {
+            alert.setHeaderText("Inserir Pagamento");
+        }else {
+            alert.setHeaderText("Remover Pagamento");
+        }
+        
+        alert.setContentText("Deseja alterar " + j.getClient().getClientName() + " - "
+                + j.getJobPrice().getJobType().getName() + "?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        return result.get() == ButtonType.OK ? true : false;
+    }
 
     public static boolean showDelete(Job j) {
         Alert alert = new Alert(AlertType.CONFIRMATION);

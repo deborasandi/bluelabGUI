@@ -7,6 +7,7 @@ import client.Client;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import jobprice.JobPrice;
+import productcolor.ProductColor;
 
 
 public class Job {
@@ -14,6 +15,7 @@ public class Job {
     private int id;
     private Client client;
     private JobPrice jobPrice;
+    private ProductColor productColor;
     private int qtd;
     private double shipping;
     private Date date;
@@ -113,12 +115,21 @@ public class Job {
     public void setPaidProperty(BooleanProperty paidProperty) {
         this.paidProperty = paidProperty;
     }
-    
+
     public double getTotal() {
         return total;
     }
-    
+
     public void setTotal(double total) {
         this.total = total;
     }
+
+    public ProductColor getProductColor() {
+        return productColor;
+    }
+
+    public void setProductColor(ProductColor productColor) {
+        this.productColor = productColor;
+    }
+
 }

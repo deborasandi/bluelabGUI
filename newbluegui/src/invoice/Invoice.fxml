@@ -41,7 +41,7 @@
                         </ImageView>
                      </graphic>
                   </JFXButton>
-                  <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY">
+                  <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" disable="true">
                      <graphic>
                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -50,7 +50,7 @@
                         </ImageView>
                      </graphic>
                   </JFXButton>
-                  <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY">
+                  <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" disable="true">
                      <graphic>
                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -76,7 +76,7 @@
                                                 <VBox alignment="CENTER">
                                                    <children>
                                                       <Label text="Cliente" VBox.vgrow="NEVER" />
-                                                      <JFXComboBox fx:id="client" maxWidth="1.7976931348623157E308" onAction="#filterClient" VBox.vgrow="NEVER" />
+                                                      <JFXComboBox fx:id="client" maxWidth="1.7976931348623157E308" onAction="#filter" VBox.vgrow="NEVER" />
                                                    </children>
                                                    <padding>
                                                       <Insets bottom="5.0" />
@@ -89,7 +89,20 @@
                                                 <VBox alignment="CENTER">
                                                    <children>
                                                       <Label text="Trabalho" />
-                                                      <JFXComboBox fx:id="jobType" maxWidth="1.7976931348623157E308" onAction="#filterJobType" />
+                                                      <JFXComboBox fx:id="jobType" maxWidth="1.7976931348623157E308" onAction="#filter" />
+                                                   </children>
+                                                   <padding>
+                                                      <Insets bottom="5.0" />
+                                                   </padding>
+                                                </VBox>
+                                             </graphic>
+                                          </TableColumn>
+                                          <TableColumn fx:id="colProductColor" prefWidth="100.0">
+                                             <graphic>
+                                                <VBox alignment="CENTER">
+                                                   <children>
+                                                      <Label text="Cor" />
+                                                      <JFXComboBox fx:id="productColor" maxWidth="1.7976931348623157E308" onAction="#filter" />
                                                    </children>
                                                    <padding>
                                                       <Insets bottom="5.0" />
@@ -98,14 +111,13 @@
                                              </graphic>
                                           </TableColumn>
                                           <TableColumn fx:id="colQtd" text="Quantidade" />
-                                          <TableColumn fx:id="colShipping" prefWidth="75.0" text="Frete" />
                                           <TableColumn fx:id="colDate" text="Data" />
                                           <TableColumn fx:id="colRepetion" prefWidth="100.0" style="-fx-alignment: CENTER;">
                                              <graphic>
                                                 <VBox alignment="CENTER">
                                                    <children>
                                                       <Label text="Repetição" />
-                                                      <JFXComboBox fx:id="isRepetition" maxWidth="1.7976931348623157E308" onAction="#filterRepetition" />
+                                                      <JFXComboBox fx:id="isRepetition" maxWidth="1.7976931348623157E308" onAction="#filter" />
                                                    </children>
                                                    <padding>
                                                       <Insets bottom="5.0" />
@@ -118,7 +130,7 @@
                                                 <VBox alignment="CENTER">
                                                    <children>
                                                       <Label text="Sem Custo" />
-                                                      <JFXComboBox fx:id="isNoCost" maxWidth="1.7976931348623157E308" onAction="#filterNoCost" />
+                                                      <JFXComboBox fx:id="isNoCost" maxWidth="1.7976931348623157E308" onAction="#filter" />
                                                    </children>
                                                    <padding>
                                                       <Insets bottom="5.0" />
@@ -126,13 +138,14 @@
                                                 </VBox>
                                              </graphic>
                                           </TableColumn>
+                                          <TableColumn fx:id="colShipping" prefWidth="75.0" text="Frete" />
                                           <TableColumn fx:id="colTotal" prefWidth="75.0" text="Total" />
                                           <TableColumn fx:id="colPaid" prefWidth="100.0" style="-fx-alignment: CENTER;">
                                              <graphic>
                                                 <VBox alignment="CENTER">
                                                    <children>
                                                       <Label text="Recebido" />
-                                                      <JFXComboBox fx:id="isPaid" maxWidth="1.7976931348623157E308" onAction="#filterPaid" />
+                                                      <JFXComboBox fx:id="isPaid" maxWidth="1.7976931348623157E308" onAction="#filter" />
                                                    </children>
                                                    <padding>
                                                       <Insets bottom="5.0" />
@@ -156,12 +169,12 @@
                         <Insets right="5.0" />
                      </StackPane.margin>
                      <children>
-                        <JFXDatePicker fx:id="initDate" onAction="#filterInitDate" prefWidth="120.0" promptText="Início" HBox.hgrow="NEVER">
+                        <JFXDatePicker fx:id="initDate" onAction="#filter" prefWidth="120.0" promptText="Início" HBox.hgrow="NEVER">
                            <HBox.margin>
                               <Insets left="5.0" />
                            </HBox.margin>
                         </JFXDatePicker>
-                        <JFXDatePicker fx:id="endDate" onAction="#filterEndDate" prefWidth="120.0" promptText="Fim" HBox.hgrow="NEVER" />
+                        <JFXDatePicker fx:id="endDate" onAction="#filter" prefWidth="120.0" promptText="Fim" HBox.hgrow="NEVER" />
                         <Label alignment="TOP_CENTER" contentDisplay="RIGHT" text="Filtros">
                            <font>
                               <Font name="System Bold" size="12.0" />

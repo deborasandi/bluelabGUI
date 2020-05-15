@@ -108,11 +108,11 @@
                         <Label text="Frete:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                         <Label text="Data:" GridPane.rowIndex="4" />
                         <JFXComboBox fx:id="client" maxWidth="1.7976931348623157E308" onAction="#loadJobPrice" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />
-                        <JFXComboBox fx:id="jobPrice" maxWidth="1.7976931348623157E308" onAction="#calcTotal" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" />
+                        <JFXComboBox fx:id="jobPrice" maxWidth="1.7976931348623157E308" onAction="#calcTotal" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <JFXDatePicker fx:id="date" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                         <HBox spacing="15.0" GridPane.columnIndex="3" GridPane.rowIndex="4">
                            <children>
-                              <JFXCheckBox fx:id="repetition" text="Repetição" HBox.hgrow="NEVER" />
+                              <JFXCheckBox fx:id="repetition" onAction="#calcTotal" text="Repetição" HBox.hgrow="NEVER" />
                               <JFXCheckBox fx:id="nocost" onAction="#calcTotal" text="Sem Custo" HBox.hgrow="NEVER" />
                            </children>
                            <padding>
@@ -138,6 +138,8 @@
                            </GridPane.margin>
                         </HBox>
                         <Spinner fx:id="shipping" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                        <Label text="Cor:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <JFXComboBox fx:id="productColor" maxWidth="1.7976931348623157E308" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                      </children>
                   </GridPane>
                   <Separator orientation="VERTICAL" HBox.hgrow="NEVER" />
@@ -145,6 +147,7 @@
                      <columns>
                         <TableColumn fx:id="colClient" prefWidth="150.0" text="Cliente" />
                         <TableColumn fx:id="colJobType" prefWidth="150.0" text="Trabalho" />
+                        <TableColumn fx:id="colProductColor" prefWidth="75.0" text="Cor" />
                         <TableColumn fx:id="colDate" prefWidth="75.0" text="Data" />
                      </columns>
                   </TableView>
