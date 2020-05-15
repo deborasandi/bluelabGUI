@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bluelab.client.ClientCtrl">
+   <children>
+      <VBox styleClass="general-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox styleClass="button-panel" VBox.vgrow="NEVER">
+               <children>
+                  <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#newClient">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../icons/new-user.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#editClient">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../@../../../icons/editar.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#saveClient">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../icons/save.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#deleteClient">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../icons/delete.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </HBox>
+            <HBox styleClass="hbox-main" VBox.vgrow="ALWAYS">
+               <children>
+                  <GridPane HBox.hgrow="ALWAYS">
+                    <columnConstraints>
+                      <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="10.0" />
+                      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="10.0" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints maxHeight="40.0" minHeight="40.0" prefHeight="40.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                    </rowConstraints>
+                     <children>
+                        <JFXTabPane GridPane.columnSpan="4">
+                           <tabs>
+                              <Tab text="Cliente">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../../icons/user.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Tab>
+                           </tabs>
+                        </JFXTabPane>
+                        <Label text="Nome:" GridPane.rowIndex="1" />
+                        <Label text="CPF/CNPJ:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <Label text="Telefone:" GridPane.rowIndex="2" />
+                        <Label text="Celular:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <Label text="Endereço:" GridPane.rowIndex="3" />
+                        <Label text="Número:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                        <Label text="Compl:" GridPane.rowIndex="4" />
+                        <Label text="Cidade:" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                        <Label text="Estado:" GridPane.rowIndex="5" />
+                        <Label text="CEP:" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                        <Label text="Tabela:" GridPane.rowIndex="6" />
+                        <Label text="Nome:" GridPane.rowIndex="9" />
+                        <Label text="Telefone:" GridPane.rowIndex="10" />
+                        <Label text="Celular:" GridPane.columnIndex="2" GridPane.rowIndex="10" />
+                        <Label text="CPF:" GridPane.columnIndex="2" GridPane.rowIndex="9" />
+                        <JFXTabPane GridPane.columnSpan="4" GridPane.rowIndex="8">
+                           <tabs>
+                              <Tab text="Responsável">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../../icons/resp.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Tab>
+                           </tabs>
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
+                        </JFXTabPane>
+                        <JFXTextField fx:id="name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <JFXTextField fx:id="tel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <JFXTextField fx:id="address" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <JFXTextField fx:id="complement" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <JFXTextField fx:id="cpf" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                        <JFXTextField fx:id="cel" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                        <JFXTextField fx:id="number" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                        <JFXTextField fx:id="city" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                        <JFXTextField fx:id="cep" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+                        <JFXTextField fx:id="respName" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                        <JFXTextField fx:id="respTel" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                        <JFXTextField fx:id="respCpf" GridPane.columnIndex="3" GridPane.rowIndex="9" />
+                        <JFXTextField fx:id="respCel" GridPane.columnIndex="3" GridPane.rowIndex="10" />
+                        <JFXComboBox fx:id="state" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <JFXComboBox fx:id="priceTable" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                     </children>
+                  </GridPane>
+                  <Separator orientation="VERTICAL" HBox.hgrow="NEVER" />
+                  <TableView fx:id="viewClient" HBox.hgrow="SOMETIMES">
+                    <columns>
+                      <TableColumn fx:id="colClient" prefWidth="150.0" text="Cliente" />
+                        <TableColumn fx:id="colTable" prefWidth="150.0" text="Tabela" />
+                    </columns>
+                  </TableView>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
