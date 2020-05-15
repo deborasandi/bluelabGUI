@@ -27,25 +27,25 @@
                <children>
                   <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#newClient">
                      <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../../icons/new-user.png" />
+                              <Image url="@../../../icons/new.png" />
                            </image>
                         </ImageView>
                      </graphic>
                   </JFXButton>
                   <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#editClient">
                      <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../@../../../icons/editar.png" />
+                              <Image url="@../../../icons/edit.png" />
                            </image>
                         </ImageView>
                      </graphic>
                   </JFXButton>
                   <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#saveClient">
                      <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../../../icons/save.png" />
                            </image>
@@ -54,9 +54,9 @@
                   </JFXButton>
                   <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#deleteClient">
                      <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../../icons/delete.png" />
+                              <Image url="@../../../icons/delete2.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -93,7 +93,7 @@
                            <tabs>
                               <Tab text="Cliente">
                                  <graphic>
-                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../../../icons/user.png" />
                                        </image>
@@ -121,9 +121,9 @@
                            <tabs>
                               <Tab text="Responsável">
                                  <graphic>
-                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../../../icons/resp.png" />
+                                          <Image url="@../../../icons/user-plus.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>

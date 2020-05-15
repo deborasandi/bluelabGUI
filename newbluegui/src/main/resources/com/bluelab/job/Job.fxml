@@ -30,25 +30,25 @@
                <children>
                   <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#newJob">
                      <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../../icons/novo-documento.png" />
+                              <Image url="@../../../icons/new.png" />
                            </image>
                         </ImageView>
                      </graphic>
                   </JFXButton>
                   <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#editJob">
                      <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../../icons/editar.png" />
+                              <Image url="@../../../icons/edit.png" />
                            </image>
                         </ImageView>
                      </graphic>
                   </JFXButton>
                   <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#saveJob">
                      <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../../../icons/save.png" />
                            </image>
@@ -57,9 +57,9 @@
                   </JFXButton>
                   <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#deleteJob">
                      <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../../icons/delete.png" />
+                              <Image url="@../../../icons/delete2.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -95,7 +95,7 @@
                                  <graphic>
                                     <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../../../icons/medico.png" />
+                                          <Image url="@../../../icons/teeth.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>

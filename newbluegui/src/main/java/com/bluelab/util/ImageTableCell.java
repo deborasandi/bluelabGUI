@@ -21,7 +21,8 @@ public class ImageTableCell extends TableCell<Job, Boolean>{
         }
 
         if(value) {
-            ImageView i = new ImageView(new Image(getClass().getResource("../icons/check.png").toExternalForm()));
+            // TODO tem que ver como faz pra pegar esse icone ai
+            ImageView i = new ImageView(new Image(getClass().getResource("../../../icons/check.png").toExternalForm()));
             i.setFitWidth(15.0);
             i.setFitHeight(15.0);
             setGraphic(i);
