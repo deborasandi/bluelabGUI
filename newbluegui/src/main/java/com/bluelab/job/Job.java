@@ -133,4 +133,7 @@ public class Job {
         this.productColor = productColor;
     }
 
+    public String getClassName() {
+        return "Trabalho";
+    }
 }

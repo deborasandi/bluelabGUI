@@ -4,13 +4,14 @@ package com.bluelab.jobprice;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bluelab.alert.AlertDialog;
 import com.bluelab.database.DBJobPrice;
 import com.bluelab.database.DBJobType;
 import com.bluelab.database.DBPriceTable;
 import com.bluelab.jobtype.JobType;
 import com.bluelab.main.Main;
 import com.bluelab.pricetable.PriceTable;
+import com.bluelab.util.AlertDialog;
+import com.bluelab.util.FxmlInterface;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,7 +29,7 @@ import javafx.scene.layout.HBox;
 import javafx.util.converter.DoubleStringConverter;
 
 
-public class JobPriceCtrl {
+public class JobPriceCtrl implements FxmlInterface {
 
     @FXML
     private Label labelNotif;
@@ -41,6 +42,9 @@ public class JobPriceCtrl {
 
     @FXML
     private Tab tabJob;
+
+    @FXML
+    private Tab tabPrice;
 
     @FXML
     private TableView<PriceTable> viewTable;
@@ -96,106 +100,14 @@ public class JobPriceCtrl {
 
         newPrices = new ArrayList<JobPrice>();
 
-        createColumns();
+        priceTableColumns();
+        jobTypeColumns();
+        jobPriceColumns();
 
         paneInfo.getChildren().remove(labelNotif);
     }
 
-    private void createColumns() {
-        /* Colunas Tipo de Tabela */
-        colTableId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colTableName.setCellValueFactory(new PropertyValueFactory<>("name"));
-
-        colTableName.setCellFactory(TextFieldTableCell.forTableColumn());
-
-        colTableName.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<PriceTable, String>>() {
-
-            @Override
-            public void handle(CellEditEvent<PriceTable, String> event) {
-                PriceTable p = event.getTableView().getItems().get(event.getTablePosition().getRow());
-                String old = new String(p.getName());
-                p.setName(event.getNewValue());
-
-                if (p.getId() == 0) {
-                    DBPriceTable.insert(p);
-                    p = DBPriceTable.get(p.getName());
-
-                    List<JobPrice> list = new ArrayList<JobPrice>();
-
-                    for (JobType jobType : listJobType) {
-                        list.add(new JobPrice(jobType, p, 0.0));
-                    }
-
-                    DBJobPrice.insert(list);
-                    Main.refreshPriceTables();
-                    Main.refreshJobPrices();
-                    refreshViewPrice();
-                }
-                else {
-                    if (AlertDialog.showSaveTable(p, old)) {
-                        DBPriceTable.update(p);
-                        Main.refreshPriceTables();
-                        Main.refreshJobPrices();
-                        refreshViewPrice();
-                    }
-                    else {
-                        p.setName(old);
-                        viewTable.refresh();
-                    }
-
-                }
-
-            }
-        });
-
-        /* Colunas Tabela de Trabalhos */
-        colJobId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colJobName.setCellValueFactory(new PropertyValueFactory<>("name"));
-
-        colJobName.setCellFactory(TextFieldTableCell.forTableColumn());
-
-        colJobName.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<JobType, String>>() {
-
-            @Override
-            public void handle(CellEditEvent<JobType, String> event) {
-                JobType j = event.getTableView().getItems().get(event.getTablePosition().getRow());
-                String old = new String(j.getName());
-                j.setName(event.getNewValue());
-
-                if (j.getId() == 0) {
-                    DBJobType.insert(j);
-
-                    j = DBJobType.get(j.getName());
-
-                    List<JobPrice> list = new ArrayList<JobPrice>();
-
-                    for (PriceTable p : listPriceTable) {
-                        list.add(new JobPrice(j, p, 0.0));
-                    }
-
-                    DBJobPrice.insert(list);
-
-                    Main.refreshJobTypes();
-                    Main.refreshJobPrices();
-                    refreshViewPrice();
-                }
-                else {
-                    if (AlertDialog.showSaveJobType(j, old)) {
-                        DBJobType.update(j);
-                        Main.refreshJobTypes();
-                        Main.refreshJobPrices();
-                        refreshViewPrice();
-                    }
-                    else {
-                        j.setName(old);
-                        refreshViewJob();
-                    }
-                }
-
-            }
-        });
-
-        /* Colunas Tabela de Preços */
+    private void jobPriceColumns() {
         colTable.setCellValueFactory(new PropertyValueFactory<>("priceTable"));
         colTable.setCellFactory(ComboBoxTableCell.forTableColumn(listPriceTable));
         colTable.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<JobPrice, PriceTable>>() {
@@ -245,6 +157,113 @@ public class JobPriceCtrl {
         });
     }
 
+    private void priceTableColumns() {
+        colTableId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colTableName.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        colTableName.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        colTableName.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<PriceTable, String>>() {
+
+            @Override
+            public void handle(CellEditEvent<PriceTable, String> event) {
+                PriceTable p = event.getTableView().getItems().get(event.getTablePosition().getRow());
+
+                if (p.getId() == 0) {
+                    p.setName(event.getNewValue());
+
+                    DBPriceTable.insert(p);
+                    
+                    Main.refreshPriceTables();
+                    refreshViewPrice();
+                    
+                    p = DBPriceTable.get(p.getName());
+
+                    List<JobPrice> list = new ArrayList<JobPrice>();
+
+                    for (JobType jobType : listJobType) {
+                        list.add(new JobPrice(jobType, p, 0.0));
+                    }
+
+                    DBJobPrice.insert(list);
+                    AlertDialog.successAlert(p);
+                    
+                    Main.refreshJobPrices();
+                    refreshViewPrice();
+                }
+                else {
+                    String old = new String(p.getName());
+                    p.setName(event.getNewValue());
+
+                    if (AlertDialog.updateAlert(p, old)) {
+                        DBPriceTable.update(p);
+                        Main.refreshPriceTables();
+                        Main.refreshJobPrices();
+                        refreshViewPrice();
+                    }
+                    else {
+                        p.setName(old);
+                        viewTable.refresh();
+                    }
+
+                }
+
+            }
+        });
+    }
+
+    private void jobTypeColumns() {
+        colJobId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colJobName.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        colJobName.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        colJobName.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<JobType, String>>() {
+
+            @Override
+            public void handle(CellEditEvent<JobType, String> event) {
+                JobType j = event.getTableView().getItems().get(event.getTablePosition().getRow());
+
+                if (j.getId() == 0) {
+                    j.setName(event.getNewValue());
+
+                    DBJobType.insert(j);
+                    refreshViewJob();
+                    Main.refreshJobTypes();
+                    
+                    j = DBJobType.get(j.getName());
+
+                    List<JobPrice> list = new ArrayList<JobPrice>();
+
+                    for (PriceTable p : listPriceTable) {
+                        list.add(new JobPrice(j, p, 0.0));
+                    }
+
+                    DBJobPrice.insert(list);
+                    AlertDialog.successAlert(j);
+                    
+                    Main.refreshJobPrices();
+                    refreshViewPrice();
+                }
+                else {
+                    String old = new String(j.getName());
+                    j.setName(event.getNewValue());
+
+                    if (AlertDialog.updateAlert(j, old)) {
+                        DBJobType.update(j);
+                        Main.refreshJobTypes();
+                        Main.refreshJobPrices();
+                        refreshViewPrice();
+                    }
+                    else {
+                        j.setName(old);
+                        refreshViewJob();
+                    }
+                }
+            }
+        });
+    }
+
     private void refreshViewTable() {
         listPriceTable = FXCollections.observableArrayList(DBPriceTable.getList());
         viewTable.getItems().clear();
@@ -268,28 +287,52 @@ public class JobPriceCtrl {
     }
 
     @FXML
-    void newTable() {
+    @Override
+    public void create() {
         if (tabTable.isSelected()) {
             PriceTable p = new PriceTable();
             viewTable.getItems().add(p);
         }
-        else {
+        else if (tabJob.isSelected()) {
             JobType j = new JobType();
             viewJob.getItems().add(j);
+        }
+        else {
+            JobPrice jp = new JobPrice();
+            viewPrice.getItems().add(jp);
+        }
+    }
+
+    @Override
+    public void edit() {
+
+    }
+
+    @FXML
+    @Override
+    public void save() {
+        if (tabPrice.isSelected()) {
+            for (JobPrice jp : newPrices) {
+                DBJobPrice.update(jp);
+                Main.refreshPriceTables();
+                refreshViewPrice();
+            }
+
+            if (paneInfo.getChildren().contains(labelNotif))
+                paneInfo.getChildren().remove(labelNotif);
+
+            AlertDialog.successAlert(new JobPrice());
+
+            newPrices.clear();
         }
     }
 
     @FXML
-    void insertPrice() {
-        JobPrice jp = new JobPrice();
-        viewPrice.getItems().add(jp);
-    }
-
-    @FXML
-    void deleteTable() {
+    @Override
+    public void delete() {
         if (tabTable.isSelected()) {
             PriceTable p = viewTable.getSelectionModel().getSelectedItem();
-            if (p != null && p.getId() != 0 && AlertDialog.showDeleteTable(p)) {
+            if (p != null && p.getId() != 0 && AlertDialog.deleteAlert(p)) {
                 DBPriceTable.delete(p.getId());
                 Main.refreshPriceTables();
                 Main.refreshJobPrices();
@@ -297,9 +340,9 @@ public class JobPriceCtrl {
                 refreshViewPrice();
             }
         }
-        else {
+        else if (tabJob.isSelected()) {
             JobType j = viewJob.getSelectionModel().getSelectedItem();
-            if (j != null && j.getId() != 0 && AlertDialog.showDeleteJobType(j)) {
+            if (j != null && j.getId() != 0 && AlertDialog.deleteAlert(j)) {
                 DBJobType.delete(j.getId());
                 Main.refreshJobTypes();
                 Main.refreshJobPrices();
@@ -307,32 +350,21 @@ public class JobPriceCtrl {
                 refreshViewPrice();
             }
         }
-    }
-
-    @FXML
-    void deletePrice() {
-        JobPrice jp = viewPrice.getSelectionModel().getSelectedItem();
-        if (jp != null && jp.getId() != 0 && AlertDialog.showDeletePrice(jp)) {
-            DBJobPrice.delete(jp.getId());
-            Main.refreshPriceTables();
-            Main.refreshJobPrices();
-            refreshViewPrice();
+        else {
+            JobPrice jp = viewPrice.getSelectionModel().getSelectedItem();
+            if (jp != null && jp.getId() != 0 && AlertDialog.deleteAlert(jp)) {
+                DBJobPrice.updatePrice(jp);
+                // DBJobPrice.delete(jp.getId());
+                Main.refreshPriceTables();
+                Main.refreshJobPrices();
+                refreshViewPrice();
+            }
         }
     }
 
-    @FXML
-    void savePrice() {
-        for (JobPrice jp : newPrices) {
-            DBJobPrice.update(jp);
-            Main.refreshPriceTables();
-            refreshViewPrice();
-        }
-
-        if (paneInfo.getChildren().contains(labelNotif))
-            paneInfo.getChildren().remove(labelNotif);
-
-        AlertDialog.showUpdateSuccess();
-
-        newPrices.clear();
+    @Override
+    public void disableFields(boolean b) {
+        // TODO Auto-generated method stub
+        
     }
 }

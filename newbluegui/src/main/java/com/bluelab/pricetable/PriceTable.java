@@ -34,4 +34,8 @@ public class PriceTable {
     public String toString() {
         return this.name;
     }
+    
+    public String getClassName() {
+        return "Tabela de Preço";
+    }
 }

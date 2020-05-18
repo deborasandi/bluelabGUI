@@ -128,6 +128,23 @@ public class DBJobPrice extends DBConnection {
             throw new RuntimeException(u);
         }
     }
+    
+    public static void updatePrice(JobPrice j) {
+        String query = "UPDATE job_price SET price=? WHERE id = ?;";
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            stmt.setDouble(1, j.getPrice());
+            stmt.setInt(2, j.getId());
+
+            stmt.execute();
+            stmt.close();
+        }
+        catch (SQLException u) {
+            throw new RuntimeException(u);
+        }
+    }
 
     public static void updateList() {
         listJobPrice = getMap();

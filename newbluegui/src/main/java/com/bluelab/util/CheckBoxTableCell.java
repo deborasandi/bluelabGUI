@@ -1,7 +1,6 @@
 package com.bluelab.util;
 
 
-import com.bluelab.alert.AlertDialog;
 import com.bluelab.database.DBJob;
 import com.bluelab.job.Job;
 
@@ -46,7 +45,7 @@ public class CheckBoxTableCell extends TableCell<Job, Boolean> {
     }
     
     private void updateValue(Job j, boolean old) {
-        if (AlertDialog.showSaveUpdate(j)) {
+        if (AlertDialog.updateAlert(j)) {
             DBJob.update(j.getId(), j.isPaid());
         }
         else {

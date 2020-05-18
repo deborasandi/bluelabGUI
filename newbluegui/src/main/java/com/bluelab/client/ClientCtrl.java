@@ -7,11 +7,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.bluelab.alert.AlertDialog;
 import com.bluelab.database.DBClient;
 import com.bluelab.database.DBPriceTable;
 import com.bluelab.main.Main;
 import com.bluelab.pricetable.PriceTable;
+import com.bluelab.util.AlertDialog;
+import com.bluelab.util.FxmlInterface;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 
@@ -25,7 +26,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 
-public class ClientCtrl {
+public class ClientCtrl implements FxmlInterface{
 
     @FXML
     private JFXTextField name;
@@ -139,7 +140,8 @@ public class ClientCtrl {
         disableFields(true);
     }
 
-    private void disableFields(boolean d) {
+    @Override
+    public void disableFields(boolean d) {
         name.setDisable(d);
         cpf.setDisable(d);
         tel.setDisable(d);
@@ -155,26 +157,6 @@ public class ClientCtrl {
         respCpf.setDisable(d);
         respTel.setDisable(d);
         respCel.setDisable(d);
-    }
-
-    @FXML
-    void deleteClient() {
-        if (currentClient != null) {
-            if (AlertDialog.showDelete(currentClient)) {
-                DBClient.delete(currentClient.getId());
-                clearFields();
-                Main.refreshClients();
-                refreshView();
-            }
-        }
-    }
-
-    @FXML
-    void newClient() {
-        currentClient = null;
-
-        clearFields();
-        disableFields(false);
     }
 
     private void clearFields() {
@@ -195,8 +177,44 @@ public class ClientCtrl {
         priceTable.getSelectionModel().select(0);
     }
 
+    private void refreshView() {
+        listClient = FXCollections.observableArrayList(DBClient.getList());
+        viewClient.getItems().clear();
+        viewClient.getItems().addAll(listClient);
+    }
+
+    private void findTable(PriceTable p) {
+        for (PriceTable p1 : listTables) {
+            if (p1.getId() == p.getId())
+                priceTable.getSelectionModel().select(p1);
+        }
+    }
+
+    public void refreshPriceTables() {
+        listTables = FXCollections.observableArrayList(DBPriceTable.getList());
+        priceTable.getItems().clear();
+        priceTable.getItems().addAll(listTables);
+        priceTable.getSelectionModel().select(0);
+    }
+
     @FXML
-    void saveClient() {
+    @Override
+    public void create() {
+        currentClient = null;
+
+        clearFields();
+        disableFields(false);
+    }
+
+    @FXML
+    @Override
+    public void edit() {
+        disableFields(false);
+    }
+
+    @FXML
+    @Override
+    public void save() {
         Client c = new Client();
 
         c.setClientName(name.getText());
@@ -216,43 +234,34 @@ public class ClientCtrl {
         c.setPriceTable(priceTable.getSelectionModel().getSelectedItem());
 
         if (currentClient != null) {
-            if (AlertDialog.showSaveUpdate(c)) {
+            if (AlertDialog.updateAlert(c)) {
                 c.setId(currentClient.getId());
                 DBClient.update(c);
             }
         }
         else {
-            if (AlertDialog.showSaveNew(c))
+            if (AlertDialog.saveNewAlert(c))
                 DBClient.insert(c);
         }
 
         clearFields();
         Main.refreshClients();
         refreshView();
-    }
-
-    private void refreshView() {
-        listClient = FXCollections.observableArrayList(DBClient.getList());
-        viewClient.getItems().clear();
-        viewClient.getItems().addAll(listClient);
-    }
-
-    @FXML
-    void editClient() {
         disableFields(false);
     }
 
-    private void findTable(PriceTable p) {
-        for (PriceTable p1 : listTables) {
-            if (p1.getId() == p.getId())
-                priceTable.getSelectionModel().select(p1);
+    @FXML
+    @Override
+    public void delete() {
+        if (currentClient != null) {
+            if (AlertDialog.deleteAlert(currentClient)) {
+                DBClient.delete(currentClient.getId());
+                clearFields();
+                Main.refreshClients();
+                refreshView();
+            }
         }
-    }
-
-    public void refreshPriceTables() {
-        listTables = FXCollections.observableArrayList(DBPriceTable.getList());
-        priceTable.getItems().clear();
-        priceTable.getItems().addAll(listTables);
-        priceTable.getSelectionModel().select(0);
+        
+        disableFields(false);
     }
 }

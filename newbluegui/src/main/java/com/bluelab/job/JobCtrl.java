@@ -4,7 +4,6 @@ package com.bluelab.job;
 import java.time.LocalDate;
 import java.util.Date;
 
-import com.bluelab.alert.AlertDialog;
 import com.bluelab.client.Client;
 import com.bluelab.database.DBClient;
 import com.bluelab.database.DBJob;
@@ -13,6 +12,8 @@ import com.bluelab.database.DBProductColor;
 import com.bluelab.jobprice.JobPrice;
 import com.bluelab.main.Main;
 import com.bluelab.productcolor.ProductColor;
+import com.bluelab.util.AlertDialog;
+import com.bluelab.util.FxmlInterface;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
@@ -31,7 +32,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 
-public class JobCtrl {
+public class JobCtrl implements FxmlInterface {
 
     @FXML
     private Spinner<Integer> jobQtd;
@@ -128,62 +129,8 @@ public class JobCtrl {
     }
 
     @FXML
-    void deleteJob(ActionEvent event) {
-        if (currentJob != null) {
-            if (AlertDialog.showDelete(currentJob)) {
-                DBJob.delete(currentJob.getId());
-                clearFields();
-                Main.refreshJobs();
-                refreshViewJob();
-            }
-        }
-    }
-
-    @FXML
-    void newJob(ActionEvent event) {
-        currentJob = null;
-        clearFields();
-        disableFields(false);
-    }
-
-    @FXML
     void refresh(ActionEvent event) {
         refreshViewJob();
-    }
-
-    @FXML
-    void saveJob(ActionEvent event) {
-        Job j = new Job();
-
-        j.setClient(client.getValue());
-        j.setJobPrice(jobPrice.getValue());
-        j.setProductColor(productColor.getValue());
-        j.setQtd(jobQtd.getValue());
-        j.setShipping(shipping.getValue());
-        j.setDate(java.sql.Date.valueOf(date.getValue()));
-        j.setRepetition(repetition.isSelected());
-        j.setNocost(nocost.isSelected());
-        j.setTotal(Double.parseDouble(lblTotal.getText()));
-
-        if (currentJob != null) {
-            if (AlertDialog.showSaveUpdate(j)) {
-                j.setId(currentJob.getId());
-                DBJob.update(j);
-            }
-        }
-        else {
-            if (AlertDialog.showSaveNew(j))
-                DBJob.insert(j);
-        }
-
-        clearFields();
-        Main.refreshJobs();
-        refreshViewJob();
-    }
-
-    @FXML
-    void editJob() {
-        disableFields(false);
     }
 
     private void clearFields() {
@@ -203,7 +150,8 @@ public class JobCtrl {
         viewJob.getItems().addAll(listJob);
     }
 
-    private void disableFields(boolean d) {
+    @Override
+    public void disableFields(boolean d) {
         client.setDisable(d);
         jobPrice.setDisable(d);
         productColor.setDisable(d);
@@ -309,5 +257,64 @@ public class JobCtrl {
 
         double total = ((jp.getPrice() * jobQtd.getValue()) * nc) + shipping.getValue();
         lblTotal.setText(String.valueOf(total));
+    }
+
+    @FXML
+    @Override
+    public void create() {
+        currentJob = null;
+        clearFields();
+        disableFields(false);
+    }
+
+    @FXML
+    @Override
+    public void edit() {
+        disableFields(false);
+    }
+
+    @FXML
+    @Override
+    public void save() {
+        Job j = new Job();
+
+        j.setClient(client.getValue());
+        j.setJobPrice(jobPrice.getValue());
+        j.setProductColor(productColor.getValue());
+        j.setQtd(jobQtd.getValue());
+        j.setShipping(shipping.getValue());
+        j.setDate(java.sql.Date.valueOf(date.getValue()));
+        j.setRepetition(repetition.isSelected());
+        j.setNocost(nocost.isSelected());
+        j.setTotal(Double.parseDouble(lblTotal.getText()));
+
+        if (currentJob != null) {
+            if (AlertDialog.updateAlert(j)) {
+                j.setId(currentJob.getId());
+                DBJob.update(j);
+            }
+        }
+        else {
+            if (AlertDialog.saveNewAlert(j))
+                DBJob.insert(j);
+        }
+
+        clearFields();
+        Main.refreshJobs();
+        refreshViewJob();
+        disableFields(false);
+    }
+
+    @Override
+    public void delete() {
+        if (currentJob != null) {
+            if (AlertDialog.deleteAlert(currentJob)) {
+                DBJob.delete(currentJob.getId());
+                clearFields();
+                Main.refreshJobs();
+                refreshViewJob();
+            }
+        }
+        disableFields(false);
     }
 }

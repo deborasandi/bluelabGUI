@@ -35,5 +35,7 @@ public class JobType {
         return name;
     }
     
-    
+    public String getClassName() {
+        return "Tipo de Trabalho";
+    }
 }

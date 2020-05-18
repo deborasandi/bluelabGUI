@@ -194,4 +194,8 @@ public class Client {
     public String toString() {
         return this.name;
     }
+    
+    public String getClassName() {
+        return "Cliente";
+    }
 }

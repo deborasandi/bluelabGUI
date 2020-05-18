@@ -66,5 +66,7 @@ public class JobPrice {
         return this.getJobType().getName();
     }
     
-    
+    public String getClassName() {
+        return "Preço";
+    }
 }
