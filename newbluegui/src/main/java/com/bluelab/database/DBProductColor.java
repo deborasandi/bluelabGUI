@@ -8,15 +8,49 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import com.bluelab.productcolor.ProductColor;
+
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 
 public class DBProductColor extends DBConnection {
 
-    private static Map<Integer, ProductColor> listProductColor;
+    private static ObservableList<ProductColor> list;
+    private static Map<Integer, ProductColor> map;
+
+    private static Consumer<ProductColor> callback = client -> {
+    };
+
+    private static void setCallback(Consumer<ProductColor> c) {
+        callback = c;
+    }
+
+    private static void updateData() {
+        map = getMap();
+
+        list.clear();
+        list.addAll(map.values());
+        list.sort(new Comparator<ProductColor>() {
+
+            @Override
+            public int compare(ProductColor o1, ProductColor o2) {
+                return o1.getName().compareToIgnoreCase(o2.getName());
+            }
+        });
+    }
+
+    public static void init() {
+        list = FXCollections.observableArrayList(new ArrayList<ProductColor>());
+
+        updateData();
+
+        setCallback(c -> Platform.runLater(() -> updateData()));
+    }
 
     public static void insert(ProductColor p) {
         String query = "insert into product_color (name) values (?)";
@@ -28,6 +62,8 @@ public class DBProductColor extends DBConnection {
 
             stmt.execute();
             stmt.close();
+
+            callback.accept(new ProductColor());
         }
         catch (SQLException u) {
             throw new RuntimeException(u);
@@ -96,6 +132,8 @@ public class DBProductColor extends DBConnection {
 
             stmt.execute();
             stmt.close();
+
+            callback.accept(new ProductColor());
         }
         catch (SQLException u) {
             throw new RuntimeException(u);
@@ -113,30 +151,19 @@ public class DBProductColor extends DBConnection {
 
             stmt.execute();
             stmt.close();
+
+            callback.accept(new ProductColor());
         }
         catch (SQLException u) {
             throw new RuntimeException(u);
         }
     }
 
-    public static void updateList() {
-        listProductColor = getMap();
-    }
-
-    public static List<ProductColor> getList() {
-        List<ProductColor> list = new ArrayList<ProductColor>(listProductColor.values());
-        list.sort(new Comparator<ProductColor>() {
-
-            @Override
-            public int compare(ProductColor o1, ProductColor o2) {
-                return o1.getName().compareToIgnoreCase(o2.getName());
-            }
-        });
-
+    public static ObservableList<ProductColor> getList() {
         return list;
     }
 
     public static ProductColor get(int id) {
-        return listProductColor.get(id);
+        return map.get(id);
     }
 }

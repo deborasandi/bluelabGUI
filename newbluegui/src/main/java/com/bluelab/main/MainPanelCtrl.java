@@ -4,11 +4,6 @@ package com.bluelab.main;
 import java.io.IOException;
 
 import com.bluelab.client.ClientCtrl;
-import com.bluelab.database.DBClient;
-import com.bluelab.database.DBJob;
-import com.bluelab.database.DBJobPrice;
-import com.bluelab.database.DBJobType;
-import com.bluelab.database.DBPriceTable;
 import com.bluelab.invoice.InvoiceCtrl;
 import com.bluelab.job.JobCtrl;
 import com.bluelab.jobprice.JobPriceCtrl;
@@ -130,26 +125,5 @@ public class MainPanelCtrl {
 
         if (!btnInvoice.isSelected())
             btnInvoice.setSelected(true);
-    }
-
-    public void refreshPriceTables() {
-        DBPriceTable.updateList();
-        clientCtrl.refreshPriceTables();
-    }
-
-    public void refreshJobTypes() {
-        DBJobType.updateList();
-        invoiceCtrl.refreshJobTypes();
-    }
-
-    public void refreshJobPrices() {
-        DBJobPrice.updateList();
-        jobCtrl.refreshJobPrice();
-        jobPriceCtrl.refreshJobPrice();
-    }
-
-    public void refreshJobs() {
-        DBJob.updateList();
-        invoiceCtrl.refreshJobs();
     }
 }

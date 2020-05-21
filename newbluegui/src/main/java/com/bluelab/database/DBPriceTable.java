@@ -8,15 +8,49 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import com.bluelab.pricetable.PriceTable;
+
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 
 public class DBPriceTable extends DBConnection {
 
-    private static Map<Integer, PriceTable> listPriceTable;
+    private static ObservableList<PriceTable> list;
+    private static Map<Integer, PriceTable> map;
+
+    private static Consumer<PriceTable> callback = pricetable -> {
+    };
+
+    private static void setCallback(Consumer<PriceTable> c) {
+        callback = c;
+    }
+
+    private static void updateData() {
+        map = getMap();
+
+        list.clear();
+        list.addAll(map.values());
+        list.sort(new Comparator<PriceTable>() {
+
+            @Override
+            public int compare(PriceTable o1, PriceTable o2) {
+                return o1.getName().compareToIgnoreCase(o2.getName());
+            }
+        });
+    }
+
+    public static void init() {
+        list = FXCollections.observableArrayList(new ArrayList<PriceTable>());
+
+        updateData();
+
+        setCallback(c -> Platform.runLater(() -> updateData()));
+    }
 
     public static void insert(PriceTable p) {
         String query = "insert into price_table (name) values (?)";
@@ -28,6 +62,8 @@ public class DBPriceTable extends DBConnection {
 
             stmt.execute();
             stmt.close();
+
+            callback.accept(new PriceTable());
         }
         catch (SQLException u) {
             throw new RuntimeException(u);
@@ -86,22 +122,6 @@ public class DBPriceTable extends DBConnection {
         return p;
     }
 
-    public static void delete(int id) {
-        String query = "DELETE FROM price_table WHERE id = ?;";
-
-        try {
-            PreparedStatement stmt = connection.prepareStatement(query);
-
-            stmt.setInt(1, id);
-
-            stmt.execute();
-            stmt.close();
-        }
-        catch (SQLException u) {
-            throw new RuntimeException(u);
-        }
-    }
-
     public static void update(PriceTable p) {
         String query = "UPDATE price_table SET name = ? WHERE id = ?;";
 
@@ -113,30 +133,41 @@ public class DBPriceTable extends DBConnection {
 
             stmt.execute();
             stmt.close();
+
+            callback.accept(new PriceTable());
+            
+            DBJobPrice.updateData();
         }
         catch (SQLException u) {
             throw new RuntimeException(u);
         }
     }
 
-    public static void updateList() {
-        listPriceTable = getMap();
+    public static void delete(int id) {
+        String query = "DELETE FROM price_table WHERE id = ?;";
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            stmt.setInt(1, id);
+
+            stmt.execute();
+            stmt.close();
+
+            callback.accept(new PriceTable());
+            
+            DBJobPrice.updateData();
+        }
+        catch (SQLException u) {
+            throw new RuntimeException(u);
+        }
     }
 
-    public static List<PriceTable> getList() {
-        List<PriceTable> list = new ArrayList<PriceTable>(listPriceTable.values());
-        list.sort(new Comparator<PriceTable>() {
-
-            @Override
-            public int compare(PriceTable o1, PriceTable o2) {
-                return o1.getName().compareToIgnoreCase(o2.getName());
-            }
-        });
-
+    public static ObservableList<PriceTable> getList() {
         return list;
     }
 
     public static PriceTable get(int id) {
-        return listPriceTable.get(id);
+        return map.get(id);
     }
 }

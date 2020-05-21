@@ -10,7 +10,6 @@ import com.bluelab.database.DBJob;
 import com.bluelab.database.DBJobPrice;
 import com.bluelab.database.DBProductColor;
 import com.bluelab.jobprice.JobPrice;
-import com.bluelab.main.Main;
 import com.bluelab.productcolor.ProductColor;
 import com.bluelab.util.AlertDialog;
 import com.bluelab.util.FxmlInterface;
@@ -18,9 +17,6 @@ import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -76,29 +72,14 @@ public class JobCtrl implements FxmlInterface {
     @FXML
     private Label lblTotal;
 
-    private ObservableList<Client> listClient;
-
-    private ObservableList<JobPrice> listJobPrice;
-
-    private ObservableList<ProductColor> listProductColor;
-
-    private ObservableList<Job> listJob;
-
     private Job currentJob;
     
     boolean consumeList = false;
 
     public void initialize() {
-        listClient = FXCollections.observableArrayList(DBClient.getList());
-        client.getItems().addAll(listClient);
-
-        listJobPrice = FXCollections.observableArrayList(DBJobPrice.getList());
-
-        listProductColor = FXCollections.observableArrayList(DBProductColor.getList());
-        productColor.getItems().addAll(listProductColor);
-
-        listJob = FXCollections.observableArrayList(DBJob.getList());
-        viewJob.getItems().addAll(listJob);
+        client.setItems(DBClient.getList());
+        productColor.setItems(DBProductColor.getList());
+        viewJob.setItems(DBJob.getList());
 
         date.setValue(LocalDate.now());
 
@@ -130,11 +111,6 @@ public class JobCtrl implements FxmlInterface {
         colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
     }
 
-    @FXML
-    void refresh(ActionEvent event) {
-        refreshViewJob();
-    }
-
     private void clearFields() {
         client.getSelectionModel().clearSelection();
         jobPrice.getSelectionModel().clearSelection();
@@ -144,12 +120,6 @@ public class JobCtrl implements FxmlInterface {
         date.setValue(LocalDate.now());
         repetition.setSelected(false);
         nocost.setSelected(false);
-    }
-
-    private void refreshViewJob() {
-        listJob = FXCollections.observableArrayList(DBJob.getList());
-        viewJob.getItems().clear();
-        viewJob.getItems().addAll(listJob);
     }
 
     @Override
@@ -181,7 +151,7 @@ public class JobCtrl implements FxmlInterface {
         if (c == null)
             return;
 
-        for (Client c1 : listClient) {
+        for (Client c1 : DBClient.getList()) {
             if (c1.getId() == c.getId())
                 client.getSelectionModel().select(c1);
         }
@@ -205,31 +175,10 @@ public class JobCtrl implements FxmlInterface {
         if (p == null)
             return;
 
-        for (ProductColor p1 : listProductColor) {
+        for (ProductColor p1 : DBProductColor.getList()) {
             if (p1.getId() == p.getId())
                 productColor.getSelectionModel().select(p1);
         }
-    }
-
-    public void refreshClients() {
-        listClient = FXCollections.observableArrayList(DBClient.getList());
-        client.getItems().clear();
-        client.getItems().addAll(listClient);
-        client.getSelectionModel().clearSelection();
-    }
-
-    public void refreshJobPrice() {
-        consumeList = true;
-        listJobPrice = FXCollections.observableArrayList(DBJobPrice.getList());
-//        loadJobPrice();
-//        calcTotal();
-    }
-
-    public void refreshProductColor() {
-        listProductColor = FXCollections.observableArrayList(DBProductColor.getList());
-        productColor.getItems().clear();
-        productColor.getItems().addAll(listProductColor);
-        productColor.getSelectionModel().clearSelection();
     }
 
     @FXML
@@ -246,7 +195,7 @@ public class JobCtrl implements FxmlInterface {
         }
 
         jobPrice.getItems().clear();
-        for (JobPrice jp : listJobPrice) {
+        for (JobPrice jp : DBJobPrice.getList()) {
             if (jp.getPriceTable().getId() == c.getPriceTable().getId())
                 jobPrice.getItems().add(jp);
         }
@@ -271,7 +220,6 @@ public class JobCtrl implements FxmlInterface {
             if (newValue != 0) {
                 j.setPrice(newValue);
                 DBJobPrice.updatePrice(j);
-                Main.refreshJobPrices();
             }
         }
         calcTotal();
@@ -337,8 +285,6 @@ public class JobCtrl implements FxmlInterface {
         }
 
         clearFields();
-        Main.refreshJobs();
-        refreshViewJob();
         disableFields(false);
     }
 
@@ -348,8 +294,6 @@ public class JobCtrl implements FxmlInterface {
             if (AlertDialog.deleteAlert(currentJob)) {
                 DBJob.delete(currentJob.getId());
                 clearFields();
-                Main.refreshJobs();
-                refreshViewJob();
             }
         }
         disableFields(false);

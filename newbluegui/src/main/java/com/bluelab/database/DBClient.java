@@ -26,11 +26,11 @@ public class DBClient extends DBConnection {
     private static Consumer<Client> callback = client -> {
     };
 
-    public static void setCallback(Consumer<Client> c) {
+    private static void setCallback(Consumer<Client> c) {
         callback = c;
     }
 
-    protected static void updateData() {
+    private static void updateData() {
         map = getMap();
 
         list.clear();
@@ -49,10 +49,10 @@ public class DBClient extends DBConnection {
         
         updateData();
 
-        setCallback(client -> Platform.runLater(() -> updateData()));
+        setCallback(c -> Platform.runLater(() -> updateData()));
     }
 
-    public static boolean insert(Client c) {
+    public static void insert(Client c) {
         String query = "INSERT INTO client (name, cpf, tel, cel, resp_name, resp_cpf, resp_tel, resp_cel, address, number, compl, "
                 + "city, state, cep, price_table_id) VALUES" + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
@@ -75,12 +75,10 @@ public class DBClient extends DBConnection {
             stmt.setString(14, c.getCep());
             stmt.setInt(15, c.getPriceTable().getId());
 
-            boolean result = stmt.execute();
+            stmt.execute();
             stmt.close();
 
             callback.accept(new Client());
-
-            return result;
         }
         catch (SQLException u) {
             throw new RuntimeException(u);
@@ -128,7 +126,7 @@ public class DBClient extends DBConnection {
         return list;
     }
 
-    public static boolean update(Client c) {
+    public static void update(Client c) {
         String query = "UPDATE client SET name = ?, cpf = ?, tel = ?, cel = ?, resp_name = ?, resp_cpf = ?, resp_tel = ?, resp_cel = ?, "
                 + "address = ?, number = ?, compl = ?, city = ?, state = ?, cep = ?, price_table_id = ? WHERE id = ?";
 
@@ -152,13 +150,10 @@ public class DBClient extends DBConnection {
             stmt.setInt(15, c.getPriceTable().getId());
             stmt.setInt(16, c.getId());
 
-            boolean r = stmt.execute();
+            stmt.execute();
             stmt.close();
 
-            updateData();
             callback.accept(new Client());
-
-            return r;
         }
         catch (SQLException u) {
             throw new RuntimeException(u);
@@ -176,7 +171,6 @@ public class DBClient extends DBConnection {
             stmt.execute();
             stmt.close();
 
-            updateData();
             callback.accept(new Client());
         }
         catch (SQLException u) {

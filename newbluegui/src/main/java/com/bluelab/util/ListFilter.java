@@ -54,7 +54,7 @@ public class ListFilter<Job> extends ArrayList<Job> {
     }
 
     public void filterJobType(JobType f) {
-        if (f.getId() == 0) {
+        if (f == null || f.getId() == 0) {
             if (filterJobType) {
                 filterJobType = false;
                 numFilter--;
@@ -77,7 +77,7 @@ public class ListFilter<Job> extends ArrayList<Job> {
     }
 
     public void filterProductColor(ProductColor f) {
-        if (f.getId() == 0) {
+        if (f == null || f.getId() == 0) {
             if (filterProductColor) {
                 filterProductColor = false;
                 numFilter--;
@@ -88,7 +88,8 @@ public class ListFilter<Job> extends ArrayList<Job> {
         List<Job> aux = new ArrayList<Job>();
 
         for (Job j : this) {
-            if (((com.bluelab.job.Job) j).getProductColor().getId() == f.getId())
+            if (((com.bluelab.job.Job) j).getProductColor() != null
+                    && ((com.bluelab.job.Job) j).getProductColor().getId() == f.getId())
                 aux.add(j);
         }
 
@@ -175,7 +176,7 @@ public class ListFilter<Job> extends ArrayList<Job> {
     }
 
     public void filterInitDate(LocalDate f) {
-        if (f == null) {
+        if (f == null || f == null) {
             if (filterInitDate) {
                 filterInitDate = false;
                 numFilter--;
@@ -200,7 +201,7 @@ public class ListFilter<Job> extends ArrayList<Job> {
     }
 
     public void filterEndDate(LocalDate f) {
-        if (f == null) {
+        if (f == null || f == null) {
             if (filterEndDate) {
                 filterEndDate = false;
                 numFilter--;

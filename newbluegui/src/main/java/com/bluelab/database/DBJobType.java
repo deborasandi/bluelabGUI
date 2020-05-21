@@ -8,15 +8,49 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import com.bluelab.jobtype.JobType;
+
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 
 public class DBJobType extends DBConnection {
 
-    private static Map<Integer, JobType> listJobType;
+    private static ObservableList<JobType> list;
+    private static Map<Integer, JobType> map;
+
+    private static Consumer<JobType> callback = client -> {
+    };
+
+    private static void setCallback(Consumer<JobType> c) {
+        callback = c;
+    }
+
+    private static void updateData() {
+        map = getMap();
+
+        list.clear();
+        list.addAll(map.values());
+        list.sort(new Comparator<JobType>() {
+
+            @Override
+            public int compare(JobType o1, JobType o2) {
+                return o1.getName().compareToIgnoreCase(o2.getName());
+            }
+        });
+    }
+
+    public static void init() {
+        list = FXCollections.observableArrayList(new ArrayList<JobType>());
+
+        updateData();
+
+        setCallback(c -> Platform.runLater(() -> updateData()));
+    }
 
     public static void insert(JobType j) {
         String query = "insert into job_type (name) values (?)";
@@ -28,6 +62,8 @@ public class DBJobType extends DBConnection {
 
             stmt.execute();
             stmt.close();
+
+            callback.accept(new JobType());
         }
         catch (SQLException u) {
             throw new RuntimeException(u);
@@ -96,6 +132,10 @@ public class DBJobType extends DBConnection {
 
             stmt.execute();
             stmt.close();
+
+            callback.accept(new JobType());
+            
+            DBJobPrice.updateData();
         }
         catch (SQLException u) {
             throw new RuntimeException(u);
@@ -113,30 +153,21 @@ public class DBJobType extends DBConnection {
 
             stmt.execute();
             stmt.close();
+
+            callback.accept(new JobType());
+            
+            DBJobPrice.updateData();
         }
         catch (SQLException u) {
             throw new RuntimeException(u);
         }
     }
-    
-    public static void updateList() {
-        listJobType = getMap();
-    }
 
-    public static List<JobType> getList() {
-        List<JobType> list = new ArrayList<JobType>(listJobType.values());
-        list.sort(new Comparator<JobType>() {
-
-            @Override
-            public int compare(JobType o1, JobType o2) {
-                return o1.getName().compareToIgnoreCase(o2.getName());
-            }
-        });
-
+    public static ObservableList<JobType> getList() {
         return list;
     }
 
     public static JobType get(int id) {
-        return listJobType.get(id);
+        return map.get(id);
     }
 }

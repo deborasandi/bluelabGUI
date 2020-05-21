@@ -1,7 +1,6 @@
 package com.bluelab.main;
 
 
-import com.bluelab.data.BlueData;
 import com.bluelab.database.DBConnection;
 
 import javafx.application.Application;
@@ -37,21 +36,5 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
-    }
-
-    public static void refreshPriceTables() {
-        mainCtrl.refreshPriceTables();
-    }
-
-    public static void refreshJobTypes() {
-        mainCtrl.refreshJobTypes();
-    }
-
-    public static void refreshJobPrices() {
-        mainCtrl.refreshJobPrices();
-    }
-
-    public static void refreshJobs() {
-        mainCtrl.refreshJobs();
     }
 }

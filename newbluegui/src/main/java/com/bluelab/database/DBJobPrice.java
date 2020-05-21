@@ -10,13 +10,48 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import com.bluelab.jobprice.JobPrice;
+
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 
 public class DBJobPrice extends DBConnection {
 
-    private static Map<Integer, JobPrice> listJobPrice;
+    private static ObservableList<JobPrice> list;
+    private static Map<Integer, JobPrice> map;
+
+    private static Consumer<JobPrice> callback = client -> {
+    };
+
+    private static void setCallback(Consumer<JobPrice> c) {
+        callback = c;
+    }
+
+    public static void updateData() {
+        map = getMap();
+
+        list.clear();
+        list.addAll(map.values());
+        list.sort(new Comparator<JobPrice>() {
+
+            @Override
+            public int compare(JobPrice o1, JobPrice o2) {
+                return o1.getPriceTable().getName().compareToIgnoreCase(o2.getPriceTable().getName());
+            }
+        });
+    }
+
+    public static void init() {
+        list = FXCollections.observableArrayList(new ArrayList<JobPrice>());
+
+        updateData();
+
+        setCallback(c -> Platform.runLater(() -> updateData()));
+    }
 
     public static void insert(List<JobPrice> list) {
         String query = "insert into job_price (price_table_id, job_type_id, price) values (?, ?, ?)";
@@ -41,6 +76,8 @@ public class DBJobPrice extends DBConnection {
 
             stmt.execute();
             stmt.close();
+
+            callback.accept(new JobPrice());
         }
         catch (SQLException u) {
             throw new RuntimeException(u);
@@ -59,12 +96,14 @@ public class DBJobPrice extends DBConnection {
 
             stmt.execute();
             stmt.close();
+
+            callback.accept(new JobPrice());
         }
         catch (SQLException u) {
             throw new RuntimeException(u);
         }
     }
-    
+
     public static Map<Integer, JobPrice> getMap() {
         Map<Integer, JobPrice> list = new HashMap<Integer, JobPrice>();
 
@@ -104,6 +143,8 @@ public class DBJobPrice extends DBConnection {
 
             stmt.execute();
             stmt.close();
+
+            callback.accept(new JobPrice());
         }
         catch (SQLException u) {
             throw new RuntimeException(u);
@@ -123,12 +164,14 @@ public class DBJobPrice extends DBConnection {
 
             stmt.execute();
             stmt.close();
+
+            callback.accept(new JobPrice());
         }
         catch (SQLException u) {
             throw new RuntimeException(u);
         }
     }
-    
+
     public static void updatePrice(JobPrice j) {
         String query = "UPDATE job_price SET price=? WHERE id = ?;";
 
@@ -140,31 +183,19 @@ public class DBJobPrice extends DBConnection {
 
             stmt.execute();
             stmt.close();
+
+            callback.accept(new JobPrice());
         }
         catch (SQLException u) {
             throw new RuntimeException(u);
         }
     }
 
-    public static void updateList() {
-        listJobPrice = getMap();
-    }
-
-    public static List<JobPrice> getList() {
-        List<JobPrice> list = new ArrayList<JobPrice>(listJobPrice.values());
-        
-        list.sort(new Comparator<JobPrice>() {
-
-            @Override
-            public int compare(JobPrice o1, JobPrice o2) {
-                return o1.getPriceTable().getName().compareToIgnoreCase(o2.getPriceTable().getName());
-            }
-        });
-        
+    public static ObservableList<JobPrice> getList() {
         return list;
     }
 
     public static JobPrice get(int id) {
-        return listJobPrice.get(id);
+        return map.get(id);
     }
 }

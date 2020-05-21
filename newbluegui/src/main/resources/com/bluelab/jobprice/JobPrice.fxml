@@ -76,7 +76,7 @@
                           <content>
                             <AnchorPane minHeight="0.0" minWidth="0.0">
                                  <children>
-                                    <TableView fx:id="viewTable" layoutY="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <TableView fx:id="viewPriceTable" layoutY="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                       <columns>
                                         <TableColumn fx:id="colTableId" minWidth="50.0" prefWidth="50.0" text="ID" />
                                         <TableColumn fx:id="colTableName" prefWidth="180.0" text="Tabela" />
@@ -97,7 +97,7 @@
                           <content>
                             <AnchorPane minHeight="0.0" minWidth="0.0" styleClass="table-panel">
                                  <children>
-                                    <TableView fx:id="viewJob" layoutY="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <TableView fx:id="viewJobType" layoutY="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                       <columns>
                                         <TableColumn fx:id="colJobId" prefWidth="50.0" text="ID" />
                                         <TableColumn fx:id="colJobName" prefWidth="180.0" text="Trabalho" />
@@ -118,7 +118,7 @@
                           <content>
                             <AnchorPane minHeight="0.0" minWidth="0.0" styleClass="table-panel">
                                  <children>
-                                    <TableView fx:id="viewPrice" layoutY="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <TableView fx:id="viewJobPrice" layoutY="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                       <columns>
                                         <TableColumn fx:id="colTable" prefWidth="180.0" text="Tabela" />
                                         <TableColumn fx:id="colJob" prefWidth="180.0" text="Trabalho" />

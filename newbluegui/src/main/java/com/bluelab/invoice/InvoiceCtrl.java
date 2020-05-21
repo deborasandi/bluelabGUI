@@ -127,8 +127,9 @@ public class InvoiceCtrl {
         viewJob.setEditable(true);
 
         listClient = DBClient.getList();
-
-        updateCboxClient();
+        listJobType = DBJobType.getList();
+        listProductColor = DBProductColor.getList();
+        listJob = DBJob.getList();
 
         listClient.addListener(new ListChangeListener<Client>() {
 
@@ -139,18 +140,38 @@ public class InvoiceCtrl {
 
         });
 
-        listJobType = FXCollections.observableArrayList(DBJobType.getList());
-        listJobType.add(0, new JobType("Todos"));
-        jobType.getItems().addAll(listJobType);
-        jobType.getSelectionModel().select(0);
+        listJobType.addListener(new ListChangeListener<JobType>() {
 
-        listProductColor = FXCollections.observableArrayList(DBProductColor.getList());
-        listProductColor.add(0, new ProductColor("Todos"));
-        productColor.getItems().addAll(listProductColor);
-        productColor.getSelectionModel().select(0);
+            @Override
+            public void onChanged(Change<? extends JobType> c) {
+                updateCboxJobType();
+            }
 
-        listJob = FXCollections.observableArrayList(DBJob.getList());
-        viewJob.getItems().addAll(listJob);
+        });
+
+        listProductColor.addListener(new ListChangeListener<ProductColor>() {
+
+            @Override
+            public void onChanged(Change<? extends ProductColor> c) {
+                updateCboxProductColor();
+            }
+
+        });
+        
+        listJob.addListener(new ListChangeListener<Job>() {
+
+            @Override
+            public void onChanged(Change<? extends Job> c) {
+                filter();
+            }
+
+        });
+
+        updateCboxClient();
+        updateCboxJobType();
+        updateCboxProductColor();
+        
+        viewJob.setItems(listJob);
 
         List<String> listAux = new ArrayList<String>();
         listAux.add("Todos");
@@ -163,8 +184,6 @@ public class InvoiceCtrl {
         isNoCost.getSelectionModel().select(0);
         isPaid.getItems().addAll(listAux);
         isPaid.getSelectionModel().select(0);
-
-        // contentFilter.getChildren().remove(imgFilter);
 
         createColumns();
     }
@@ -208,7 +227,7 @@ public class InvoiceCtrl {
 
     @FXML
     void filter() {
-        ListFilter<Job> filter = new ListFilter<Job>(DBJob.getList());
+        ListFilter<Job> filter = new ListFilter<Job>(listJob);
 
         Client c = client.getValue();
         filter.filterClient(c);
@@ -234,9 +253,7 @@ public class InvoiceCtrl {
         d = endDate.getValue();
         filter.filterEndDate(d);
 
-        listJob = FXCollections.observableArrayList(filter);
-        viewJob.getItems().clear();
-        viewJob.getItems().addAll(listJob);
+        viewJob.setItems(FXCollections.observableArrayList(filter));
 
         if (filter.getNumFilter() > 0) {
             lblNumFiltros.setText("(" + String.valueOf(filter.getNumFilter()) + ")");
@@ -263,22 +280,21 @@ public class InvoiceCtrl {
         endDate.getEditor().clear();
     }
 
-    public void refreshJobTypes() {
-        listJobType = FXCollections.observableArrayList(DBJobType.getList());
-        jobType.getItems().clear();
-        jobType.getItems().addAll(listJobType);
-        jobType.getSelectionModel().clearSelection();
-    }
-
-    public void refreshJobs() {
-        listJob = FXCollections.observableArrayList(DBJob.getList());
-        viewJob.getItems().clear();
-        viewJob.getItems().addAll(listJob);
-    }
-
     private void updateCboxClient() {
         client.setItems(FXCollections.observableArrayList(listClient));
         client.getItems().add(0, new Client("Todos"));
         client.getSelectionModel().select(0);
+    }
+
+    private void updateCboxJobType() {
+        jobType.setItems(FXCollections.observableArrayList(listJobType));
+        jobType.getItems().add(0, new JobType("Todos"));
+        jobType.getSelectionModel().select(0);
+    }
+
+    private void updateCboxProductColor() {
+        productColor.setItems(FXCollections.observableArrayList(listProductColor));
+        productColor.getItems().add(0, new ProductColor("Todos"));
+        productColor.getSelectionModel().select(0);
     }
 }

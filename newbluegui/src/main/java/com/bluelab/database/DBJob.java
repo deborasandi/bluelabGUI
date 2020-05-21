@@ -9,17 +9,51 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import com.bluelab.job.Job;
+
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 
 public class DBJob extends DBConnection {
 
-    private static Map<Integer, Job> listJob;
+    private static ObservableList<Job> list;
+    private static Map<Integer, Job> map;
 
-    public static boolean insert(Job j) {
+    private static Consumer<Job> callback = client -> {
+    };
+
+    private static void setCallback(Consumer<Job> c) {
+        callback = c;
+    }
+
+    private static void updateData() {
+        map = getMap();
+
+        list.clear();
+        list.addAll(map.values());
+        list.sort(new Comparator<Job>() {
+
+            @Override
+            public int compare(Job o1, Job o2) {
+                return o1.getClient().getClientName().compareToIgnoreCase(o2.getClient().getClientName());
+            }
+        });
+    }
+
+    public static void init() {
+        list = FXCollections.observableArrayList(new ArrayList<Job>());
+
+        updateData();
+
+        setCallback(c -> Platform.runLater(() -> updateData()));
+    }
+
+    public static void insert(Job j) {
         String query = "INSERT INTO job (client_id, job_price_id, color_id, qtd, shipping, date, repetition, nocost, paid, total) VALUES"
                 + "(?, ?, ?, ?, ?, ?, ?, ?);";
 
@@ -37,10 +71,10 @@ public class DBJob extends DBConnection {
             stmt.setBoolean(9, j.isPaid());
             stmt.setDouble(10, j.getTotal());
 
-            boolean result = stmt.execute();
+            stmt.execute();
             stmt.close();
 
-            return result;
+            callback.accept(new Job());
         }
         catch (SQLException u) {
             throw new RuntimeException(u);
@@ -82,8 +116,8 @@ public class DBJob extends DBConnection {
 
         return list;
     }
-    
-    public static boolean update(Job j) {
+
+    public static void update(Job j) {
         String query = "UPDATE job SET client_id = ?, job_price_id = ?, color_id = ?, qtd = ?, shipping = ?, date = ?, repetition = ?, nocost = ?, paid = ?, total = ? WHERE id = ?";
 
         try {
@@ -100,17 +134,17 @@ public class DBJob extends DBConnection {
             stmt.setBoolean(9, j.isPaid());
             stmt.setDouble(10, j.getTotal());
 
-            boolean r = stmt.execute();
+            stmt.execute();
             stmt.close();
 
-            return r;
+            callback.accept(new Job());
         }
         catch (SQLException u) {
             throw new RuntimeException(u);
         }
     }
 
-    public static boolean update(int id, boolean paid) {
+    public static void update(int id, boolean paid) {
         String query = "UPDATE job SET paid = ? WHERE id = ?";
 
         try {
@@ -119,10 +153,10 @@ public class DBJob extends DBConnection {
             stmt.setBoolean(1, paid);
             stmt.setInt(2, id);
 
-            boolean r = stmt.execute();
+            stmt.execute();
             stmt.close();
 
-            return r;
+            callback.accept(new Job());
         }
         catch (SQLException u) {
             throw new RuntimeException(u);
@@ -139,27 +173,15 @@ public class DBJob extends DBConnection {
 
             stmt.execute();
             stmt.close();
+
+            callback.accept(new Job());
         }
         catch (SQLException u) {
             throw new RuntimeException(u);
         }
     }
 
-    public static void updateList() {
-        listJob = getMap();
-    }
-
-    public static List<Job> getList() {
-        List<Job> list = new ArrayList<Job>(listJob.values());
-
-        list.sort(new Comparator<Job>() {
-
-            @Override
-            public int compare(Job o1, Job o2) {
-                return o1.getClient().getClientName().compareToIgnoreCase(o2.getClient().getClientName());
-            }
-        });
-
+    public static ObservableList<Job> getList() {
         return list;
     }
 }

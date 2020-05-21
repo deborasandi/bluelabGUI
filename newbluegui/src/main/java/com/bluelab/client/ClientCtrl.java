@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.bluelab.data.BlueData;
 import com.bluelab.database.DBClient;
+import com.bluelab.database.DBPriceTable;
 import com.bluelab.pricetable.PriceTable;
 import com.bluelab.util.AlertDialog;
 import com.bluelab.util.FxmlInterface;
@@ -78,11 +78,11 @@ public class ClientCtrl implements FxmlInterface {
     private TableColumn<Client, PriceTable> colTable;
 
     private Client currentClient;
-    
+
     public void initialize() {
         viewClient.setItems(DBClient.getList());
 
-        priceTable.getItems().addAll(BlueData.getListPriceTable());
+        priceTable.setItems(DBPriceTable.getList());
         priceTable.getSelectionModel().select(0);
 
         String siglasEstados[] = { "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA",
@@ -167,18 +167,12 @@ public class ClientCtrl implements FxmlInterface {
     }
 
     private void findTable(PriceTable p) {
-        for (PriceTable p1 : BlueData.getListPriceTable()) {
+        for (PriceTable p1 : DBPriceTable.getList()) {
             if (p1.getId() == p.getId()) {
                 priceTable.getSelectionModel().select(p1);
                 break;
             }
         }
-    }
-
-    public void refreshPriceTables() {
-        priceTable.getItems().clear();
-        priceTable.getItems().addAll(BlueData.getListPriceTable());
-        priceTable.getSelectionModel().select(0);
     }
 
     @FXML

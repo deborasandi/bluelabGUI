@@ -7,8 +7,6 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.bluelab.data.BlueData;
-
 
 public class DBConnection {
 
@@ -17,7 +15,7 @@ public class DBConnection {
     private static String password = "bluelabadmin";
 
     protected static Connection connection;
-    
+
     public static void init() {
         try {
             connection = DriverManager.getConnection(url, user, password);
@@ -27,14 +25,12 @@ public class DBConnection {
             Logger lgr = Logger.getLogger(DBConnection.class.getName());
             lgr.log(Level.SEVERE, ex.getMessage(), ex);
         }
-        
-        DBPriceTable.updateList();
-        DBJobType.updateList();
-        DBProductColor.updateList();
-        DBJobPrice.updateList();
+
+        DBPriceTable.init();
+        DBJobType.init();
+        DBProductColor.init();
+        DBJobPrice.init();
         DBClient.init();
-        DBJob.updateList();
-        
-        BlueData.init();
+        DBJob.init();
     }
 }
