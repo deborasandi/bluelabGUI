@@ -28,7 +28,7 @@
          <children>
             <HBox styleClass="button-panel" VBox.vgrow="NEVER">
                <children>
-                  <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#newJob">
+                  <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#create">
                      <graphic>
                         <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -37,7 +37,7 @@
                         </ImageView>
                      </graphic>
                   </JFXButton>
-                  <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#editJob">
+                  <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#edit">
                      <graphic>
                         <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -46,7 +46,7 @@
                         </ImageView>
                      </graphic>
                   </JFXButton>
-                  <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#saveJob">
+                  <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#save">
                      <graphic>
                         <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -55,7 +55,7 @@
                         </ImageView>
                      </graphic>
                   </JFXButton>
-                  <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#deleteJob">
+                  <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" onAction="#delete">
                      <graphic>
                         <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -108,7 +108,7 @@
                         <Label text="Frete:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                         <Label text="Data:" GridPane.rowIndex="4" />
                         <JFXComboBox fx:id="client" maxWidth="1.7976931348623157E308" onAction="#loadJobPrice" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />
-                        <JFXComboBox fx:id="jobPrice" maxWidth="1.7976931348623157E308" onAction="#calcTotal" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <JFXComboBox fx:id="jobPrice" maxWidth="1.7976931348623157E308" onAction="#verifyPrice" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <JFXDatePicker fx:id="date" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                         <HBox spacing="15.0" GridPane.columnIndex="3" GridPane.rowIndex="4">
                            <children>

@@ -12,6 +12,7 @@ import com.bluelab.pricetable.PriceTable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextInputDialog;
 
 
 public class AlertDialog {
@@ -131,6 +132,30 @@ public class AlertDialog {
     public static void successAlert(JobType p) {
         String content = "Tipo de Trabalho inserido com sucesso!\nPreços inseridos com sucesso!";
         successAlert(p.getClassName(), content);
+    }
+    
+    public static double insertPriceAlert(JobPrice j) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Preço");
+        dialog.setHeaderText(j.getJobType().getName() + " na Tabela " +  j.getPriceTable().getName() + " não possui preço cadastrado.");
+        dialog.setContentText("Novo valor:");
+
+        Optional<String> result = dialog.showAndWait();
+        
+        if(result.isPresent()) {
+            try {
+                return Double.parseDouble(result.get());
+            }
+            catch (NumberFormatException e) {
+                Alert alert = new Alert(AlertType.INFORMATION);
+                alert.setTitle("Novo Preço");
+                alert.setHeaderText("Valor Inválido");
+
+                alert.showAndWait();
+            }
+        }
+        
+        return 0;
     }
 
 

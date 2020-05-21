@@ -85,6 +85,8 @@ public class JobCtrl implements FxmlInterface {
     private ObservableList<Job> listJob;
 
     private Job currentJob;
+    
+    boolean consumeList = false;
 
     public void initialize() {
         listClient = FXCollections.observableArrayList(DBClient.getList());
@@ -164,7 +166,7 @@ public class JobCtrl implements FxmlInterface {
 
     private void loadJob(Job j) {
         findClient(j.getClient());
-        findJobPrice(j.getJobPrice());
+        findJobPrice(j.getJobPrice() != null ? j.getJobPrice().getId() : 0);
         findProductColor(j.getProductColor());
         jobQtd.getValueFactory().setValue(j.getQtd());
         shipping.getValueFactory().setValue(j.getShipping());
@@ -185,14 +187,18 @@ public class JobCtrl implements FxmlInterface {
         }
     }
 
-    private void findJobPrice(JobPrice j) {
-        if (j == null)
+    private void findJobPrice(int id) {
+        if(id == 0)
             return;
-
-        for (JobPrice j1 : listJobPrice) {
-            if (j1.getId() == j.getId())
-                jobPrice.getSelectionModel().select(j1);
+        
+        int i;
+        for (i = 0; i < jobPrice.getItems().size(); i++) {
+            if (jobPrice.getItems().get(i).getId() == id)
+                break;
         }
+        
+        if(i < jobPrice.getItems().size())
+            jobPrice.getSelectionModel().select(i);
     }
 
     private void findProductColor(ProductColor p) {
@@ -213,10 +219,10 @@ public class JobCtrl implements FxmlInterface {
     }
 
     public void refreshJobPrice() {
+        consumeList = true;
         listJobPrice = FXCollections.observableArrayList(DBJobPrice.getList());
-        jobPrice.getItems().clear();
-        jobPrice.getItems().addAll(listJobPrice);
-        jobPrice.getSelectionModel().clearSelection();
+//        loadJobPrice();
+//        calcTotal();
     }
 
     public void refreshProductColor() {
@@ -233,11 +239,42 @@ public class JobCtrl implements FxmlInterface {
         if (c == null)
             return;
 
+        int id = 0;
+        if (jobPrice.getValue() != null) {
+            id = jobPrice.getValue().getId();
+            consumeList = true;
+        }
+
         jobPrice.getItems().clear();
         for (JobPrice jp : listJobPrice) {
             if (jp.getPriceTable().getId() == c.getPriceTable().getId())
                 jobPrice.getItems().add(jp);
         }
+
+        findJobPrice(id);
+    }
+
+    @FXML
+    void verifyPrice() {
+        if(consumeList) {
+            consumeList = false;
+            return;
+        }
+        
+        JobPrice j = jobPrice.getValue();
+
+        if (j == null)
+            return;
+
+        if (j.getPrice() == 0) {
+            double newValue = AlertDialog.insertPriceAlert(j);
+            if (newValue != 0) {
+                j.setPrice(newValue);
+                DBJobPrice.updatePrice(j);
+                Main.refreshJobPrices();
+            }
+        }
+        calcTotal();
     }
 
     @FXML

@@ -12,7 +12,11 @@ import com.bluelab.main.Main;
 import com.bluelab.pricetable.PriceTable;
 import com.bluelab.util.AlertDialog;
 import com.bluelab.util.FxmlInterface;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXTabPane;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -32,6 +36,12 @@ import javafx.util.converter.DoubleStringConverter;
 public class JobPriceCtrl implements FxmlInterface {
 
     @FXML
+    private JFXButton btnCreate;
+
+    @FXML
+    private JFXButton btnSave;
+
+    @FXML
     private Label labelNotif;
 
     @FXML
@@ -45,6 +55,9 @@ public class JobPriceCtrl implements FxmlInterface {
 
     @FXML
     private Tab tabPrice;
+
+    @FXML
+    private JFXTabPane tabpane;
 
     @FXML
     private TableView<PriceTable> viewTable;
@@ -105,6 +118,22 @@ public class JobPriceCtrl implements FxmlInterface {
         jobPriceColumns();
 
         paneInfo.getChildren().remove(labelNotif);
+
+        tabpane.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) {
+                if (newTab.equals(tabTable) || newTab.equals(tabJob)) {
+                    btnCreate.setDisable(false);
+                    btnSave.setDisable(true);
+                }
+                else {
+                    btnCreate.setDisable(true);
+                    btnSave.setDisable(false);
+                }
+            }
+        });
+
     }
 
     private void jobPriceColumns() {
@@ -173,10 +202,9 @@ public class JobPriceCtrl implements FxmlInterface {
                     p.setName(event.getNewValue());
 
                     DBPriceTable.insert(p);
-                    
+
                     Main.refreshPriceTables();
-                    refreshViewPrice();
-                    
+
                     p = DBPriceTable.get(p.getName());
 
                     List<JobPrice> list = new ArrayList<JobPrice>();
@@ -187,9 +215,8 @@ public class JobPriceCtrl implements FxmlInterface {
 
                     DBJobPrice.insert(list);
                     AlertDialog.successAlert(p);
-                    
+
                     Main.refreshJobPrices();
-                    refreshViewPrice();
                 }
                 else {
                     String old = new String(p.getName());
@@ -199,7 +226,6 @@ public class JobPriceCtrl implements FxmlInterface {
                         DBPriceTable.update(p);
                         Main.refreshPriceTables();
                         Main.refreshJobPrices();
-                        refreshViewPrice();
                     }
                     else {
                         p.setName(old);
@@ -230,7 +256,7 @@ public class JobPriceCtrl implements FxmlInterface {
                     DBJobType.insert(j);
                     refreshViewJob();
                     Main.refreshJobTypes();
-                    
+
                     j = DBJobType.get(j.getName());
 
                     List<JobPrice> list = new ArrayList<JobPrice>();
@@ -241,9 +267,8 @@ public class JobPriceCtrl implements FxmlInterface {
 
                     DBJobPrice.insert(list);
                     AlertDialog.successAlert(j);
-                    
+
                     Main.refreshJobPrices();
-                    refreshViewPrice();
                 }
                 else {
                     String old = new String(j.getName());
@@ -253,7 +278,6 @@ public class JobPriceCtrl implements FxmlInterface {
                         DBJobType.update(j);
                         Main.refreshJobTypes();
                         Main.refreshJobPrices();
-                        refreshViewPrice();
                     }
                     else {
                         j.setName(old);
@@ -278,12 +302,6 @@ public class JobPriceCtrl implements FxmlInterface {
         viewJob.getItems().addAll(listJobType);
 
         colJob.setCellFactory(ComboBoxTableCell.forTableColumn(listJobType));
-    }
-
-    private void refreshViewPrice() {
-        listPrice = FXCollections.observableArrayList(DBJobPrice.getList());
-        viewPrice.getItems().clear();
-        viewPrice.getItems().addAll(listPrice);
     }
 
     @FXML
@@ -314,8 +332,12 @@ public class JobPriceCtrl implements FxmlInterface {
         if (tabPrice.isSelected()) {
             for (JobPrice jp : newPrices) {
                 DBJobPrice.update(jp);
+            }
+
+            if (!newPrices.isEmpty()) {
                 Main.refreshPriceTables();
-                refreshViewPrice();
+                Main.refreshJobPrices();
+                newPrices.clear();
             }
 
             if (paneInfo.getChildren().contains(labelNotif))
@@ -323,7 +345,6 @@ public class JobPriceCtrl implements FxmlInterface {
 
             AlertDialog.successAlert(new JobPrice());
 
-            newPrices.clear();
         }
     }
 
@@ -337,7 +358,6 @@ public class JobPriceCtrl implements FxmlInterface {
                 Main.refreshPriceTables();
                 Main.refreshJobPrices();
                 refreshViewTable();
-                refreshViewPrice();
             }
         }
         else if (tabJob.isSelected()) {
@@ -347,7 +367,6 @@ public class JobPriceCtrl implements FxmlInterface {
                 Main.refreshJobTypes();
                 Main.refreshJobPrices();
                 refreshViewJob();
-                refreshViewPrice();
             }
         }
         else {
@@ -357,7 +376,6 @@ public class JobPriceCtrl implements FxmlInterface {
                 // DBJobPrice.delete(jp.getId());
                 Main.refreshPriceTables();
                 Main.refreshJobPrices();
-                refreshViewPrice();
             }
         }
     }
@@ -365,6 +383,12 @@ public class JobPriceCtrl implements FxmlInterface {
     @Override
     public void disableFields(boolean b) {
         // TODO Auto-generated method stub
-        
+
+    }
+
+    public void refreshJobPrice() {
+        listPrice = FXCollections.observableArrayList(DBJobPrice.getList());
+        viewPrice.getItems().clear();
+        viewPrice.getItems().addAll(listPrice);
     }
 }

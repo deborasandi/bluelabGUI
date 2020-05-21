@@ -44,7 +44,7 @@ public class MainPanelCtrl {
 
     private AnchorPane clientPanel;
 
-    private AnchorPane tablePanel;
+    private AnchorPane jobPricePanel;
 
     private AnchorPane jobPanel;
 
@@ -55,6 +55,8 @@ public class MainPanelCtrl {
     private InvoiceCtrl invoiceCtrl;
 
     private JobCtrl jobCtrl;
+    
+    private JobPriceCtrl jobPriceCtrl;
 
     public void initialize() {
         try {
@@ -69,11 +71,13 @@ public class MainPanelCtrl {
             loader = new FXMLLoader(JobCtrl.class.getResource("Job.fxml"));
             jobPanel = loader.load();
             jobCtrl = loader.getController();
-
-            tablePanel = FXMLLoader.load(JobPriceCtrl.class.getResource("JobPrice.fxml"));
+            
+            loader = new FXMLLoader(JobPriceCtrl.class.getResource("JobPrice.fxml"));
+            jobPricePanel = loader.load();
+            jobPriceCtrl = loader.getController();
 
             HBox.setHgrow(clientPanel, Priority.ALWAYS);
-            HBox.setHgrow(tablePanel, Priority.ALWAYS);
+            HBox.setHgrow(jobPricePanel, Priority.ALWAYS);
             HBox.setHgrow(jobPanel, Priority.ALWAYS);
             HBox.setHgrow(invoicePanel, Priority.ALWAYS);
         }
@@ -111,7 +115,7 @@ public class MainPanelCtrl {
         if (mainPanel.getChildren().size() > 1)
             mainPanel.getChildren().remove(1);
 
-        mainPanel.getChildren().add(tablePanel);
+        mainPanel.getChildren().add(jobPricePanel);
 
         if (!btnTables.isSelected())
             btnTables.setSelected(true);
@@ -147,6 +151,7 @@ public class MainPanelCtrl {
     public void refreshJobPrices() {
         DBJobPrice.updateList();
         jobCtrl.refreshJobPrice();
+        jobPriceCtrl.refreshJobPrice();
     }
 
     public void refreshJobs() {

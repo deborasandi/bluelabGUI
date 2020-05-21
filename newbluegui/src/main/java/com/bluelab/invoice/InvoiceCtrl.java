@@ -154,7 +154,7 @@ public class InvoiceCtrl {
         isPaid.getItems().addAll(listAux);
         isPaid.getSelectionModel().select(0);
         
-        contentFilter.getChildren().remove(imgFilter);
+//        contentFilter.getChildren().remove(imgFilter);
 
         createColumns();
     }
@@ -198,8 +198,7 @@ public class InvoiceCtrl {
 
     @FXML
     void filter() {
-        listJob = FXCollections.observableArrayList(DBJob.getList());
-        ListFilter<Job> filter = new ListFilter<Job>(listJob);
+        ListFilter<Job> filter = new ListFilter<Job>(DBJob.getList());
 
         Client c = client.getValue();
         filter.filterClient(c);
@@ -231,10 +230,6 @@ public class InvoiceCtrl {
 
         if (filter.getNumFilter() > 0) {
             lblNumFiltros.setText("(" + String.valueOf(filter.getNumFilter()) + ")");
-            
-            if(!contentFilter.getChildren().contains(imgFilter)) {
-                contentFilter.getChildren().add(imgFilter);
-            }
         }
         else {
             removeFilter();
@@ -243,7 +238,6 @@ public class InvoiceCtrl {
 
     @FXML
     void removeFilter() {
-        contentFilter.getChildren().remove(imgFilter);
         lblNumFiltros.setText("(0)");
         
         listJob = FXCollections.observableArrayList(DBJob.getList());

@@ -181,7 +181,7 @@
                         </Tab>
                      </tabs>
                   </JFXTabPane>
-                  <HBox fx:id="contentFilter" alignment="CENTER_RIGHT" maxHeight="30.0" maxWidth="400.0">
+                  <HBox fx:id="contentFilter" alignment="CENTER_RIGHT" maxHeight="30.0" maxWidth="100.0">
                      <StackPane.margin>
                         <Insets right="5.0" />
                      </StackPane.margin>
