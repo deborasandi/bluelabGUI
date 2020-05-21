@@ -1,6 +1,7 @@
 package com.bluelab.main;
 
 
+import com.bluelab.data.BlueData;
 import com.bluelab.database.DBConnection;
 
 import javafx.application.Application;
@@ -17,7 +18,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            DBConnection db = new DBConnection();
+            DBConnection.init();
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("MainPanel.fxml"));
             Parent root = loader.load();
@@ -36,10 +37,6 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
-    }
-
-    public static void refreshClients() {
-        mainCtrl.refreshClients();
     }
 
     public static void refreshPriceTables() {

@@ -20,6 +20,7 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -38,7 +39,7 @@ public class InvoiceCtrl {
 
     @FXML
     private ImageView imgFilter;
-    
+
     @FXML
     private HBox contentFilter;
 
@@ -124,10 +125,19 @@ public class InvoiceCtrl {
 
     public void initialize() {
         viewJob.setEditable(true);
-        listClient = FXCollections.observableArrayList(DBClient.getList());
-        listClient.add(0, new Client("Todos"));
-        client.getItems().addAll(listClient);
-        client.getSelectionModel().select(0);
+
+        listClient = DBClient.getList();
+
+        updateCboxClient();
+
+        listClient.addListener(new ListChangeListener<Client>() {
+
+            @Override
+            public void onChanged(Change<? extends Client> c) {
+                updateCboxClient();
+            }
+
+        });
 
         listJobType = FXCollections.observableArrayList(DBJobType.getList());
         listJobType.add(0, new JobType("Todos"));
@@ -153,8 +163,8 @@ public class InvoiceCtrl {
         isNoCost.getSelectionModel().select(0);
         isPaid.getItems().addAll(listAux);
         isPaid.getSelectionModel().select(0);
-        
-//        contentFilter.getChildren().remove(imgFilter);
+
+        // contentFilter.getChildren().remove(imgFilter);
 
         createColumns();
     }
@@ -239,10 +249,10 @@ public class InvoiceCtrl {
     @FXML
     void removeFilter() {
         lblNumFiltros.setText("(0)");
-        
+
         listJob = FXCollections.observableArrayList(DBJob.getList());
         viewJob.getItems().addAll(listJob);
-        
+
         client.getSelectionModel().select(0);
         jobType.getSelectionModel().select(0);
         productColor.getSelectionModel().select(0);
@@ -251,14 +261,6 @@ public class InvoiceCtrl {
         isPaid.getSelectionModel().select(0);
         initDate.getEditor().clear();
         endDate.getEditor().clear();
-    }
-
-    public void refreshClients() {
-        listClient = FXCollections.observableArrayList(DBClient.getList());
-        listClient.add(0, new Client("Todos"));
-        client.getItems().clear();
-        client.getItems().addAll(listClient);
-        client.getSelectionModel().select(0);
     }
 
     public void refreshJobTypes() {
@@ -272,5 +274,11 @@ public class InvoiceCtrl {
         listJob = FXCollections.observableArrayList(DBJob.getList());
         viewJob.getItems().clear();
         viewJob.getItems().addAll(listJob);
+    }
+
+    private void updateCboxClient() {
+        client.setItems(FXCollections.observableArrayList(listClient));
+        client.getItems().add(0, new Client("Todos"));
+        client.getSelectionModel().select(0);
     }
 }

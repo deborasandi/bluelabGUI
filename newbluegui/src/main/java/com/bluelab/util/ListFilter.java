@@ -31,7 +31,7 @@ public class ListFilter<Job> extends ArrayList<Job> {
     }
 
     public void filterClient(Client f) {
-        if (f.getId() == 0) {
+        if (f == null || f.getId() == 0) {
             if (filterClient) {
                 filterClient = false;
                 numFilter--;

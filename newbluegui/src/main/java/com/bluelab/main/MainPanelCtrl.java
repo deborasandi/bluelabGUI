@@ -132,12 +132,6 @@ public class MainPanelCtrl {
             btnInvoice.setSelected(true);
     }
 
-    public void refreshClients() {
-        DBClient.updateList();
-        invoiceCtrl.refreshClients();
-        jobCtrl.refreshClients();
-    }
-
     public void refreshPriceTables() {
         DBPriceTable.updateList();
         clientCtrl.refreshPriceTables();

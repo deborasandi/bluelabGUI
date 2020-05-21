@@ -256,10 +256,10 @@ public class JobCtrl implements FxmlInterface {
 
     @FXML
     void verifyPrice() {
-        if(consumeList) {
-            consumeList = false;
-            return;
-        }
+//        if(consumeList) {
+//            consumeList = false;
+//            return;
+//        }
         
         JobPrice j = jobPrice.getValue();
 

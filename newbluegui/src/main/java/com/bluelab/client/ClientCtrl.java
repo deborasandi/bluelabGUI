@@ -1,23 +1,18 @@
 package com.bluelab.client;
 
 
-
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.bluelab.data.BlueData;
 import com.bluelab.database.DBClient;
-import com.bluelab.database.DBPriceTable;
-import com.bluelab.main.Main;
 import com.bluelab.pricetable.PriceTable;
 import com.bluelab.util.AlertDialog;
 import com.bluelab.util.FxmlInterface;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -26,7 +21,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 
-public class ClientCtrl implements FxmlInterface{
+public class ClientCtrl implements FxmlInterface {
 
     @FXML
     private JFXTextField name;
@@ -82,18 +77,12 @@ public class ClientCtrl implements FxmlInterface{
     @FXML
     private TableColumn<Client, PriceTable> colTable;
 
-    private ObservableList<Client> listClient;
-
-    private ObservableList<PriceTable> listTables;
-
     private Client currentClient;
-
+    
     public void initialize() {
-        listClient = FXCollections.observableArrayList(DBClient.getList());
-        viewClient.getItems().addAll(listClient);
+        viewClient.setItems(DBClient.getList());
 
-        listTables = FXCollections.observableArrayList(DBPriceTable.getList());
-        priceTable.getItems().addAll(listTables);
+        priceTable.getItems().addAll(BlueData.getListPriceTable());
         priceTable.getSelectionModel().select(0);
 
         String siglasEstados[] = { "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA",
@@ -177,23 +166,18 @@ public class ClientCtrl implements FxmlInterface{
         priceTable.getSelectionModel().select(0);
     }
 
-    private void refreshView() {
-        listClient = FXCollections.observableArrayList(DBClient.getList());
-        viewClient.getItems().clear();
-        viewClient.getItems().addAll(listClient);
-    }
-
     private void findTable(PriceTable p) {
-        for (PriceTable p1 : listTables) {
-            if (p1.getId() == p.getId())
+        for (PriceTable p1 : BlueData.getListPriceTable()) {
+            if (p1.getId() == p.getId()) {
                 priceTable.getSelectionModel().select(p1);
+                break;
+            }
         }
     }
 
     public void refreshPriceTables() {
-        listTables = FXCollections.observableArrayList(DBPriceTable.getList());
         priceTable.getItems().clear();
-        priceTable.getItems().addAll(listTables);
+        priceTable.getItems().addAll(BlueData.getListPriceTable());
         priceTable.getSelectionModel().select(0);
     }
 
@@ -245,8 +229,7 @@ public class ClientCtrl implements FxmlInterface{
         }
 
         clearFields();
-        Main.refreshClients();
-        refreshView();
+        viewClient.refresh();
         disableFields(false);
     }
 
@@ -257,11 +240,10 @@ public class ClientCtrl implements FxmlInterface{
             if (AlertDialog.deleteAlert(currentClient)) {
                 DBClient.delete(currentClient.getId());
                 clearFields();
-                Main.refreshClients();
-                refreshView();
+                viewClient.refresh();
             }
         }
-        
+
         disableFields(false);
     }
 }

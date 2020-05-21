@@ -8,15 +8,49 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import com.bluelab.client.Client;
+
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 
 public class DBClient extends DBConnection {
 
-    private static Map<Integer, Client> listClient;
+    private static ObservableList<Client> list;
+    private static Map<Integer, Client> map;
+
+    private static Consumer<Client> callback = client -> {
+    };
+
+    public static void setCallback(Consumer<Client> c) {
+        callback = c;
+    }
+
+    protected static void updateData() {
+        map = getMap();
+
+        list.clear();
+        list.addAll(map.values());
+        list.sort(new Comparator<Client>() {
+
+            @Override
+            public int compare(Client o1, Client o2) {
+                return o1.getClientName().compareToIgnoreCase(o2.getClientName());
+            }
+        });
+    }
+
+    public static void init() {
+        list = FXCollections.observableArrayList(new ArrayList<Client>()); 
+        
+        updateData();
+
+        setCallback(client -> Platform.runLater(() -> updateData()));
+    }
 
     public static boolean insert(Client c) {
         String query = "INSERT INTO client (name, cpf, tel, cel, resp_name, resp_cpf, resp_tel, resp_cel, address, number, compl, "
@@ -43,6 +77,8 @@ public class DBClient extends DBConnection {
 
             boolean result = stmt.execute();
             stmt.close();
+
+            callback.accept(new Client());
 
             return result;
         }
@@ -119,6 +155,9 @@ public class DBClient extends DBConnection {
             boolean r = stmt.execute();
             stmt.close();
 
+            updateData();
+            callback.accept(new Client());
+
             return r;
         }
         catch (SQLException u) {
@@ -136,30 +175,20 @@ public class DBClient extends DBConnection {
 
             stmt.execute();
             stmt.close();
+
+            updateData();
+            callback.accept(new Client());
         }
         catch (SQLException u) {
             throw new RuntimeException(u);
         }
     }
 
-    public static void updateList() {
-        listClient = getMap();
-    }
-
-    public static List<Client> getList() {
-        List<Client> list = new ArrayList<Client>(listClient.values());
-        list.sort(new Comparator<Client>() {
-
-            @Override
-            public int compare(Client o1, Client o2) {
-                return o1.getClientName().compareToIgnoreCase(o2.getClientName());
-            }
-        });
-
+    public static ObservableList<Client> getList() {
         return list;
     }
 
     public static Client get(int id) {
-        return listClient.get(id);
+        return map.get(id);
     }
 }
