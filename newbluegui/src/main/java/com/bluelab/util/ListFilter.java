@@ -100,8 +100,8 @@ public class ListFilter<Job> extends ArrayList<Job> {
         numFilter++;
     }
 
-    public void filterIsRepetition(int f) {
-        if (f == 0) {
+    public void filterIsRepetition(boolean f, boolean g) {
+        if (!f && !g) {
             if (filterIsRepetition) {
                 filterIsRepetition = false;
                 numFilter--;
@@ -111,10 +111,8 @@ public class ListFilter<Job> extends ArrayList<Job> {
 
         List<Job> aux = new ArrayList<Job>();
 
-        boolean r = f == 1 ? true : false;
-
         for (Job j : this) {
-            if (((com.bluelab.job.Job) j).isRepetition() == r)
+            if (((com.bluelab.job.Job) j).isRepetition() == f)
                 aux.add(j);
         }
 
@@ -125,8 +123,8 @@ public class ListFilter<Job> extends ArrayList<Job> {
         numFilter++;
     }
 
-    public void filterIsNoCost(int f) {
-        if (f == 0) {
+    public void filterIsNoCost(boolean f, boolean g) {
+        if (!f && !g) {
             if (filterIsNoCost) {
                 filterIsNoCost = false;
                 numFilter--;
@@ -136,10 +134,8 @@ public class ListFilter<Job> extends ArrayList<Job> {
 
         List<Job> aux = new ArrayList<Job>();
 
-        boolean r = f == 1 ? true : false;
-
         for (Job j : this) {
-            if (((com.bluelab.job.Job) j).isNocost() == r)
+            if (((com.bluelab.job.Job) j).isNocost() == g)
                 aux.add(j);
         }
 
@@ -150,8 +146,8 @@ public class ListFilter<Job> extends ArrayList<Job> {
         numFilter++;
     }
 
-    public void filterIsPaid(int f) {
-        if (f == 0) {
+    public void filterIsPaid(boolean f, boolean g) {
+        if (!f && !g) {
             if (filterIsPaid) {
                 filterIsPaid = false;
                 numFilter--;
@@ -161,10 +157,8 @@ public class ListFilter<Job> extends ArrayList<Job> {
 
         List<Job> aux = new ArrayList<Job>();
 
-        boolean r = f == 1 ? true : false;
-
         for (Job j : this) {
-            if (((com.bluelab.job.Job) j).isPaid() == r)
+            if (((com.bluelab.job.Job) j).isPaid() == f)
                 aux.add(j);
         }
 

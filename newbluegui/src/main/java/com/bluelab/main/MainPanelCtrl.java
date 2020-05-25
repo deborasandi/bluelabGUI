@@ -7,17 +7,28 @@ import com.bluelab.client.ClientCtrl;
 import com.bluelab.invoice.InvoiceCtrl;
 import com.bluelab.job.JobCtrl;
 import com.bluelab.jobprice.JobPriceCtrl;
+import com.jfoenix.controls.JFXHamburger;
+import com.jfoenix.transitions.hamburger.HamburgerBackArrowBasicTransition;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 
 
 public class MainPanelCtrl {
+
+    @FXML
+    private JFXHamburger burguer;
+    
+    @FXML
+    private VBox vboxMenu;
 
     @FXML
     private HBox mainPanel;
@@ -50,7 +61,7 @@ public class MainPanelCtrl {
     private InvoiceCtrl invoiceCtrl;
 
     private JobCtrl jobCtrl;
-    
+
     private JobPriceCtrl jobPriceCtrl;
 
     public void initialize() {
@@ -66,7 +77,7 @@ public class MainPanelCtrl {
             loader = new FXMLLoader(JobCtrl.class.getResource("Job.fxml"));
             jobPanel = loader.load();
             jobCtrl = loader.getController();
-            
+
             loader = new FXMLLoader(JobPriceCtrl.class.getResource("JobPrice.fxml"));
             jobPricePanel = loader.load();
             jobPriceCtrl = loader.getController();
@@ -79,6 +90,35 @@ public class MainPanelCtrl {
         catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        }
+
+        HamburgerBackArrowBasicTransition transition = new HamburgerBackArrowBasicTransition(burguer);
+
+        transition.setRate(-1);
+        burguer.addEventHandler(MouseEvent.MOUSE_PRESSED, (e) -> {
+            closeMenu(transition.getRate() * -1 == -1 ? true : false);
+            transition.setRate(transition.getRate() * -1);
+            transition.play();
+        });
+
+        closeMenu(true);
+
+    }
+
+    private void closeMenu(boolean b) {
+        if (b) {
+            btnClient.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+            btnJobs.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+            btnTables.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+            btnInvoice.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+            vboxMenu.setPrefWidth(90.0);
+        }
+        else {
+            btnClient.setContentDisplay(ContentDisplay.LEFT);
+            btnJobs.setContentDisplay(ContentDisplay.LEFT);
+            btnTables.setContentDisplay(ContentDisplay.LEFT);
+            btnInvoice.setContentDisplay(ContentDisplay.LEFT);
+            vboxMenu.setPrefWidth(220.0);
         }
     }
 

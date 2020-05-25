@@ -33,25 +33,20 @@ public class CheckBoxTableCell extends TableCell<Job, Boolean> {
         setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
         setEditable(true);
     }
-    
+
     @Override
     public void updateItem(Boolean item, boolean empty) {
         if (empty) {
             setGraphic(null);
-        } else {
+        }
+        else {
             checkBox.setSelected(item);
             setGraphic(checkBox);
         }
     }
-    
+
     private void updateValue(Job j, boolean old) {
-        if (AlertDialog.updateAlert(j)) {
-            DBJob.update(j.getId(), j.isPaid());
-        }
-        else {
-            j.setPaid(old);
-        }
-        getTableView().refresh();
+        DBJob.update(j.getId(), j.isPaid());
     }
 
 }

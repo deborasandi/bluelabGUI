@@ -3,8 +3,6 @@ package com.bluelab.invoice;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.bluelab.client.Client;
 import com.bluelab.database.DBClient;
@@ -28,6 +26,8 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -65,13 +65,31 @@ public class InvoiceCtrl {
     private JFXDatePicker endDate;
 
     @FXML
-    private JFXComboBox<String> isRepetition;
+    private ToggleButton isRepetition;
 
     @FXML
-    private JFXComboBox<String> isNoCost;
+    private ToggleGroup repgroup;
 
     @FXML
-    private JFXComboBox<String> isPaid;
+    private ToggleButton isNoRepetion;
+
+    @FXML
+    private ToggleButton isNoCost;
+
+    @FXML
+    private ToggleGroup costgroup;
+
+    @FXML
+    private ToggleButton isCost;
+
+    @FXML
+    private ToggleButton isPaid;
+
+    @FXML
+    private ToggleGroup paidgroup;
+
+    @FXML
+    private ToggleButton isNoPaid;
 
     @FXML
     private VBox contentPane;
@@ -157,7 +175,7 @@ public class InvoiceCtrl {
             }
 
         });
-        
+
         listJob.addListener(new ListChangeListener<Job>() {
 
             @Override
@@ -170,20 +188,8 @@ public class InvoiceCtrl {
         updateCboxClient();
         updateCboxJobType();
         updateCboxProductColor();
-        
+
         viewJob.setItems(listJob);
-
-        List<String> listAux = new ArrayList<String>();
-        listAux.add("Todos");
-        listAux.add("Sim");
-        listAux.add("Não");
-
-        isRepetition.getItems().addAll(listAux);
-        isRepetition.getSelectionModel().select(0);
-        isNoCost.getItems().addAll(listAux);
-        isNoCost.getSelectionModel().select(0);
-        isPaid.getItems().addAll(listAux);
-        isPaid.getSelectionModel().select(0);
 
         createColumns();
     }
@@ -238,14 +244,11 @@ public class InvoiceCtrl {
         ProductColor p = productColor.getValue();
         filter.filterProductColor(p);
 
-        int r = isRepetition.getSelectionModel().getSelectedIndex();
-        filter.filterIsRepetition(r);
+        filter.filterIsRepetition(isRepetition.isSelected(), isNoRepetion.isSelected());
 
-        r = isNoCost.getSelectionModel().getSelectedIndex();
-        filter.filterIsNoCost(r);
+        filter.filterIsNoCost(isCost.isSelected(), isNoCost.isSelected());
 
-        r = isPaid.getSelectionModel().getSelectedIndex();
-        filter.filterIsPaid(r);
+        filter.filterIsPaid(isPaid.isSelected(), isNoPaid.isSelected());
 
         LocalDate d = initDate.getValue();
         filter.filterInitDate(d);
@@ -273,9 +276,12 @@ public class InvoiceCtrl {
         client.getSelectionModel().select(0);
         jobType.getSelectionModel().select(0);
         productColor.getSelectionModel().select(0);
-        isRepetition.getSelectionModel().select(0);
-        isNoCost.getSelectionModel().select(0);
-        isPaid.getSelectionModel().select(0);
+        isRepetition.setSelected(false);
+        isNoRepetion.setSelected(false);
+        isCost.setSelected(false);
+        isNoCost.setSelected(false);
+        isPaid.setSelected(false);
+        isNoPaid.setSelected(false);
         initDate.getEditor().clear();
         endDate.getEditor().clear();
     }
