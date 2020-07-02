@@ -14,7 +14,7 @@
 		<class>com.bluelab.pricetable.PriceTable</class>
 		<class>com.bluelab.jobtype.JobType</class>
 		<class>com.bluelab.jobprice.JobPrice</class>
-		<class>com.bluelab.client.Cliente</class>
+		<class>com.bluelab.client.Client</class>
 		<class>com.bluelab.job.Job</class>
 		<class>com.bluelab.payment.Payment</class>
 		<class>com.bluelab.payment.JobPayment</class>
