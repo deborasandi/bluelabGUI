@@ -1,15 +1,15 @@
 package com.bluelab.database;
 
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 
 import com.bluelab.jobtype.JobType;
 
@@ -31,21 +31,36 @@ public class DBJobType extends DBConnection {
     }
 
     private static void updateData() {
-        map = getMap();
+        String query = "SELECT * FROM jobtype p ORDER BY p.name";
 
-        list.clear();
-        list.addAll(map.values());
-        list.sort(new Comparator<JobType>() {
+        try {
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
+            
+            list.clear();
+            map.clear();
 
-            @Override
-            public int compare(JobType o1, JobType o2) {
-                return o1.getName().compareToIgnoreCase(o2.getName());
+            while (rs.next()) {
+                JobType j = new JobType();
+                j.setId(rs.getInt("id"));
+                j.setName(rs.getString("name"));
+                
+                list.add(j);
+                
+                map.put(j.getId(), j);
             }
-        });
+
+            st.close();
+        }
+        catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     public static void init() {
-        list = FXCollections.observableArrayList(new ArrayList<JobType>());
+        map = new HashMap<Integer, JobType>();
+        list = FXCollections.observableArrayList();
 
         updateData();
 
@@ -53,113 +68,82 @@ public class DBJobType extends DBConnection {
     }
 
     public static void insert(JobType j) {
-        String query = "insert into job_type (name) values (?)";
-
+        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
+        EntityTransaction et = null;
+ 
         try {
-            PreparedStatement stmt = connection.prepareStatement(query);
-
-            stmt.setString(1, j.getName());
-
-            stmt.execute();
-            stmt.close();
-
+            et = em.getTransaction();
+            et.begin();
+ 
+            em.persist(j);
+            et.commit();
+            
             callback.accept(new JobType());
-        }
-        catch (SQLException u) {
-            throw new RuntimeException(u);
-        }
-    }
-
-    public static Map<Integer, JobType> getMap() {
-        Map<Integer, JobType> list = new HashMap<Integer, JobType>();
-
-        String query = "SELECT * FROM job_type";
-
-        try {
-            Statement st = connection.createStatement();
-            ResultSet rs = st.executeQuery(query);
-
-            while (rs.next()) {
-                JobType j = new JobType();
-                j.setId(rs.getInt("id"));
-                j.setName(rs.getString("name"));
-
-                list.put(j.getId(), j);
+        } catch (Exception ex) {
+            if (et != null) {
+                et.rollback();
             }
-
-            st.close();
+            ex.printStackTrace();
+        } finally {
+            em.close();
         }
-        catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        return list;
     }
 
     public static JobType get(String name) {
-        JobType j = null;
-
-        String query = "SELECT * FROM job_type WHERE name = \"" + name + "\";";
-
-        try {
-            Statement st = connection.createStatement();
-            ResultSet rs = st.executeQuery(query);
-
-            while (rs.next()) {
-                j = new JobType();
-                j.setId(rs.getInt("id"));
-                j.setName(rs.getString("name"));
-            }
-
-            st.close();
-        }
-        catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        for (JobType j : list) {
+            if (j.getName().equals(name))
+                return j;
         }
 
-        return j;
+        return null;
     }
 
     public static void delete(int id) {
-        String query = "DELETE FROM job_type WHERE id = ?;";
-
+        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
+        EntityTransaction et = null;
+        JobType p = null;
+ 
         try {
-            PreparedStatement stmt = connection.prepareStatement(query);
-
-            stmt.setInt(1, id);
-
-            stmt.execute();
-            stmt.close();
-
+            et = em.getTransaction();
+            et.begin();
+            p = em.find(JobType.class, id);
+            em.remove(p);
+            et.commit();
+            
             callback.accept(new JobType());
             
             DBJobPrice.updateData();
-        }
-        catch (SQLException u) {
-            throw new RuntimeException(u);
+        } catch (Exception ex) {
+            if (et != null) {
+                et.rollback();
+            }
+            ex.printStackTrace();
+        } finally {
+            em.close();
         }
     }
 
     public static void update(JobType j) {
-        String query = "UPDATE job_type SET name = ? WHERE id = ?;";
-
+        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
+        EntityTransaction et = null;
+        
         try {
-            PreparedStatement stmt = connection.prepareStatement(query);
-
-            stmt.setString(1, j.getName());
-            stmt.setInt(2, j.getId());
-
-            stmt.execute();
-            stmt.close();
-
-            callback.accept(new JobType());
+            et = em.getTransaction();
+            et.begin();
+ 
+            em.merge(j);
+            et.commit();
             
+            callback.accept(new JobType());
+
             DBJobPrice.updateData();
-        }
-        catch (SQLException u) {
-            throw new RuntimeException(u);
+        } catch (Exception ex) {
+            if (et != null) {
+                et.rollback();
+            }
+            ex.printStackTrace();
+        } finally {
+            em.close();
         }
     }
 

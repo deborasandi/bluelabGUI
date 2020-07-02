@@ -31,7 +31,7 @@
 }
 
 .jfx-tab-pane .tab-header-background {
-    -fx-background-color: #d9d9d9;
+    -fx-background-color: #cccccc;
 }
 
 .jfx-tab-pane .headers-region .tab-container .tab-label {
@@ -73,11 +73,19 @@
 .spinner .increment-arrow-button .increment-arrow,
 .spinner .decrement-arrow-button .decrement-arrow {
     -fx-background-color: #404040;
-    -fx-font-size: 25px;
+    -fx-font-size: 20px;
 }
 
 .spinner .text-field {
     -fx-background-color: transparent;
     -fx-border-width: 0 0 1 0;
     -fx-border-color: #1a1a1a;
+}
+
+.hbox-payment .label{
+	-fx-font-weight: bold;
+}
+
+.jfx-text-area{
+	-fx-border-color: gray;
 }

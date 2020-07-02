@@ -1,7 +1,6 @@
 package com.bluelab.job;
 
 
-import java.time.LocalDate;
 import java.util.Date;
 
 import com.bluelab.client.Client;
@@ -12,13 +11,15 @@ import com.bluelab.database.DBProductColor;
 import com.bluelab.jobprice.JobPrice;
 import com.bluelab.productcolor.ProductColor;
 import com.bluelab.util.AlertDialog;
+import com.bluelab.util.ComboBoxSearch;
+import com.bluelab.util.DateUtil;
 import com.bluelab.util.FxmlInterface;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
+import com.jfoenix.controls.JFXTextArea;
 
-import javafx.event.Event;
-import javafx.event.EventHandler;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
@@ -26,9 +27,13 @@ import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
 
 
 public class JobCtrl implements FxmlInterface {
+
+    @FXML
+    private GridPane grid;
 
     @FXML
     private Spinner<Integer> jobQtd;
@@ -37,10 +42,13 @@ public class JobCtrl implements FxmlInterface {
     private Spinner<Double> shipping;
 
     @FXML
+    private Spinner<Double> repetitionValue;
+
+    @FXML
     private JFXDatePicker date;
 
     @FXML
-    private JFXComboBox<Client> client;
+    private ComboBoxSearch<Client> client;
 
     @FXML
     private JFXComboBox<JobPrice> jobPrice;
@@ -71,37 +79,73 @@ public class JobCtrl implements FxmlInterface {
 
     @FXML
     private Label lblTotal;
+    
+    @FXML
+    private JFXTextArea obs;
 
     private Job currentJob;
-    
-    boolean consumeList = false;
 
     public void initialize() {
+        client = new ComboBoxSearch<Client>();
+        grid.getChildren().add(client);
+
+        client.setMaxWidth(Double.MAX_VALUE);
+
+        GridPane.setColumnIndex(client, 1);
+        GridPane.setRowIndex(client, 1);
+
         client.setItems(DBClient.getList());
         productColor.setItems(DBProductColor.getList());
+        productColor.getSelectionModel().select(19);
         viewJob.setItems(DBJob.getList());
 
-        date.setValue(LocalDate.now());
+        date.setValue(DateUtil.localDateNow());
 
         createColumns();
 
-        viewJob.setOnMouseClicked(new EventHandler<Event>() {
-
-            @Override
-            public void handle(Event event) {
-                currentJob = viewJob.getSelectionModel().getSelectedItem();
-                if (currentJob != null)
-                    loadJob(currentJob);
-            }
+        viewJob.setOnMouseClicked(event -> {
+            currentJob = viewJob.getSelectionModel().getSelectedItem();
+            if (currentJob != null)
+                loadJob(currentJob);
         });
 
-        jobQtd.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10));
+        client.setOnAction(event -> {
+            Client c = client.getSelectionModel().getSelectedItem();
+
+            if (c == null)
+                return;
+
+            jobPrice.setItems(FXCollections.observableArrayList(DBJob.list(c.getPriceTable().getId())));
+
+        });
+
+        jobQtd.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100));
         jobQtd.getValueFactory().setValue(1);
         jobQtd.valueProperty().addListener((obs, oldValue, newValue) -> calcTotal());
 
         shipping.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 1000));
         shipping.getValueFactory().setValue(0.0);
         shipping.valueProperty().addListener((obs, oldValue, newValue) -> calcTotal());
+
+        repetitionValue.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 10000));
+        repetitionValue.getValueFactory().setValue(0.0);
+        repetitionValue.valueProperty().addListener((obs, oldValue, newValue) -> calcTotal());
+
+        repetitionValue.setOnKeyPressed(event -> {
+            calcTotal();
+        });
+
+        repetition.setOnAction(event -> {
+            repetitionValue.getValueFactory().setValue(0.0);
+            repetitionValue.setDisable(!repetition.isSelected());
+
+            calcTotal();
+        });
+
+        nocost.setOnAction(event -> {
+            calcTotal();
+        });
+
     }
 
     private void createColumns() {
@@ -114,12 +158,14 @@ public class JobCtrl implements FxmlInterface {
     private void clearFields() {
         client.getSelectionModel().clearSelection();
         jobPrice.getSelectionModel().clearSelection();
-        productColor.getSelectionModel().clearSelection();
+        productColor.getSelectionModel().select(19);
         jobQtd.getValueFactory().setValue(1);
         shipping.getValueFactory().setValue(0.0);
-        date.setValue(LocalDate.now());
+        date.setValue(DateUtil.localDateNow());
         repetition.setSelected(false);
         nocost.setSelected(false);
+        repetitionValue.setDisable(true);
+        obs.clear();
     }
 
     @Override
@@ -132,84 +178,26 @@ public class JobCtrl implements FxmlInterface {
         date.setDisable(d);
         repetition.setDisable(d);
         nocost.setDisable(d);
+        obs.setDisable(d);
     }
 
     private void loadJob(Job j) {
-        findClient(j.getClient());
-        findJobPrice(j.getJobPrice() != null ? j.getJobPrice().getId() : 0);
-        findProductColor(j.getProductColor());
+        client.getSelectionModel().select(j.getClient());
+        jobPrice.getSelectionModel().select(j.getJobPrice());
+        productColor.getSelectionModel().select(j.getProductColor());
         jobQtd.getValueFactory().setValue(j.getQtd());
         shipping.getValueFactory().setValue(j.getShipping());
-        date.setValue(j.getDate().toLocalDate());
+        date.setValue(DateUtil.toLocalDate(j.getDate()));
         repetition.setSelected(j.isRepetition());
         nocost.setSelected(j.isNocost());
+        repetitionValue.getValueFactory().setValue(j.getRepValue());
+        obs.setText(j.getObs());
 
         disableFields(true);
     }
 
-    private void findClient(Client c) {
-        if (c == null)
-            return;
-
-        for (Client c1 : DBClient.getList()) {
-            if (c1.getId() == c.getId())
-                client.getSelectionModel().select(c1);
-        }
-    }
-
-    private void findJobPrice(int id) {
-        if(id == 0)
-            return;
-        
-        int i;
-        for (i = 0; i < jobPrice.getItems().size(); i++) {
-            if (jobPrice.getItems().get(i).getId() == id)
-                break;
-        }
-        
-        if(i < jobPrice.getItems().size())
-            jobPrice.getSelectionModel().select(i);
-    }
-
-    private void findProductColor(ProductColor p) {
-        if (p == null)
-            return;
-
-        for (ProductColor p1 : DBProductColor.getList()) {
-            if (p1.getId() == p.getId())
-                productColor.getSelectionModel().select(p1);
-        }
-    }
-
-    @FXML
-    void loadJobPrice() {
-        Client c = client.getSelectionModel().getSelectedItem();
-
-        if (c == null)
-            return;
-
-        int id = 0;
-        if (jobPrice.getValue() != null) {
-            id = jobPrice.getValue().getId();
-            consumeList = true;
-        }
-
-        jobPrice.getItems().clear();
-        for (JobPrice jp : DBJobPrice.getList()) {
-            if (jp.getPriceTable().getId() == c.getPriceTable().getId())
-                jobPrice.getItems().add(jp);
-        }
-
-        findJobPrice(id);
-    }
-
     @FXML
     void verifyPrice() {
-//        if(consumeList) {
-//            consumeList = false;
-//            return;
-//        }
-        
         JobPrice j = jobPrice.getValue();
 
         if (j == null)
@@ -219,13 +207,12 @@ public class JobCtrl implements FxmlInterface {
             double newValue = AlertDialog.insertPriceAlert(j);
             if (newValue != 0) {
                 j.setPrice(newValue);
-                DBJobPrice.updatePrice(j);
+                DBJobPrice.update(j);
             }
         }
         calcTotal();
     }
 
-    @FXML
     void calcTotal() {
         JobPrice jp = jobPrice.getSelectionModel().getSelectedItem();
 
@@ -238,9 +225,12 @@ public class JobCtrl implements FxmlInterface {
         if (shipping.getValue() == null)
             shipping.getValueFactory().setValue(0.0);
 
-        int nc = (nocost.isSelected() || repetition.isSelected()) ? 0 : 1;
+        int nc = nocost.isSelected() || (repetition.isSelected() && repetitionValue.getValue() == 0) ? 0 : 1;
 
-        double total = ((jp.getPrice() * jobQtd.getValue()) * nc) + shipping.getValue();
+        double price = repetitionValue.getValue() == null || repetitionValue.getValue() == 0 ? jp.getPrice()
+                : repetitionValue.getValue();
+
+        double total = ((price * jobQtd.getValue()) * nc) + shipping.getValue();
         lblTotal.setText(String.valueOf(total));
     }
 
@@ -268,10 +258,12 @@ public class JobCtrl implements FxmlInterface {
         j.setProductColor(productColor.getValue());
         j.setQtd(jobQtd.getValue());
         j.setShipping(shipping.getValue());
-        j.setDate(java.sql.Date.valueOf(date.getValue()));
+        j.setDate(DateUtil.toDate(date.getValue()));
         j.setRepetition(repetition.isSelected());
         j.setNocost(nocost.isSelected());
         j.setTotal(Double.parseDouble(lblTotal.getText()));
+        j.setRepValue(repetitionValue.getValue());
+        j.setObs(obs.getText());
 
         if (currentJob != null) {
             if (AlertDialog.updateAlert(j)) {
@@ -280,8 +272,9 @@ public class JobCtrl implements FxmlInterface {
             }
         }
         else {
-            if (AlertDialog.saveNewAlert(j))
+            if (AlertDialog.saveNewAlert(j)) {
                 DBJob.insert(j);
+            }
         }
 
         clearFields();

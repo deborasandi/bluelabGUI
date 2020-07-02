@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXDatePicker?>
-<?import com.jfoenix.controls.JFXTabPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.image.Image?>
@@ -16,197 +14,130 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bluelab.invoice.InvoiceCtrl">
-   <children>
-      <VBox styleClass="general-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+
+		<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bluelab.invoice.InvoiceCtrl">
+			<right>
+				<AnchorPane prefWidth="190.0">
+					<children>
+						<TitledPane animated="false" text="Filtros" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+							<content>
+								<VBox fx:id="vbox" styleClass="vbox-filter">
+									<children>
+										<Label text="Cliente" />
+										<Label text="Trabalho">
+											<VBox.margin>
+												<Insets top="10.0" />
+											</VBox.margin>
+										</Label>
+										<JFXComboBox fx:id="cbxJobType" maxWidth="1.7976931348623157E308" onAction="#filter">
+											<VBox.margin>
+												<Insets />
+											</VBox.margin>
+										</JFXComboBox>
+										<Label text="Cor">
+											<VBox.margin>
+												<Insets top="10.0" />
+											</VBox.margin>
+										</Label>
+										<JFXComboBox fx:id="cbxProductColor" maxWidth="1.7976931348623157E308" onAction="#filter" />
+										<JFXDatePicker fx:id="datepickerInit" maxWidth="1.7976931348623157E308" onAction="#filter" promptText="Início">
+											<VBox.margin>
+												<Insets top="10.0" />
+											</VBox.margin>
+										</JFXDatePicker>
+										<JFXDatePicker fx:id="datepickerEnd" maxWidth="1.7976931348623157E308" onAction="#filter" promptText="Fim">
+											<VBox.margin>
+												<Insets top="10.0" />
+											</VBox.margin>
+										</JFXDatePicker>
+										<HBox alignment="CENTER_LEFT">
+											<children>
+												<ToggleButton fx:id="toggleRepetition" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#filter" prefWidth="85.0" styleClass="toggle" text="Repetição" HBox.hgrow="ALWAYS">
+													<toggleGroup>
+														<ToggleGroup fx:id="repgroup" />
+													</toggleGroup>
+												</ToggleButton>
+												<ToggleButton fx:id="toggleNormal" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#filter" prefWidth="85.0" styleClass="toggle" text="Normal" toggleGroup="$repgroup" HBox.hgrow="ALWAYS" />
+											</children>
+											<VBox.margin>
+												<Insets top="10.0" />
+											</VBox.margin>
+										</HBox>
+										<HBox alignment="CENTER_LEFT">
+											<children>
+												<ToggleButton fx:id="toggleNoCost" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#filter" prefWidth="85.0" styleClass="toggle" text="Sem Custo" HBox.hgrow="ALWAYS">
+													<toggleGroup>
+														<ToggleGroup fx:id="costgroup" />
+													</toggleGroup>
+												</ToggleButton>
+												<ToggleButton fx:id="toggleCost" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#filter" prefWidth="85.0" styleClass="toggle" text="Com Custo" toggleGroup="$costgroup" HBox.hgrow="ALWAYS" />
+											</children>
+											<VBox.margin>
+												<Insets top="10.0" />
+											</VBox.margin>
+										</HBox>
+										<HBox alignment="CENTER_LEFT">
+											<children>
+												<ToggleButton fx:id="togglePaid" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#filter" prefWidth="85.0" styleClass="toggle" text="Recebido" HBox.hgrow="ALWAYS">
+													<toggleGroup>
+														<ToggleGroup fx:id="paidgroup" />
+													</toggleGroup>
+												</ToggleButton>
+												<ToggleButton fx:id="toggleOwing" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#filter" prefWidth="85.0" styleClass="toggle" text="Devendo" toggleGroup="$paidgroup" HBox.hgrow="ALWAYS" />
+											</children>
+											<VBox.margin>
+												<Insets top="10.0" />
+											</VBox.margin>
+										</HBox>
+										<Pane VBox.vgrow="ALWAYS" />
+										<HBox styleClass="hbox-payment">
+											<children>
+												<Label text="Faltante:" />
+												<Pane HBox.hgrow="ALWAYS" />
+												<Label fx:id="labelOwing" text="-" />
+											</children>
+										</HBox>
+									</children>
+								</VBox>
+							</content>
+						</TitledPane>
+					</children>
+				</AnchorPane>
+			</right>
+			<center>
+				<TableView fx:id="viewJob" editable="true" BorderPane.alignment="CENTER">
+					<columns>
+						<TableColumn fx:id="colClient" prefWidth="150.0" text="Cliente" />
+						<TableColumn fx:id="colJobType" prefWidth="120.0" text="Trabalho" />
+						<TableColumn fx:id="colProductColor" prefWidth="75.0" text="Cor" />
+						<TableColumn fx:id="colQtd" text="Quantidade" />
+						<TableColumn fx:id="colDate" text="Data" />
+						<TableColumn fx:id="colRepetion" prefWidth="75.0" style="-fx-alignment: CENTER;" text="Repetição" />
+						<TableColumn fx:id="colNoCost" prefWidth="75.0" style="-fx-alignment: CENTER;" text="Sem Custo" />
+						<TableColumn fx:id="colShipping" prefWidth="75.0" text="Frete" />
+						<TableColumn fx:id="colTotal" prefWidth="75.0" text="Total" />
+						<TableColumn fx:id="colTotalPaid" prefWidth="75.0" text="Total Pago" />
+						<TableColumn fx:id="colPaid" prefWidth="50.0" style="-fx-alignment: CENTER;" text="Pago" />
+					</columns>
+				</TableView>
+			</center>
+			<top>
+				<HBox alignment="CENTER_RIGHT" BorderPane.alignment="CENTER">
          <children>
-            <HBox styleClass="button-panel" VBox.vgrow="NEVER">
-               <children>
-                  <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" disable="true">
-                     <graphic>
-                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../icons/new.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </JFXButton>
-                  <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" disable="true">
-                     <graphic>
-                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../icons/edit.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </JFXButton>
-                  <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" disable="true">
-                     <graphic>
-                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../icons/save.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </JFXButton>
-                  <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" disable="true">
-                     <graphic>
-                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../icons/delete2.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </JFXButton>
-               </children>
-            </HBox>
-            <StackPane alignment="TOP_RIGHT" VBox.vgrow="ALWAYS">
-               <children>
-                  <JFXTabPane styleClass="hbox-tab">
-                     <tabs>
-                        <Tab fx:id="tabTable" closable="false" text="Lançamentos">
-                          <content>
-                            <AnchorPane minHeight="0.0" minWidth="0.0">
-                                 <children>
-                                    <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                       <right>
-                                          <VBox maxWidth="170.0" BorderPane.alignment="CENTER">
-                                             <children>
-                                                <Label text="Cliente" />
-                                                <JFXComboBox fx:id="client" maxWidth="1.7976931348623157E308" onAction="#filter">
-                                                   <VBox.margin>
-                                                      <Insets bottom="10.0" />
-                                                   </VBox.margin>
-                                                </JFXComboBox>
-                                                <Label text="Trabalho" />
-                                                <JFXComboBox fx:id="jobType" maxWidth="1.7976931348623157E308" onAction="#filter">
-                                                   <VBox.margin>
-                                                      <Insets bottom="10.0" />
-                                                   </VBox.margin>
-                                                </JFXComboBox>
-                                                <Label text="Cor" />
-                                                <JFXComboBox fx:id="productColor" maxWidth="1.7976931348623157E308" onAction="#filter">
-                                                   <VBox.margin>
-                                                      <Insets bottom="10.0" />
-                                                   </VBox.margin>
-                                                </JFXComboBox>
-                                                <JFXDatePicker fx:id="initDate" maxWidth="1.7976931348623157E308" onAction="#filter" promptText="Início">
-                                                   <VBox.margin>
-                                                      <Insets bottom="10.0" />
-                                                   </VBox.margin>
-                                                </JFXDatePicker>
-                                                <JFXDatePicker fx:id="endDate" maxWidth="1.7976931348623157E308" onAction="#filter" promptText="Fim">
-                                                   <VBox.margin>
-                                                      <Insets bottom="20.0" />
-                                                   </VBox.margin>
-                                                </JFXDatePicker>
-                                                <HBox alignment="CENTER_LEFT">
-                                                   <children>
-                                                      <ToggleButton fx:id="isRepetition" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#filter" prefWidth="85.0" styleClass="toggle" text="Repetição" HBox.hgrow="ALWAYS">
-                                                         <toggleGroup>
-                                                            <ToggleGroup fx:id="repgroup" />
-                                                         </toggleGroup>
-                                                      </ToggleButton>
-                                                      <ToggleButton fx:id="isNoRepetion" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#filter" prefWidth="85.0" styleClass="toggle" text="Normal" toggleGroup="$repgroup" HBox.hgrow="ALWAYS" />
-                                                   </children>
-                                                   <VBox.margin>
-                                                      <Insets bottom="10.0" />
-                                                   </VBox.margin>
-                                                </HBox>
-                                                <HBox alignment="CENTER_LEFT">
-                                                   <VBox.margin>
-                                                      <Insets bottom="10.0" />
-                                                   </VBox.margin>
-                                                   <children>
-                                                      <ToggleButton fx:id="isNoCost" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#filter" prefWidth="85.0" styleClass="toggle" text="Sem Custo" HBox.hgrow="ALWAYS">
-                                                         <toggleGroup>
-                                                            <ToggleGroup fx:id="costgroup" />
-                                                         </toggleGroup>
-                                                      </ToggleButton>
-                                                      <ToggleButton fx:id="isCost" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#filter" prefWidth="85.0" styleClass="toggle" text="Com Custo" toggleGroup="$costgroup" HBox.hgrow="ALWAYS" />
-                                                   </children>
-                                                </HBox>
-                                                <HBox alignment="CENTER_LEFT">
-                                                   <VBox.margin>
-                                                      <Insets />
-                                                   </VBox.margin>
-                                                   <children>
-                                                      <ToggleButton fx:id="isPaid" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#filter" prefWidth="85.0" styleClass="toggle" text="Recebido" HBox.hgrow="ALWAYS">
-                                                         <toggleGroup>
-                                                            <ToggleGroup fx:id="paidgroup" />
-                                                         </toggleGroup>
-                                                      </ToggleButton>
-                                                      <ToggleButton fx:id="isNoPaid" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#filter" prefWidth="85.0" styleClass="toggle" text="Devendo" toggleGroup="$paidgroup" HBox.hgrow="ALWAYS" />
-                                                   </children>
-                                                </HBox>
-                                             </children>
-                                             <BorderPane.margin>
-                                                <Insets left="10.0" top="10.0" />
-                                             </BorderPane.margin>
-                                          </VBox>
-                                       </right>
-                                       <center>
-                                          <TableView fx:id="viewJob" BorderPane.alignment="CENTER">
-                                            <columns>
-                                              <TableColumn fx:id="colClient" prefWidth="150.0" text="Cliente" />
-                                              <TableColumn fx:id="colJobType" prefWidth="120.0" text="Trabalho" />
-                                                <TableColumn fx:id="colProductColor" prefWidth="75.0" text="Cor" />
-                                                <TableColumn fx:id="colQtd" text="Quantidade" />
-                                                <TableColumn fx:id="colDate" text="Data" />
-                                                <TableColumn fx:id="colRepetion" prefWidth="75.0" style="-fx-alignment: CENTER;" text="Repetição" />
-                                                <TableColumn fx:id="colNoCost" prefWidth="75.0" style="-fx-alignment: CENTER;" text="Sem Custo" />
-                                                <TableColumn fx:id="colShipping" prefWidth="75.0" text="Frete" />
-                                                <TableColumn fx:id="colTotal" prefWidth="75.0" text="Total" />
-                                                <TableColumn fx:id="colPaid" prefWidth="75.0" style="-fx-alignment: CENTER;" text="Recebido" />
-                                            </columns>
-                                          </TableView>
-                                       </center>
-                                    </BorderPane>
-                                 </children>
-                                 <padding>
-                                    <Insets top="10.0" />
-                                 </padding>
-                              </AnchorPane>
-                          </content>
-                           <graphic>
-                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../../icons/business.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Tab>
-                     </tabs>
-                  </JFXTabPane>
-                  <HBox fx:id="contentFilter" alignment="CENTER_RIGHT" maxHeight="30.0" maxWidth="100.0">
-                     <StackPane.margin>
-                        <Insets right="5.0" />
-                     </StackPane.margin>
-                     <children>
-                        <Label fx:id="lblFiltros" alignment="TOP_CENTER" contentDisplay="RIGHT" text="Filtros">
-                           <font>
-                              <Font name="System Bold" size="12.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="lblNumFiltros" text="(0)">
-                           <font>
-                              <Font name="System Bold" size="12.0" />
-                           </font>
-                        </Label>
-                        <ImageView fx:id="imgFilter" fitHeight="15.0" fitWidth="15.0" onMouseClicked="#removeFilter" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../icons/remove.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </HBox>
-               </children>
-            </StackPane>
+            <Label text="Filtros:" />
+            <Label fx:id="labelQtdFiltered" text="(0)" />
+            <ImageView fx:id="imgFilter" fitHeight="15.0" fitWidth="15.0" onMouseClicked="#removeFilter" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../icons/remove.png" />
+               </image>
+            </ImageView>
          </children>
-      </VBox>
-   </children>
-</AnchorPane>
+         <BorderPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </BorderPane.margin>
+      </HBox>
+			</top>
+		</BorderPane>

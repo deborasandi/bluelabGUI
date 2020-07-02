@@ -6,7 +6,7 @@
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -16,6 +16,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
@@ -61,14 +62,24 @@
                         </ImageView>
                      </graphic>
                   </JFXButton>
+                  <Pane HBox.hgrow="ALWAYS" />
+                  <JFXButton fx:id="btnPrint" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" disable="true" onAction="#print">
+                     <graphic>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../icons/print.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
                </children>
                <VBox.margin>
                   <Insets />
                </VBox.margin>
             </HBox>
-            <HBox styleClass="hbox-main" VBox.vgrow="ALWAYS">
-               <children>
-                  <GridPane HBox.hgrow="ALWAYS">
+            <SplitPane dividerPositions="0.6" VBox.vgrow="ALWAYS">
+               <items>
+                  <GridPane fx:id="grid">
                     <columnConstraints>
                       <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="10.0" />
                       <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
@@ -79,6 +90,7 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
@@ -106,18 +118,18 @@
                         <Label text="CPF/CNPJ:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                         <Label text="Telefone:" GridPane.rowIndex="2" />
                         <Label text="Celular:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                        <Label text="Endereço:" GridPane.rowIndex="3" />
-                        <Label text="Número:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                        <Label text="Compl:" GridPane.rowIndex="4" />
+                        <Label text="Endereço:" GridPane.rowIndex="5" />
+                        <Label text="Número:" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                        <Label text="Compl:" GridPane.rowIndex="6" />
+                        <Label text="Estado:" GridPane.rowIndex="4" />
                         <Label text="Cidade:" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                        <Label text="Estado:" GridPane.rowIndex="5" />
-                        <Label text="CEP:" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                        <Label text="Tabela:" GridPane.rowIndex="6" />
-                        <Label text="Nome:" GridPane.rowIndex="9" />
-                        <Label text="Telefone:" GridPane.rowIndex="10" />
-                        <Label text="Celular:" GridPane.columnIndex="2" GridPane.rowIndex="10" />
-                        <Label text="CPF:" GridPane.columnIndex="2" GridPane.rowIndex="9" />
-                        <JFXTabPane GridPane.columnSpan="4" GridPane.rowIndex="8">
+                        <Label text="CEP:" GridPane.rowIndex="7" />
+                        <Label text="Tabela:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                        <Label text="Nome:" GridPane.rowIndex="10" />
+                        <Label text="Telefone:" GridPane.rowIndex="11" />
+                        <Label text="Celular:" GridPane.columnIndex="2" GridPane.rowIndex="11" />
+                        <Label text="CPF:" GridPane.columnIndex="2" GridPane.rowIndex="10" />
+                        <JFXTabPane GridPane.columnSpan="4" GridPane.rowIndex="9">
                            <tabs>
                               <Tab text="Responsável">
                                  <graphic>
@@ -135,30 +147,35 @@
                         </JFXTabPane>
                         <JFXTextField fx:id="name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <JFXTextField fx:id="tel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <JFXTextField fx:id="address" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        <JFXTextField fx:id="complement" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <JFXTextField fx:id="address" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <JFXTextField fx:id="complement" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                         <JFXTextField fx:id="cpf" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                         <JFXTextField fx:id="cel" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                        <JFXTextField fx:id="number" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-                        <JFXTextField fx:id="city" GridPane.columnIndex="3" GridPane.rowIndex="4" />
-                        <JFXTextField fx:id="cep" GridPane.columnIndex="3" GridPane.rowIndex="5" />
-                        <JFXTextField fx:id="respName" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-                        <JFXTextField fx:id="respTel" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-                        <JFXTextField fx:id="respCpf" GridPane.columnIndex="3" GridPane.rowIndex="9" />
-                        <JFXTextField fx:id="respCel" GridPane.columnIndex="3" GridPane.rowIndex="10" />
-                        <JFXComboBox fx:id="state" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                        <JFXComboBox fx:id="priceTable" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                        <JFXTextField fx:id="number" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+                        <JFXTextField fx:id="cep" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                        <JFXTextField fx:id="respName" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                        <JFXTextField fx:id="respTel" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                        <JFXTextField fx:id="respCpf" GridPane.columnIndex="3" GridPane.rowIndex="10" />
+                        <JFXTextField fx:id="respCel" GridPane.columnIndex="3" GridPane.rowIndex="11" />
+                        <JFXComboBox fx:id="priceTable" maxWidth="1.7976931348623157E308" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                        <Label text="Bairro:" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                        <JFXTextField fx:id="district" GridPane.columnIndex="3" GridPane.rowIndex="6" />
+                        <Label text="E-mail:" GridPane.rowIndex="3" />
+                        <JFXTextField fx:id="email" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                      </children>
+                     <padding>
+                        <Insets right="10.0" />
+                     </padding>
                   </GridPane>
-                  <Separator orientation="VERTICAL" HBox.hgrow="NEVER" />
-                  <TableView fx:id="viewClient" HBox.hgrow="SOMETIMES">
+                  <TableView fx:id="viewClient">
                     <columns>
                       <TableColumn fx:id="colClient" prefWidth="150.0" text="Cliente" />
+                        <TableColumn fx:id="colCity" prefWidth="150.0" text="Cidade" />
                         <TableColumn fx:id="colTable" prefWidth="150.0" text="Tabela" />
                     </columns>
                   </TableView>
-               </children>
-            </HBox>
+               </items>
+            </SplitPane>
          </children>
       </VBox>
    </children>

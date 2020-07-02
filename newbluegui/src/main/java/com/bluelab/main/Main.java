@@ -2,8 +2,10 @@ package com.bluelab.main;
 
 
 import com.bluelab.database.DBConnection;
+import com.bluelab.database.DBPriceTable;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -27,7 +29,13 @@ public class Main extends Application {
             scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
             primaryStage.setScene(scene);
             primaryStage.setMaximized(true);
+            primaryStage.setOnCloseRequest(t -> {
+                DBConnection.close();
+                Platform.exit();
+                System.exit(0);
+            });
             primaryStage.show();
+
         }
         catch (Exception e) {
             e.printStackTrace();

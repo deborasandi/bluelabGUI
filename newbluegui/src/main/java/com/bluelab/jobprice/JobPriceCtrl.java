@@ -9,19 +9,16 @@ import com.bluelab.database.DBJobType;
 import com.bluelab.database.DBPriceTable;
 import com.bluelab.jobtype.JobType;
 import com.bluelab.pricetable.PriceTable;
-import com.bluelab.util.AlertDialog;
 import com.bluelab.util.FxmlInterface;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTabPane;
 
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -86,6 +83,12 @@ public class JobPriceCtrl implements FxmlInterface {
     @FXML
     private TableColumn<JobPrice, Double> colPrice;
 
+    private ObservableList<PriceTable> listPriceTable;
+
+    private ObservableList<JobType> listJobType;
+
+    private ObservableList<JobPrice> listJobPrice;
+
     private List<JobPrice> newPrices;
 
     public void initialize() {
@@ -93,9 +96,13 @@ public class JobPriceCtrl implements FxmlInterface {
         viewJobType.setEditable(true);
         viewJobPrice.setEditable(true);
 
-        viewPriceTable.setItems(DBPriceTable.getList());
-        viewJobType.setItems(DBJobType.getList());
-        viewJobPrice.setItems(DBJobPrice.getList());
+        listPriceTable = DBPriceTable.list();
+        listJobType = DBJobType.getList();
+        listJobPrice = DBJobPrice.getList();
+
+        viewPriceTable.setItems(listPriceTable);
+        viewJobType.setItems(listJobType);
+        viewJobPrice.setItems(listJobPrice);
 
         newPrices = new ArrayList<JobPrice>();
 
@@ -105,70 +112,55 @@ public class JobPriceCtrl implements FxmlInterface {
 
         paneInfo.getChildren().remove(labelNotif);
 
-        tabpane.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
-
-            @Override
-            public void changed(ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) {
-                if (newTab.equals(tabTable) || newTab.equals(tabJob)) {
-                    btnCreate.setDisable(false);
-                    btnSave.setDisable(true);
-                }
-                else {
-                    btnCreate.setDisable(true);
-                    btnSave.setDisable(false);
-                }
-            }
-        });
+        tabpane.getSelectionModel().selectedItemProperty()
+                .addListener((ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) -> {
+                    if (newTab.equals(tabTable) || newTab.equals(tabJob)) {
+                        btnCreate.setDisable(false);
+                        btnSave.setDisable(true);
+                    }
+                    else {
+                        btnCreate.setDisable(true);
+                        btnSave.setDisable(false);
+                    }
+                });
 
     }
 
     private void jobPriceColumns() {
         colTable.setCellValueFactory(new PropertyValueFactory<>("priceTable"));
-        colTable.setCellFactory(ComboBoxTableCell.forTableColumn(DBPriceTable.getList()));
-        colTable.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<JobPrice, PriceTable>>() {
+        colTable.setCellFactory(ComboBoxTableCell.forTableColumn(listPriceTable));
+        colTable.setOnEditCommit(event -> {
+            JobPrice j = event.getTableView().getItems().get(event.getTablePosition().getRow());
+            j.setPriceTable(event.getNewValue());
+            newPrices.add(j);
+            viewJobPrice.refresh();
 
-            @Override
-            public void handle(CellEditEvent<JobPrice, PriceTable> event) {
-                JobPrice j = event.getTableView().getItems().get(event.getTablePosition().getRow());
-                j.setPriceTable(event.getNewValue());
-                newPrices.add(j);
-                viewJobPrice.refresh();
-
-                if (!paneInfo.getChildren().contains(labelNotif))
-                    paneInfo.getChildren().add(labelNotif);
-            }
+            if (!paneInfo.getChildren().contains(labelNotif))
+                paneInfo.getChildren().add(labelNotif);
         });
 
         colJob.setCellValueFactory(new PropertyValueFactory<>("jobType"));
-        colJob.setCellFactory(ComboBoxTableCell.forTableColumn(DBJobType.getList()));
-        colJob.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<JobPrice, JobType>>() {
+        colJob.setCellFactory(ComboBoxTableCell.forTableColumn(listJobType));
+        colJob.setOnEditCommit(event -> {
+            JobPrice j = event.getTableView().getItems().get(event.getTablePosition().getRow());
+            j.setJobType(event.getNewValue());
+            newPrices.add(j);
+            viewJobPrice.refresh();
 
-            @Override
-            public void handle(CellEditEvent<JobPrice, JobType> event) {
-                JobPrice j = event.getTableView().getItems().get(event.getTablePosition().getRow());
-                j.setJobType(event.getNewValue());
-                newPrices.add(j);
-                viewJobPrice.refresh();
-
-                if (!paneInfo.getChildren().contains(labelNotif))
-                    paneInfo.getChildren().add(labelNotif);
-            }
+            if (!paneInfo.getChildren().contains(labelNotif))
+                paneInfo.getChildren().add(labelNotif);
         });
 
         colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
         colPrice.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
-        colPrice.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<JobPrice, Double>>() {
+        colPrice.setOnEditCommit(event -> {
+            JobPrice j = event.getTableView().getItems().get(event.getTablePosition().getRow());
+            j.setPrice(event.getNewValue());
+            newPrices.add(j);
+            viewJobPrice.refresh();
 
-            @Override
-            public void handle(CellEditEvent<JobPrice, Double> event) {
-                JobPrice j = event.getTableView().getItems().get(event.getTablePosition().getRow());
-                j.setPrice(event.getNewValue());
-                newPrices.add(j);
-                viewJobPrice.refresh();
-
-                if (!paneInfo.getChildren().contains(labelNotif))
-                    paneInfo.getChildren().add(labelNotif);
-            }
+            if (!paneInfo.getChildren().contains(labelNotif))
+                paneInfo.getChildren().add(labelNotif);
         });
     }
 
@@ -178,42 +170,27 @@ public class JobPriceCtrl implements FxmlInterface {
 
         colTableName.setCellFactory(TextFieldTableCell.forTableColumn());
 
-        colTableName.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<PriceTable, String>>() {
+        colTableName.setOnEditCommit(event -> {
+            PriceTable p = event.getTableView().getItems().get(event.getTablePosition().getRow());
 
-            @Override
-            public void handle(CellEditEvent<PriceTable, String> event) {
-                PriceTable p = event.getTableView().getItems().get(event.getTablePosition().getRow());
+            if (p.getId() == 0) {
+                p.setName(event.getNewValue());
 
-                if (p.getId() == 0) {
-                    p.setName(event.getNewValue());
+                DBPriceTable.insert(p);
 
-                    DBPriceTable.insert(p);
+                p = DBPriceTable.get(p.getName());
 
-                    p = DBPriceTable.get(p.getName());
+                List<JobPrice> list = new ArrayList<JobPrice>();
 
-                    List<JobPrice> list = new ArrayList<JobPrice>();
-
-                    for (JobType jobType : DBJobType.getList()) {
-                        list.add(new JobPrice(jobType, p, 0.0));
-                    }
-
-                    DBJobPrice.insert(list);
-                    AlertDialog.successAlert(p);
-                }
-                else {
-                    String old = new String(p.getName());
-                    p.setName(event.getNewValue());
-
-                    if (AlertDialog.updateAlert(p, old)) {
-                        DBPriceTable.update(p);
-                    }
-                    else {
-                        p.setName(old);
-                        viewPriceTable.refresh();
-                    }
-
+                for (JobType jobType : listJobType) {
+                    list.add(new JobPrice(jobType, p, 0.0));
                 }
 
+                DBJobPrice.insert(list);
+            }
+            else {
+                p.setName(event.getNewValue());
+                DBPriceTable.update(p);
             }
         });
     }
@@ -224,39 +201,27 @@ public class JobPriceCtrl implements FxmlInterface {
 
         colJobName.setCellFactory(TextFieldTableCell.forTableColumn());
 
-        colJobName.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<JobType, String>>() {
+        colJobName.setOnEditCommit(event -> {
+            JobType j = event.getTableView().getItems().get(event.getTablePosition().getRow());
 
-            @Override
-            public void handle(CellEditEvent<JobType, String> event) {
-                JobType j = event.getTableView().getItems().get(event.getTablePosition().getRow());
+            if (j.getId() == 0) {
+                j.setName(event.getNewValue());
 
-                if (j.getId() == 0) {
-                    j.setName(event.getNewValue());
+                DBJobType.insert(j);
 
-                    DBJobType.insert(j);
+                j = DBJobType.get(j.getName());
 
-                    j = DBJobType.get(j.getName());
+                List<JobPrice> list = new ArrayList<JobPrice>();
 
-                    List<JobPrice> list = new ArrayList<JobPrice>();
-
-                    for (PriceTable p : DBPriceTable.getList()) {
-                        list.add(new JobPrice(j, p, 0.0));
-                    }
-
-                    DBJobPrice.insert(list);
-                    AlertDialog.successAlert(j);
+                for (PriceTable p : listPriceTable) {
+                    list.add(new JobPrice(j, p, 0.0));
                 }
-                else {
-                    String old = new String(j.getName());
-                    j.setName(event.getNewValue());
 
-                    if (AlertDialog.updateAlert(j, old)) {
-                        DBJobType.update(j);
-                    }
-                    else {
-                        j.setName(old);
-                    }
-                }
+                DBJobPrice.insert(list);
+            }
+            else {
+                j.setName(event.getNewValue());
+                DBJobType.update(j);
             }
         });
     }
@@ -297,9 +262,6 @@ public class JobPriceCtrl implements FxmlInterface {
 
             if (paneInfo.getChildren().contains(labelNotif))
                 paneInfo.getChildren().remove(labelNotif);
-
-            AlertDialog.successAlert(new JobPrice());
-
         }
     }
 
@@ -308,20 +270,20 @@ public class JobPriceCtrl implements FxmlInterface {
     public void delete() {
         if (tabTable.isSelected()) {
             PriceTable p = viewPriceTable.getSelectionModel().getSelectedItem();
-            if (p != null && p.getId() != 0 && AlertDialog.deleteAlert(p)) {
+            if (p != null && p.getId() != 0) {
                 DBPriceTable.delete(p.getId());
             }
         }
         else if (tabJob.isSelected()) {
             JobType j = viewJobType.getSelectionModel().getSelectedItem();
-            if (j != null && j.getId() != 0 && AlertDialog.deleteAlert(j)) {
+            if (j != null && j.getId() != 0) {
                 DBJobType.delete(j.getId());
             }
         }
         else {
             JobPrice jp = viewJobPrice.getSelectionModel().getSelectedItem();
-            if (jp != null && jp.getId() != 0 && AlertDialog.deleteAlert(jp)) {
-                DBJobPrice.updatePrice(jp);
+            if (jp != null && jp.getId() != 0) {
+                DBJobPrice.update(jp);
             }
         }
     }

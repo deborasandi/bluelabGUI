@@ -2,7 +2,9 @@ package com.bluelab.invoice;
 
 
 import java.sql.Date;
+import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.util.Locale;
 
 import com.bluelab.client.Client;
 import com.bluelab.database.DBClient;
@@ -12,93 +14,83 @@ import com.bluelab.database.DBProductColor;
 import com.bluelab.job.Job;
 import com.bluelab.jobtype.JobType;
 import com.bluelab.productcolor.ProductColor;
-import com.bluelab.util.ImageTableCell;
+import com.bluelab.util.CheckBoxTableCell;
+import com.bluelab.util.ComboBoxSearch;
 import com.bluelab.util.ListFilter;
+import com.bluelab.util.RealTableCell;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
+import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.util.Callback;
 
 
 public class InvoiceCtrl {
 
-    @FXML
-    private ImageView imgFilter;
+    private static Locale ptBr = new Locale("pt", "BR");
 
     @FXML
-    private HBox contentFilter;
+    private VBox vbox;
+
+    private ComboBoxSearch<Client> cbxClient;
 
     @FXML
-    private Label lblFiltros;
+    private JFXComboBox<JobType> cbxJobType;
 
     @FXML
-    private Label lblNumFiltros;
+    private JFXComboBox<ProductColor> cbxProductColor;
 
     @FXML
-    private JFXComboBox<Client> client;
+    private JFXDatePicker datepickerInit;
 
     @FXML
-    private JFXComboBox<JobType> jobType;
+    private JFXDatePicker datepickerEnd;
 
     @FXML
-    private JFXComboBox<ProductColor> productColor;
-
-    @FXML
-    private JFXDatePicker initDate;
-
-    @FXML
-    private JFXDatePicker endDate;
-
-    @FXML
-    private ToggleButton isRepetition;
+    private ToggleButton toggleRepetition;
 
     @FXML
     private ToggleGroup repgroup;
 
     @FXML
-    private ToggleButton isNoRepetion;
+    private ToggleButton toggleNormal;
 
     @FXML
-    private ToggleButton isNoCost;
+    private ToggleButton toggleNoCost;
 
     @FXML
     private ToggleGroup costgroup;
 
     @FXML
-    private ToggleButton isCost;
+    private ToggleButton toggleCost;
 
     @FXML
-    private ToggleButton isPaid;
+    private ToggleButton togglePaid;
 
     @FXML
     private ToggleGroup paidgroup;
 
     @FXML
-    private ToggleButton isNoPaid;
+    private ToggleButton toggleOwing;
 
     @FXML
-    private VBox contentPane;
+    private Label labelOwing;
 
     @FXML
-    private HBox filterPane;
+    private Label labelQtdFiltered;
 
     @FXML
-    private Tab tabTable;
+    private ImageView imgFilter;
 
     @FXML
     private TableView<Job> viewJob;
@@ -116,9 +108,6 @@ public class InvoiceCtrl {
     private TableColumn<Job, Integer> colQtd;
 
     @FXML
-    private TableColumn<Job, Double> colShipping;
-
-    @FXML
     private TableColumn<Job, Date> colDate;
 
     @FXML
@@ -128,7 +117,13 @@ public class InvoiceCtrl {
     private TableColumn<Job, Boolean> colNoCost;
 
     @FXML
+    private TableColumn<Job, Double> colShipping;
+
+    @FXML
     private TableColumn<Job, Double> colTotal;
+
+    @FXML
+    private TableColumn<Job, Double> colTotalPaid;
 
     @FXML
     private TableColumn<Job, Boolean> colPaid;
@@ -140,6 +135,8 @@ public class InvoiceCtrl {
     private ObservableList<ProductColor> listProductColor;
 
     private ObservableList<Job> listJob;
+    
+    private double total;
 
     public void initialize() {
         viewJob.setEditable(true);
@@ -149,38 +146,41 @@ public class InvoiceCtrl {
         listProductColor = DBProductColor.getList();
         listJob = DBJob.getList();
 
-        listClient.addListener(new ListChangeListener<Client>() {
-
-            @Override
-            public void onChanged(Change<? extends Client> c) {
-                updateCboxClient();
-            }
-
+        listClient.addListener((Change<? extends Client> c) -> {
+            updateCboxClient();
         });
 
-        listJobType.addListener(new ListChangeListener<JobType>() {
-
-            @Override
-            public void onChanged(Change<? extends JobType> c) {
-                updateCboxJobType();
-            }
-
+        listJobType.addListener((Change<? extends JobType> c) -> {
+            updateCboxJobType();
         });
 
-        listProductColor.addListener(new ListChangeListener<ProductColor>() {
-
-            @Override
-            public void onChanged(Change<? extends ProductColor> c) {
-                updateCboxProductColor();
-            }
-
+        listProductColor.addListener((Change<? extends ProductColor> c) -> {
+            updateCboxProductColor();
         });
 
-        listJob.addListener(new ListChangeListener<Job>() {
+        listJob.addListener((Change<? extends Job> c) -> {
+            filter();
 
-            @Override
-            public void onChanged(Change<? extends Job> c) {
-                filter();
+            if (cbxClient.getValue().getId() > 0) {
+                labelOwing.setText(NumberFormat.getCurrencyInstance(ptBr).format(total));
+            }
+        });
+
+        cbxClient = new ComboBoxSearch<Client>();
+        vbox.getChildren().add(1, cbxClient);
+        cbxClient.setMaxWidth(Double.MAX_VALUE);
+
+        cbxClient.setOnAction(event -> {
+            filter();
+
+            if (cbxClient.getValue() == null)
+                return;
+            
+            if (cbxClient.getValue().getId() > 0) {
+                labelOwing.setText(NumberFormat.getCurrencyInstance(ptBr).format(total));
+            }
+            else {
+                labelOwing.setText("-");
             }
 
         });
@@ -192,74 +192,69 @@ public class InvoiceCtrl {
         viewJob.setItems(listJob);
 
         createColumns();
+
     }
 
     private void createColumns() {
+        viewJob.setEditable(true);
+
         colClient.setCellValueFactory(new PropertyValueFactory<>("client"));
+
         colJobType.setCellValueFactory(new PropertyValueFactory<>("jobPrice"));
+
         colProductColor.setCellValueFactory(new PropertyValueFactory<>("productColor"));
+
         colQtd.setCellValueFactory(new PropertyValueFactory<>("qtd"));
+
         colShipping.setCellValueFactory(new PropertyValueFactory<>("shipping"));
+        colShipping.setCellFactory(c -> new RealTableCell<Job>(false));
+
         colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+
         colRepetion.setCellValueFactory(new PropertyValueFactory<>("repetition"));
+        colRepetion.setCellFactory(c -> new CheckBoxTableCell());
+
         colNoCost.setCellValueFactory(new PropertyValueFactory<>("nocost"));
+        colNoCost.setCellFactory(c -> new CheckBoxTableCell());
+
         colTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
+        colTotal.setCellFactory(c -> new RealTableCell<Job>(false));
+
+        colTotalPaid.setCellValueFactory(new PropertyValueFactory<>("totalPaid"));
+        colTotalPaid.setCellFactory(c -> new RealTableCell<Job>(false));
+
         colPaid.setCellValueFactory(new PropertyValueFactory<>("paid"));
-
-        colPaid.setCellFactory(new Callback<TableColumn<Job, Boolean>, TableCell<Job, Boolean>>() {
-
-            @Override
-            public TableCell<Job, Boolean> call(TableColumn<Job, Boolean> param) {
-                return new com.bluelab.util.CheckBoxTableCell();
-            }
-        });
-
-        colRepetion.setCellFactory(new Callback<TableColumn<Job, Boolean>, TableCell<Job, Boolean>>() {
-
-            @Override
-            public TableCell<Job, Boolean> call(TableColumn<Job, Boolean> arg0) {
-                return new ImageTableCell();
-            }
-        });
-
-        colNoCost.setCellFactory(new Callback<TableColumn<Job, Boolean>, TableCell<Job, Boolean>>() {
-
-            @Override
-            public TableCell<Job, Boolean> call(TableColumn<Job, Boolean> arg0) {
-                return new ImageTableCell();
-            }
-        });
+        colPaid.setCellFactory(c -> new CheckBoxTableCell());
     }
 
     @FXML
     void filter() {
         ListFilter<Job> filter = new ListFilter<Job>(listJob);
 
-        Client c = client.getValue();
-        filter.filterClient(c);
+        Client c = cbxClient.getValue();
+        total = filter.filterClient(c);
 
-        JobType j = jobType.getValue();
+        JobType j = cbxJobType.getValue();
         filter.filterJobType(j);
 
-        ProductColor p = productColor.getValue();
+        ProductColor p = cbxProductColor.getValue();
         filter.filterProductColor(p);
 
-        filter.filterIsRepetition(isRepetition.isSelected(), isNoRepetion.isSelected());
+        filter.filterIsRepetition(toggleRepetition.isSelected(), toggleNormal.isSelected());
 
-        filter.filterIsNoCost(isCost.isSelected(), isNoCost.isSelected());
+        filter.filterIsNoCost(toggleCost.isSelected(), toggleNoCost.isSelected());
 
-        filter.filterIsPaid(isPaid.isSelected(), isNoPaid.isSelected());
+        filter.filterIsPaid(togglePaid.isSelected(), toggleOwing.isSelected());
 
-        LocalDate d = initDate.getValue();
+        LocalDate d = datepickerInit.getValue();
         filter.filterInitDate(d);
 
-        d = endDate.getValue();
+        d = datepickerEnd.getValue();
         filter.filterEndDate(d);
 
-        viewJob.setItems(FXCollections.observableArrayList(filter));
-
         if (filter.getNumFilter() > 0) {
-            lblNumFiltros.setText("(" + String.valueOf(filter.getNumFilter()) + ")");
+            viewJob.setItems(FXCollections.observableArrayList(filter));
+            labelQtdFiltered.setText("(" + String.valueOf(filter.getNumFilter()) + ")");
         }
         else {
             removeFilter();
@@ -268,39 +263,39 @@ public class InvoiceCtrl {
 
     @FXML
     void removeFilter() {
-        lblNumFiltros.setText("(0)");
+        labelQtdFiltered.setText("(0)");
 
         listJob = FXCollections.observableArrayList(DBJob.getList());
-        viewJob.getItems().addAll(listJob);
+        viewJob.setItems(listJob);
 
-        client.getSelectionModel().select(0);
-        jobType.getSelectionModel().select(0);
-        productColor.getSelectionModel().select(0);
-        isRepetition.setSelected(false);
-        isNoRepetion.setSelected(false);
-        isCost.setSelected(false);
-        isNoCost.setSelected(false);
-        isPaid.setSelected(false);
-        isNoPaid.setSelected(false);
-        initDate.getEditor().clear();
-        endDate.getEditor().clear();
+        cbxClient.getSelectionModel().select(0);
+        cbxJobType.getSelectionModel().select(0);
+        cbxProductColor.getSelectionModel().select(0);
+        toggleRepetition.setSelected(false);
+        toggleNormal.setSelected(false);
+        toggleCost.setSelected(false);
+        toggleNoCost.setSelected(false);
+        togglePaid.setSelected(false);
+        toggleOwing.setSelected(false);
+        datepickerInit.getEditor().clear();
+        datepickerEnd.getEditor().clear();
     }
 
     private void updateCboxClient() {
-        client.setItems(FXCollections.observableArrayList(listClient));
-        client.getItems().add(0, new Client("Todos"));
-        client.getSelectionModel().select(0);
+        cbxClient.setItems(FXCollections.observableArrayList(listClient));
+        cbxClient.getItems().add(0, new Client("Todos"));
+        cbxClient.getSelectionModel().select(0);
     }
 
     private void updateCboxJobType() {
-        jobType.setItems(FXCollections.observableArrayList(listJobType));
-        jobType.getItems().add(0, new JobType("Todos"));
-        jobType.getSelectionModel().select(0);
+        cbxJobType.setItems(FXCollections.observableArrayList(listJobType));
+        cbxJobType.getItems().add(0, new JobType("Todos"));
+        cbxJobType.getSelectionModel().select(0);
     }
 
     private void updateCboxProductColor() {
-        productColor.setItems(FXCollections.observableArrayList(listProductColor));
-        productColor.getItems().add(0, new ProductColor("Todos"));
-        productColor.getSelectionModel().select(0);
+        cbxProductColor.setItems(FXCollections.observableArrayList(listProductColor));
+        cbxProductColor.getItems().add(0, new ProductColor("Todos"));
+        cbxProductColor.getSelectionModel().select(0);
     }
 }

@@ -1,33 +1,53 @@
 package com.bluelab.client;
 
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+
+import javax.swing.JFileChooser;
 
 import com.bluelab.database.DBClient;
 import com.bluelab.database.DBPriceTable;
 import com.bluelab.pricetable.PriceTable;
 import com.bluelab.util.AlertDialog;
+import com.bluelab.util.ComboBoxSearch;
 import com.bluelab.util.FxmlInterface;
+import com.bluelab.util.IBGEAPI;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 
-import javafx.event.Event;
-import javafx.event.EventHandler;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
 
 
 public class ClientCtrl implements FxmlInterface {
+
+    @FXML
+    private GridPane grid;
+
+    @FXML
+    private JFXButton btnPrint;
 
     @FXML
     private JFXTextField name;
 
     @FXML
     private JFXTextField tel;
+    
+    @FXML
+    private JFXTextField email;
 
     @FXML
     private JFXTextField address;
@@ -45,7 +65,10 @@ public class ClientCtrl implements FxmlInterface {
     private JFXTextField number;
 
     @FXML
-    private JFXTextField city;
+    private ComboBoxSearch<String> city;
+
+    @FXML
+    private JFXTextField district;
 
     @FXML
     private JFXTextField cep;
@@ -62,8 +85,7 @@ public class ClientCtrl implements FxmlInterface {
     @FXML
     private JFXTextField respCel;
 
-    @FXML
-    private JFXComboBox<String> state;
+    private ComboBoxSearch<String> state;
 
     @FXML
     private JFXComboBox<PriceTable> priceTable;
@@ -75,58 +97,96 @@ public class ClientCtrl implements FxmlInterface {
     private TableColumn<Client, String> colClient;
 
     @FXML
+    private TableColumn<Client, String> colCity;
+
+    @FXML
     private TableColumn<Client, PriceTable> colTable;
 
     private Client currentClient;
 
+    private List<Client> selectedClient;
+
+    private IBGEAPI ibgeapi;
+
     public void initialize() {
         viewClient.setItems(DBClient.getList());
+        viewClient.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
-        priceTable.setItems(DBPriceTable.getList());
+        selectedClient = new ArrayList<Client>();
+
+        priceTable.setItems(DBPriceTable.list());
         priceTable.getSelectionModel().select(0);
 
-        String siglasEstados[] = { "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA",
-                "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO" };
-        List<String> stringList = new ArrayList<String>(Arrays.asList(siglasEstados));
-        state.getItems().addAll(stringList);
-        state.getSelectionModel().select("PR");
+        ibgeapi = new IBGEAPI();
+
+        state = new ComboBoxSearch<String>();
+        city = new ComboBoxSearch<String>();
+
+        state.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                city.setItems(FXCollections.observableList(ibgeapi.getCidades(newValue)));
+                city.getSelectionModel().clearSelection();
+            }
+        });
+
+        grid.getChildren().add(state);
+        grid.getChildren().add(city);
+
+        state.setMaxWidth(Double.MAX_VALUE);
+        city.setMaxWidth(Double.MAX_VALUE);
+
+        GridPane.setColumnIndex(state, 1);
+        GridPane.setRowIndex(state, 4);
+        GridPane.setColumnIndex(city, 3);
+        GridPane.setRowIndex(city, 4);
+
+        state.setItems(FXCollections.observableList(ibgeapi.getUfs()));
+        state.getSelectionModel().clearSelection();
 
         createColumns();
 
-        viewClient.setOnMouseClicked(new EventHandler<Event>() {
+        viewClient.setOnMouseClicked(event -> {
+            currentClient = viewClient.getSelectionModel().getSelectedItem();
+            if (currentClient != null) {
+                loadClient(currentClient);
 
-            @Override
-            public void handle(Event event) {
-                currentClient = viewClient.getSelectionModel().getSelectedItem();
-                if (currentClient != null)
-                    loadClient(currentClient);
+                if (selectedClient.contains(currentClient)) {
+                    selectedClient.remove(currentClient);
+                }
+                else {
+                    selectedClient.add(currentClient);
+                }
             }
         });
     }
 
     private void createColumns() {
-        colClient.setCellValueFactory(new PropertyValueFactory<>("clientName"));
+        colClient.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colCity.setCellValueFactory(new PropertyValueFactory<>("city"));
         colTable.setCellValueFactory(new PropertyValueFactory<>("priceTable"));
     }
 
     private void loadClient(Client c) {
-        name.setText(c.getClientName());
-        cpf.setText(c.getClientCpf());
-        tel.setText(c.getClientTel());
-        cel.setText(c.getClientCel());
+        name.setText(c.getName());
+        cpf.setText(c.getCpf());
+        tel.setText(c.getTel());
+        cel.setText(c.getCel());
+        email.setText(c.getEmail());
         address.setText(c.getAddress());
         number.setText(c.getNumber() == 0 ? "" : String.valueOf(c.getNumber()));
-        complement.setText(c.getComplement());
-        city.setText(c.getCity());
+        complement.setText(c.getCompl());
+        district.setText(c.getDistrict());
+        city.getSelectionModel().select(c.getCity());
         state.getSelectionModel().select(c.getState());
         cep.setText(c.getCep());
-        findTable(c.getPriceTable());
+        priceTable.getSelectionModel().select(c.getPriceTable());
         respName.setText(c.getRespName());
         respCpf.setText(c.getRespCpf());
         respTel.setText(c.getRespTel());
         respCel.setText(c.getRespCel());
 
         disableFields(true);
+        btnPrint.setDisable(false);
     }
 
     @Override
@@ -135,9 +195,11 @@ public class ClientCtrl implements FxmlInterface {
         cpf.setDisable(d);
         tel.setDisable(d);
         cel.setDisable(d);
+        email.setDisable(d);
         address.setDisable(d);
         number.setDisable(d);
         complement.setDisable(d);
+        district.setDisable(d);
         city.setDisable(d);
         state.setDisable(d);
         cep.setDisable(d);
@@ -153,6 +215,7 @@ public class ClientCtrl implements FxmlInterface {
         cpf.clear();
         tel.clear();
         cel.clear();
+        email.clear();
         respName.clear();
         respCpf.clear();
         respTel.clear();
@@ -160,19 +223,11 @@ public class ClientCtrl implements FxmlInterface {
         address.clear();
         number.clear();
         complement.clear();
-        city.clear();
-        state.getSelectionModel().select("PR");
+        district.clear();
+        city.getSelectionModel().clearSelection();
+        state.getSelectionModel().clearSelection();
         cep.clear();
         priceTable.getSelectionModel().select(0);
-    }
-
-    private void findTable(PriceTable p) {
-        for (PriceTable p1 : DBPriceTable.getList()) {
-            if (p1.getId() == p.getId()) {
-                priceTable.getSelectionModel().select(p1);
-                break;
-            }
-        }
     }
 
     @FXML
@@ -182,6 +237,7 @@ public class ClientCtrl implements FxmlInterface {
 
         clearFields();
         disableFields(false);
+        btnPrint.setDisable(true);
     }
 
     @FXML
@@ -195,18 +251,20 @@ public class ClientCtrl implements FxmlInterface {
     public void save() {
         Client c = new Client();
 
-        c.setClientName(name.getText());
-        c.setClientCpf(cpf.getText());
-        c.setClientTel(tel.getText());
-        c.setClientCel(cel.getText());
+        c.setName(name.getText());
+        c.setCpf(cpf.getText());
+        c.setTel(tel.getText());
+        c.setCel(cel.getText());
+        c.setEmail(email.getText());
         c.setRespName(respName.getText());
         c.setRespCpf(respCpf.getText());
         c.setRespTel(respTel.getText());
         c.setRespCel(respCel.getText());
         c.setAddress(address.getText());
         c.setNumber(number.getText().equals("") ? 0 : Integer.parseInt(number.getText()));
-        c.setComplement(complement.getText());
-        c.setCity(city.getText());
+        c.setDistrict(district.getText());
+        c.setCompl(complement.getText());
+        c.setCity(city.getSelectionModel().getSelectedItem());
         c.setState(state.getSelectionModel().getSelectedItem());
         c.setCep(cep.getText());
         c.setPriceTable(priceTable.getSelectionModel().getSelectedItem());
@@ -225,6 +283,7 @@ public class ClientCtrl implements FxmlInterface {
         clearFields();
         viewClient.refresh();
         disableFields(false);
+        btnPrint.setDisable(true);
     }
 
     @FXML
@@ -239,5 +298,53 @@ public class ClientCtrl implements FxmlInterface {
         }
 
         disableFields(false);
+        btnPrint.setDisable(true);
     }
+
+    @FXML
+    void print() {
+        if (currentClient == null)
+            return;
+
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new java.io.File("."));
+        chooser.setDialogTitle("choosertitle");
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setAcceptAllFileFilterUsed(false);
+
+        int returnVal = chooser.showOpenDialog(null);
+        if (returnVal != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+        Document document = new Document();
+
+        try {
+
+            PdfWriter.getInstance(document,
+                    new FileOutputStream(chooser.getSelectedFile().getAbsolutePath() + "/" + "Etiqueta.pdf"));
+            document.open();
+
+            for (Client client : selectedClient) {
+                document.add(new Paragraph("Destinatário:"));
+                document.add(new Paragraph(client.getName()));
+                document.add(new Paragraph(client.getAddress() + ", " + client.getNumber()));
+                document.add(new Paragraph(client.getCompl()));
+                document.add(new Paragraph(client.getDistrict()));
+                document.add(new Paragraph(client.getCity() + "-" + client.getState()));
+                document.add(new Paragraph(client.getCep()));
+                document.add(new Paragraph("Remetente:"));
+                document.add(new Paragraph("Destinatário:"));
+                // TODO dados lab
+                document.add(new Paragraph("-----------------------------------------------"));
+            }
+        }
+        catch (DocumentException de) {
+            System.err.println(de.getMessage());
+        }
+        catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
+        }
+        document.close();
+    }
+
 }

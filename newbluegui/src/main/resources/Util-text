@@ -4,3 +4,6 @@ ALTER TABLE child_table_name
   REFERENCES parent_table_name(parent_column_name) 
   ON DELETE CASCADE
   ON UPDATE CASCADE;
+  
+  clean compile assembly:single
+  

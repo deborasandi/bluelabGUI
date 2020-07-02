@@ -30,20 +30,25 @@ public class ListFilter<Job> extends ArrayList<Job> {
         numFilter = 0;
     }
 
-    public void filterClient(Client f) {
+    public double filterClient(Client f) {
         if (f == null || f.getId() == 0) {
             if (filterClient) {
                 filterClient = false;
                 numFilter--;
             }
-            return;
+            return 0;
         }
 
         List<Job> aux = new ArrayList<Job>();
-
+        double total = 0;
         for (Job j : this) {
-            if (((com.bluelab.job.Job) j).getClient().getId() == f.getId())
+            if (((com.bluelab.job.Job) j).getClient().getId() == f.getId()) {
                 aux.add(j);
+                
+                if(!((com.bluelab.job.Job) j).isPaid()) {
+                    total += ((com.bluelab.job.Job) j).getTotal() - ((com.bluelab.job.Job) j).getTotalPaid();
+                }
+            }
         }
 
         this.clear();
@@ -51,6 +56,8 @@ public class ListFilter<Job> extends ArrayList<Job> {
 
         filterClient = true;
         numFilter++;
+        
+        return total;
     }
 
     public void filterJobType(JobType f) {

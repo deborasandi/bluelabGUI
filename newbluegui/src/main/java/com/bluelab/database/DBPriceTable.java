@@ -1,15 +1,15 @@
 package com.bluelab.database;
 
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 
 import com.bluelab.pricetable.PriceTable;
 
@@ -31,143 +31,127 @@ public class DBPriceTable extends DBConnection {
     }
 
     private static void updateData() {
-        map = getMap();
+        String query = "SELECT * FROM pricetable p ORDER BY p.name";
 
-        list.clear();
-        list.addAll(map.values());
-        list.sort(new Comparator<PriceTable>() {
+        try {
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
+            
+            list.clear();
+            map.clear();
 
-            @Override
-            public int compare(PriceTable o1, PriceTable o2) {
-                return o1.getName().compareToIgnoreCase(o2.getName());
+            while (rs.next()) {
+                PriceTable j = new PriceTable();
+                j.setId(rs.getInt("id"));
+                j.setName(rs.getString("name"));
+                
+                list.add(j);
+                
+                map.put(j.getId(), j);
             }
-        });
+
+            st.close();
+        }
+        catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     public static void init() {
-        list = FXCollections.observableArrayList(new ArrayList<PriceTable>());
-
+        map = new HashMap<Integer, PriceTable>();
+        list = FXCollections.observableArrayList();
         updateData();
 
         setCallback(c -> Platform.runLater(() -> updateData()));
     }
 
     public static void insert(PriceTable p) {
-        String query = "insert into price_table (name) values (?)";
-
+        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
+        EntityTransaction et = null;
+ 
         try {
-            PreparedStatement stmt = connection.prepareStatement(query);
-
-            stmt.setString(1, p.getName());
-
-            stmt.execute();
-            stmt.close();
-
+            et = em.getTransaction();
+            et.begin();
+ 
+            em.persist(p);
+            et.commit();
+            
             callback.accept(new PriceTable());
-        }
-        catch (SQLException u) {
-            throw new RuntimeException(u);
-        }
-    }
-
-    public static Map<Integer, PriceTable> getMap() {
-        Map<Integer, PriceTable> list = new HashMap<Integer, PriceTable>();
-
-        String query = "SELECT * FROM price_table";
-
-        try {
-            Statement st = connection.createStatement();
-            ResultSet rs = st.executeQuery(query);
-
-            while (rs.next()) {
-                PriceTable p = new PriceTable();
-                p.setId(rs.getInt("id"));
-                p.setName(rs.getString("name"));
-
-                list.put(p.getId(), p);
+        } catch (Exception ex) {
+            if (et != null) {
+                et.rollback();
             }
-
-            st.close();
+            ex.printStackTrace();
+        } finally {
+            em.close();
         }
-        catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        return list;
     }
 
     public static PriceTable get(String name) {
-        PriceTable p = null;
-
-        String query = "SELECT * FROM price_table WHERE name = \"" + name + "\";";
-
-        try {
-            Statement st = connection.createStatement();
-            ResultSet rs = st.executeQuery(query);
-
-            while (rs.next()) {
-                p = new PriceTable();
-                p.setId(rs.getInt("id"));
-                p.setName(rs.getString("name"));
-            }
-
-            st.close();
-        }
-        catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        for (PriceTable priceTable : list) {
+            if (priceTable.getName().equals(name))
+                return priceTable;
         }
 
-        return p;
+        return null;
     }
 
     public static void update(PriceTable p) {
-        String query = "UPDATE price_table SET name = ? WHERE id = ?;";
-
+        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
+        EntityTransaction et = null;
+        
         try {
-            PreparedStatement stmt = connection.prepareStatement(query);
-
-            stmt.setString(1, p.getName());
-            stmt.setInt(2, p.getId());
-
-            stmt.execute();
-            stmt.close();
-
-            callback.accept(new PriceTable());
+            et = em.getTransaction();
+            et.begin();
+ 
+            em.merge(p);
+            et.commit();
             
+            callback.accept(new PriceTable());
+
             DBJobPrice.updateData();
-        }
-        catch (SQLException u) {
-            throw new RuntimeException(u);
+        } catch (Exception ex) {
+            if (et != null) {
+                et.rollback();
+            }
+            ex.printStackTrace();
+        } finally {
+            em.close();
         }
     }
 
     public static void delete(int id) {
-        String query = "DELETE FROM price_table WHERE id = ?;";
-
+        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
+        EntityTransaction et = null;
+        PriceTable p = null;
+ 
         try {
-            PreparedStatement stmt = connection.prepareStatement(query);
-
-            stmt.setInt(1, id);
-
-            stmt.execute();
-            stmt.close();
-
+            et = em.getTransaction();
+            et.begin();
+            p = em.find(PriceTable.class, id);
+            em.remove(p);
+            et.commit();
+            
             callback.accept(new PriceTable());
             
             DBJobPrice.updateData();
-        }
-        catch (SQLException u) {
-            throw new RuntimeException(u);
+        } catch (Exception ex) {
+            if (et != null) {
+                et.rollback();
+            }
+            ex.printStackTrace();
+        } finally {
+            em.close();
         }
     }
 
-    public static ObservableList<PriceTable> getList() {
+    public static ObservableList<PriceTable> list() {
         return list;
     }
 
     public static PriceTable get(int id) {
         return map.get(id);
     }
+
 }

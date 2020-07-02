@@ -1,11 +1,8 @@
 package com.bluelab.util;
 
 
-import com.bluelab.database.DBJob;
 import com.bluelab.job.Job;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.TableCell;
@@ -17,21 +14,11 @@ public class CheckBoxTableCell extends TableCell<Job, Boolean> {
 
     public CheckBoxTableCell() {
         checkBox = new CheckBox();
-        checkBox.setOnAction(new EventHandler<ActionEvent>() {
+        checkBox.setStyle("-fx-opacity: 1");
 
-            @Override
-            public void handle(ActionEvent event) {
-                commitEdit(checkBox.isSelected());
-                updateItem(checkBox.isSelected(), false);
-                Job j = (Job) getTableView().getItems().get(getTableRow().getIndex());
-                boolean old = j.isPaid();
-                j.setPaid(checkBox.isSelected());
-                updateValue(j, old);
-            }
-        });
         setGraphic(checkBox);
         setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-        setEditable(true);
+        setDisable(true);
     }
 
     @Override
@@ -44,9 +31,4 @@ public class CheckBoxTableCell extends TableCell<Job, Boolean> {
             setGraphic(checkBox);
         }
     }
-
-    private void updateValue(Job j, boolean old) {
-        DBJob.update(j.getId(), j.isPaid());
-    }
-
 }

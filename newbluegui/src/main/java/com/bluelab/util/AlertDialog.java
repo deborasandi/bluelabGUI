@@ -29,7 +29,7 @@ public class AlertDialog {
     }
     
     public static boolean updateAlert(Client c) {
-        String content = "Deseja alterar " + c.getClientName() + "?";
+        String content = "Deseja alterar " + c.getName() + "?";
         boolean result = updateAlert(c.getClassName(), content);
         
         return result;
@@ -58,7 +58,7 @@ public class AlertDialog {
     }
     
     public static boolean updateAlert(Job j) {
-        String content = "Deseja alterar " + j.getClient().getClientName() + " - "
+        String content = "Deseja alterar " + j.getClient().getName() + " - "
                 + j.getJobPrice().getJobType().getName() + "?";
         boolean result = updateAlert(j.getClassName(), content);
         
@@ -77,7 +77,7 @@ public class AlertDialog {
     }
     
     public static boolean deleteAlert(Client c) {
-        String content = "Excluir " + c.getClientName() + "?";
+        String content = "Excluir " + c.getName() + "?";
         boolean result = deleteAlert(c.getClassName(), content);
         
         return result;
@@ -105,7 +105,7 @@ public class AlertDialog {
     }
     
     public static boolean deleteAlert(Job j) {
-        String content = "Excluir " + j.getClient().getClientName() + " - " + j.getJobPrice().getJobType().getName() + "?";
+        String content = "Excluir " + j.getClient().getName() + " - " + j.getJobPrice().getJobType().getName() + "?";
         boolean result = deleteAlert(j.getClassName(), content);
         
         return result;
@@ -163,7 +163,7 @@ public class AlertDialog {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Cliente");
         alert.setHeaderText("Novo cliente");
-        alert.setContentText("Deseja salvar " + c.getClientName() + "?");
+        alert.setContentText("Deseja salvar " + c.getName() + "?");
 
         Optional<ButtonType> result = alert.showAndWait();
 
@@ -174,7 +174,7 @@ public class AlertDialog {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Trabalho");
         alert.setHeaderText("Novo Trabalho");
-        alert.setContentText("Deseja salvar " + j.getClient().getClientName() + " - "
+        alert.setContentText("Deseja salvar " + j.getClient().getName() + " - "
                 + j.getJobPrice().getJobType().getName() + "?");
 
         Optional<ButtonType> result = alert.showAndWait();
@@ -195,7 +195,7 @@ public class AlertDialog {
             alert.setHeaderText("Remover Pagamento");
         }
 
-        alert.setContentText("Deseja alterar " + j.getClient().getClientName() + " - "
+        alert.setContentText("Deseja alterar " + j.getClient().getName() + " - "
                 + j.getJobPrice().getJobType().getName() + "?");
 
         Optional<ButtonType> result = alert.showAndWait();

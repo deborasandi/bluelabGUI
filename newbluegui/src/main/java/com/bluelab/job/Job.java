@@ -1,31 +1,78 @@
 package com.bluelab.job;
 
 
+import java.io.Serializable;
 import java.sql.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import com.bluelab.client.Client;
 import com.bluelab.jobprice.JobPrice;
 import com.bluelab.productcolor.ProductColor;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+@Entity
+@Table(name = "job")
+public class Job implements Serializable{
 
-
-public class Job {
-
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true)
     private int id;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id")
     private Client client;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "jobprice_id")
     private JobPrice jobPrice;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "productcolor_id")
     private ProductColor productColor;
+    
+    @Column(name = "qtd")
     private int qtd;
+    
+    @Column(name = "shipping")
     private double shipping;
+    
+    @Column(name = "date")
     private Date date;
+    
+    @Column(name = "isrepetition")
     private boolean repetition;
+    
+    @Column(name = "isnocost")
     private boolean nocost;
+    
+    @Column(name = "total")
     private double total;
+    
+    @Column(name = "ispaid")
     private boolean paid;
-
-    private BooleanProperty paidProperty = new SimpleBooleanProperty();
+    
+    @Column(name = "totalpaid")
+    private double totalPaid;
+    
+    @Column(name = "repvalue")
+    private double repValue;
+    
+    @Column(name = "obs")
+    private String obs;
 
     public Job() {
         super();
@@ -85,12 +132,6 @@ public class Job {
 
     public void setRepetition(boolean repetition) {
         this.repetition = repetition;
-        paidProperty.set(paid);
-    }
-
-    public BooleanProperty paidProperty() {
-        paidProperty.set(paid);
-        return paidProperty;
     }
 
     public boolean isNocost() {
@@ -109,14 +150,6 @@ public class Job {
         this.paid = paid;
     }
 
-    public BooleanProperty getPaidProperty() {
-        return paidProperty;
-    }
-
-    public void setPaidProperty(BooleanProperty paidProperty) {
-        this.paidProperty = paidProperty;
-    }
-
     public double getTotal() {
         return total;
     }
@@ -133,6 +166,30 @@ public class Job {
         this.productColor = productColor;
     }
 
+    public double getTotalPaid() {
+        return totalPaid;
+    }
+
+    public void setTotalPaid(double totalPaid) {
+        this.totalPaid = totalPaid;
+    }
+
+    public double getRepValue() {
+        return repValue;
+    }
+
+    public void setRepValue(double repValue) {
+        this.repValue = repValue;
+    }
+
+    public String getObs() {
+        return obs;
+    }
+
+    public void setObs(String obs) {
+        this.obs = obs;
+    }
+    
     public String getClassName() {
         return "Trabalho";
     }

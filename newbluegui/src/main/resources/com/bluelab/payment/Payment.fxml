@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bluelab.payment.PaymentCtrl">
+	<children>
+		<VBox styleClass="general-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+			<children>
+				<HBox styleClass="button-panel" VBox.vgrow="NEVER">
+					<children>
+						<JFXButton fx:id="btnNew" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" disable="true" onAction="#create">
+							<graphic>
+								<ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+									<image>
+										<Image url="@../../../icons/new.png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</JFXButton>
+						<JFXButton fx:id="btnEdit" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" disable="true">
+							<graphic>
+								<ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+									<image>
+										<Image url="@../../../icons/edit.png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</JFXButton>
+						<JFXButton fx:id="btnSave" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" disable="true">
+							<graphic>
+								<ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+									<image>
+										<Image url="@../../../icons/save.png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</JFXButton>
+						<JFXButton fx:id="btnDelete" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" disable="true" onAction="#delete">
+							<graphic>
+								<ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+									<image>
+										<Image url="@../../../icons/delete2.png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</JFXButton>
+					</children>
+				</HBox>
+				<JFXTabPane fx:id="tabpane" styleClass="hbox-tab" VBox.vgrow="ALWAYS">
+					<tabs>
+						<Tab fx:id="tabInvoice" closable="false" text="Lançamentos">
+							<graphic>
+								<ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+									<image>
+										<Image url="@../../../icons/business.png" />
+									</image>
+								</ImageView>
+							</graphic>
+							<content>
+								<AnchorPane fx:id="paneInvoice" />
+							</content>
+						</Tab>
+						<Tab text="Pagamentos">
+							<content>
+								<AnchorPane>
+									<children>
+										<BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+											<center>
+												<TableView fx:id="viewPayment" BorderPane.alignment="CENTER">
+													<columns>
+														<TableColumn fx:id="colClient" prefWidth="150.0" text="Cliente" />
+														<TableColumn fx:id="colDate" prefWidth="75.0" text="Data" />
+														<TableColumn fx:id="colValue" prefWidth="75.0" text="Valor" />
+													</columns>
+												</TableView>
+											</center>
+											<right>
+												<AnchorPane prefWidth="190.0">
+													<children>
+														<TitledPane animated="false" collapsible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+															<content>
+																<VBox fx:id="vbox" styleClass="vbox-filter">
+																	<children>
+																		<Label text="Cliente" />
+																		<JFXDatePicker fx:id="datepicker" maxWidth="1.7976931348623157E308" onAction="#filter" promptText="Data">
+																			<VBox.margin>
+																				<Insets top="10.0" />
+																			</VBox.margin>
+																		</JFXDatePicker>
+																	</children>
+																</VBox>
+															</content>
+														</TitledPane>
+													</children>
+												</AnchorPane>
+											</right>
+											<top>
+												<HBox alignment="CENTER_RIGHT" BorderPane.alignment="CENTER">
+													<children>
+														<Label text="Filtros:" />
+														<Label fx:id="labelQtdFiltered" text="(0)" />
+														<ImageView fx:id="imgFilter" fitHeight="15.0" fitWidth="15.0" onMouseClicked="#removeFilter" pickOnBounds="true" preserveRatio="true">
+															<image>
+																<Image url="@../../../icons/remove.png" />
+															</image>
+														</ImageView>
+													</children>
+													<BorderPane.margin>
+														<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+													</BorderPane.margin>
+												</HBox>
+											</top>
+										</BorderPane>
+									</children>
+								</AnchorPane>
+							</content>
+							<graphic>
+								<ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+									<image>
+										<Image url="@../../../icons/calendario%20(1).png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</Tab>
+					</tabs>
+				</JFXTabPane>
+			</children>
+		</VBox>
+	</children>
+</AnchorPane>

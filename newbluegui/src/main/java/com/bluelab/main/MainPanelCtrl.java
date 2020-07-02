@@ -4,9 +4,9 @@ package com.bluelab.main;
 import java.io.IOException;
 
 import com.bluelab.client.ClientCtrl;
-import com.bluelab.invoice.InvoiceCtrl;
 import com.bluelab.job.JobCtrl;
 import com.bluelab.jobprice.JobPriceCtrl;
+import com.bluelab.payment.PaymentCtrl;
 import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.transitions.hamburger.HamburgerBackArrowBasicTransition;
 
@@ -48,44 +48,35 @@ public class MainPanelCtrl {
     @FXML
     private ToggleButton btnInvoice;
 
+    @FXML
+    private ToggleButton btnStatistic;
+
     private AnchorPane clientPanel;
 
     private AnchorPane jobPricePanel;
 
     private AnchorPane jobPanel;
 
-    private AnchorPane invoicePanel;
-
-    private ClientCtrl clientCtrl;
-
-    private InvoiceCtrl invoiceCtrl;
-
-    private JobCtrl jobCtrl;
-
-    private JobPriceCtrl jobPriceCtrl;
+    private AnchorPane paymentPanel;
 
     public void initialize() {
         try {
             FXMLLoader loader = new FXMLLoader(ClientCtrl.class.getResource("Client.fxml"));
             clientPanel = loader.load();
-            clientCtrl = loader.getController();
 
-            loader = new FXMLLoader(InvoiceCtrl.class.getResource("Invoice.fxml"));
-            invoicePanel = loader.load();
-            invoiceCtrl = loader.getController();
+            loader = new FXMLLoader(PaymentCtrl.class.getResource("Payment.fxml"));
+            paymentPanel = loader.load();
 
             loader = new FXMLLoader(JobCtrl.class.getResource("Job.fxml"));
             jobPanel = loader.load();
-            jobCtrl = loader.getController();
 
             loader = new FXMLLoader(JobPriceCtrl.class.getResource("JobPrice.fxml"));
             jobPricePanel = loader.load();
-            jobPriceCtrl = loader.getController();
 
             HBox.setHgrow(clientPanel, Priority.ALWAYS);
             HBox.setHgrow(jobPricePanel, Priority.ALWAYS);
             HBox.setHgrow(jobPanel, Priority.ALWAYS);
-            HBox.setHgrow(invoicePanel, Priority.ALWAYS);
+            HBox.setHgrow(paymentPanel, Priority.ALWAYS);
         }
         catch (IOException e) {
             // TODO Auto-generated catch block
@@ -111,6 +102,7 @@ public class MainPanelCtrl {
             btnJobs.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
             btnTables.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
             btnInvoice.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+            btnStatistic.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
             vboxMenu.setPrefWidth(90.0);
         }
         else {
@@ -118,6 +110,7 @@ public class MainPanelCtrl {
             btnJobs.setContentDisplay(ContentDisplay.LEFT);
             btnTables.setContentDisplay(ContentDisplay.LEFT);
             btnInvoice.setContentDisplay(ContentDisplay.LEFT);
+            btnStatistic.setContentDisplay(ContentDisplay.LEFT);
             vboxMenu.setPrefWidth(220.0);
         }
     }
@@ -161,7 +154,7 @@ public class MainPanelCtrl {
         if (mainPanel.getChildren().size() > 1)
             mainPanel.getChildren().remove(1);
 
-        mainPanel.getChildren().add(invoicePanel);
+        mainPanel.getChildren().add(paymentPanel);
 
         if (!btnInvoice.isSelected())
             btnInvoice.setSelected(true);

@@ -5,10 +5,11 @@
 <?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXDatePicker?>
 <?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXTextArea?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -69,14 +70,14 @@
                   <Insets />
                </VBox.margin>
             </HBox>
-            <HBox styleClass="hbox-main" VBox.vgrow="ALWAYS">
-               <children>
-                  <GridPane prefWidth="500.0" HBox.hgrow="SOMETIMES">
+            <SplitPane dividerPositions="0.5" VBox.vgrow="ALWAYS">
+               <items>
+                  <GridPane fx:id="grid">
                      <columnConstraints>
-                        <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="10.0" />
-                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="10.0" />
-                        <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="10.0" prefWidth="70.0" />
-                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="10.0" />
+                        <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="10.0" prefWidth="120.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="10.0" prefWidth="200.0" />
+                        <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="10.0" prefWidth="80.0" />
+                        <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="10.0" prefWidth="200.0" />
                         <ColumnConstraints />
                         <ColumnConstraints />
                      </columnConstraints>
@@ -86,7 +87,9 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
-                        <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="BOTTOM" vgrow="NEVER" />
+                        <RowConstraints maxHeight="70.0" minHeight="10.0" valignment="CENTER" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="TOP" vgrow="NEVER" />
                      </rowConstraints>
                      <children>
                         <JFXTabPane GridPane.columnSpan="4">
@@ -103,24 +106,14 @@
                            </tabs>
                         </JFXTabPane>
                         <Label text="Cliente:" GridPane.rowIndex="1" />
-                        <Label text="Trabalho:" GridPane.rowIndex="2" />
-                        <Label text="Quantidade:" GridPane.rowIndex="3" />
-                        <Label text="Frete:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                        <Label text="Data:" GridPane.rowIndex="4" />
-                        <JFXComboBox fx:id="client" maxWidth="1.7976931348623157E308" onAction="#loadJobPrice" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />
-                        <JFXComboBox fx:id="jobPrice" maxWidth="1.7976931348623157E308" onAction="#verifyPrice" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <JFXDatePicker fx:id="date" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                        <HBox spacing="15.0" GridPane.columnIndex="3" GridPane.rowIndex="4">
-                           <children>
-                              <JFXCheckBox fx:id="repetition" onAction="#calcTotal" text="Repetição" HBox.hgrow="NEVER" />
-                              <JFXCheckBox fx:id="nocost" onAction="#calcTotal" text="Sem Custo" HBox.hgrow="NEVER" />
-                           </children>
-                           <padding>
-                              <Insets top="10.0" />
-                           </padding>
-                        </HBox>
-                        <Spinner fx:id="jobQtd" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        <HBox alignment="BOTTOM_RIGHT" GridPane.columnIndex="3" GridPane.rowIndex="5">
+                        <Label text="Trabalho:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <Label text="Quantidade:" GridPane.rowIndex="2" />
+                        <Label text="Frete:" GridPane.rowIndex="3" />
+                        <Label text="Data:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                        <JFXComboBox fx:id="jobPrice" maxWidth="1.7976931348623157E308" onAction="#verifyPrice" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                        <JFXDatePicker fx:id="date" maxWidth="1.7976931348623157E308" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                        <Spinner fx:id="jobQtd" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <HBox alignment="BOTTOM_RIGHT" GridPane.columnIndex="3" GridPane.rowIndex="7">
                            <children>
                               <Label text="Total:">
                                  <font>
@@ -134,16 +127,32 @@
                               </Label>
                            </children>
                            <GridPane.margin>
-                              <Insets top="30.0" />
+                              <Insets />
                            </GridPane.margin>
                         </HBox>
-                        <Spinner fx:id="shipping" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                        <Spinner fx:id="shipping" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                         <Label text="Cor:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                         <JFXComboBox fx:id="productColor" maxWidth="1.7976931348623157E308" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                        <Label text="Valor de Repetição:" GridPane.rowIndex="4" />
+                        <Spinner fx:id="repetitionValue" disable="true" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <HBox alignment="BOTTOM_LEFT" maxWidth="1.7976931348623157E308" spacing="10.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="5" GridPane.valignment="BOTTOM">
+                           <children>
+                              <JFXCheckBox fx:id="repetition" maxWidth="1.7976931348623157E308" text="Repetição" />
+                              <JFXCheckBox fx:id="nocost" text="Sem Custo" />
+                           </children>
+                        </HBox>
+                        <Label text="Observação:" GridPane.rowIndex="6" />
+                        <JFXTextArea fx:id="obs" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="6">
+                           <GridPane.margin>
+                              <Insets top="10.0" />
+                           </GridPane.margin>
+                        </JFXTextArea>
                      </children>
+                     <padding>
+                        <Insets right="10.0" />
+                     </padding>
                   </GridPane>
-                  <Separator orientation="VERTICAL" HBox.hgrow="NEVER" />
-                  <TableView fx:id="viewJob" HBox.hgrow="ALWAYS">
+                  <TableView fx:id="viewJob">
                      <columns>
                         <TableColumn fx:id="colClient" prefWidth="150.0" text="Cliente" />
                         <TableColumn fx:id="colJobType" prefWidth="150.0" text="Trabalho" />
@@ -151,8 +160,8 @@
                         <TableColumn fx:id="colDate" prefWidth="75.0" text="Data" />
                      </columns>
                   </TableView>
-               </children>
-            </HBox>
+               </items>
+            </SplitPane>
          </children>
       </VBox>
    </children>

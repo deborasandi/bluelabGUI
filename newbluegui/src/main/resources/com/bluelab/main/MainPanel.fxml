@@ -58,7 +58,16 @@
                      <graphic>
                         <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../../icons/dinheiro.png" />
+                              <Image url="@../../../icons/recibo.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </ToggleButton>
+                  <ToggleButton fx:id="btnStatistic" alignment="TOP_LEFT" layoutX="15.0" layoutY="240.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="button" text="Estatísticas" toggleGroup="$menu">
+                     <graphic>
+                        <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../icons/grafico.png" />
                            </image>
                         </ImageView>
                      </graphic>
