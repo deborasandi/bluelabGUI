@@ -137,8 +137,11 @@ public class InvoiceCtrl {
     private ObservableList<Job> listJob;
     
     private double total;
+    
+    private boolean disableFilter;
 
     public void initialize() {
+    	disableFilter = false;
         viewJob.setEditable(true);
 
         listClient = DBClient.getList();
@@ -229,6 +232,9 @@ public class InvoiceCtrl {
 
     @FXML
     void filter() {
+    	if(disableFilter)
+    		return;
+    	
         ListFilter<Job> filter = new ListFilter<Job>(listJob);
 
         Client c = cbxClient.getValue();
@@ -263,6 +269,7 @@ public class InvoiceCtrl {
 
     @FXML
     void removeFilter() {
+    	disableFilter = true;
         labelQtdFiltered.setText("(0)");
 
         listJob = FXCollections.observableArrayList(DBJob.getList());
@@ -279,6 +286,7 @@ public class InvoiceCtrl {
         toggleOwing.setSelected(false);
         datepickerInit.getEditor().clear();
         datepickerEnd.getEditor().clear();
+        disableFilter = false;
     }
 
     private void updateCboxClient() {

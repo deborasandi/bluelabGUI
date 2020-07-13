@@ -283,6 +283,7 @@ public class JobPriceCtrl implements FxmlInterface {
         else {
             JobPrice jp = viewJobPrice.getSelectionModel().getSelectedItem();
             if (jp != null && jp.getId() != 0) {
+            	jp.setPrice(0.0);
                 DBJobPrice.update(jp);
             }
         }

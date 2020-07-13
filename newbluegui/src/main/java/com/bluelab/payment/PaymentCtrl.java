@@ -29,6 +29,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -109,6 +110,16 @@ public class PaymentCtrl implements FxmlInterface {
         });
 
         colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+//        colDate.setCellFactory(TextFieldTableCell.forTableColumn());
+        colDate.setOnEditCommit(event -> {
+            Payment p = event.getTableView().getItems().get(event.getTablePosition().getRow());
+            p.setDate(event.getNewValue());
+
+            if (p.getValue() > 0) {
+                DBPayment.update(p);
+                createJobPayment(p);
+            }
+        });
 
         colValue.setCellValueFactory(new PropertyValueFactory<>("value"));
         colValue.setCellFactory(c -> new RealTableCell<Payment>(true));
