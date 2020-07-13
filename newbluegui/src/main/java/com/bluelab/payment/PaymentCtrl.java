@@ -13,6 +13,7 @@ import com.bluelab.database.DBPayment;
 import com.bluelab.invoice.InvoiceCtrl;
 import com.bluelab.job.Job;
 import com.bluelab.util.ComboBoxSearch;
+import com.bluelab.util.DateEditingCell;
 import com.bluelab.util.DateUtil;
 import com.bluelab.util.FxmlInterface;
 import com.bluelab.util.RealTableCell;
@@ -24,7 +25,9 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.DateCell;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.ComboBoxTableCell;
@@ -110,7 +113,11 @@ public class PaymentCtrl implements FxmlInterface {
         });
 
         colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
-//        colDate.setCellFactory(TextFieldTableCell.forTableColumn());
+        
+        colDate.setCellFactory(column -> {
+            return new DateEditingCell();
+        });
+        
         colDate.setOnEditCommit(event -> {
             Payment p = event.getTableView().getItems().get(event.getTablePosition().getRow());
             p.setDate(event.getNewValue());
