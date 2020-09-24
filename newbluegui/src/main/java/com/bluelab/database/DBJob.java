@@ -11,12 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
-
-import com.bluelab.client.Client;
 import com.bluelab.job.Job;
 import com.bluelab.jobprice.JobPrice;
 
@@ -86,65 +80,79 @@ public class DBJob extends DBConnection {
 	}
 
 	public static void insert(Job j) {
-		EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-		EntityTransaction et = null;
+		String query = "INSERT INTO job (client_id, job_price_id, color_id, qtd, shipping, date, isrepetition, isnocost, ispaid, total, totalpaid, repvalue, obs) VALUES"
+				+ "(?, ?, ?, ?, ?, ?, ?, ?);";
 
 		try {
-			et = em.getTransaction();
-			et.begin();
+			PreparedStatement stmt = connection.prepareStatement(query);
 
-			em.persist(j);
-			et.commit();
+			stmt.setInt(1, j.getClient().getId());
+			stmt.setInt(2, j.getJobPrice().getId());
+			stmt.setInt(3, j.getProductColor().getId());
+			stmt.setInt(4, j.getQtd());
+			stmt.setDouble(5, j.getShipping());
+			stmt.setDate(6, j.getDate());
+			stmt.setBoolean(7, j.isRepetition());
+			stmt.setBoolean(8, j.isNocost());
+			stmt.setBoolean(9, j.isPaid());
+			stmt.setDouble(10, j.getTotal());
+			stmt.setDouble(11, j.getTotalPaid());
+			stmt.setDouble(12, j.getRepValue());
+			stmt.setString(13, j.getObs());
+
+			stmt.execute();
+			stmt.close();
 
 			callback.accept(new Job());
-		} catch (Exception ex) {
-			if (et != null) {
-				et.rollback();
-			}
-			ex.printStackTrace();
-		} finally {
-			em.close();
+		} catch (SQLException u) {
+			throw new RuntimeException(u);
 		}
-	}
-
-	public static List<Job> list(Client c) {
-		EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-
-		String strQuery = "SELECT p FROM Job p WHERE p.paid = false AND p.client.id = " + c.getId()
-				+ " ORDER BY p.date";
-
-		TypedQuery<Job> tq = em.createQuery(strQuery, Job.class);
-
-		try {
-			return tq.getResultList();
-		} catch (NoResultException ex) {
-			ex.printStackTrace();
-		} finally {
-			em.close();
-		}
-
-		return null;
 	}
 
 	public static void update(Job j) {
-		EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-		EntityTransaction et = null;
+		String query = "UPDATE job SET client_id = ?, job_price_id = ?, color_id = ?, qtd = ?, shipping = ?, date = ?, isrepetition = ?, isnocost = ?, ispaid = ?, total = ?, totalpaid = ?, repvalue = ?, obs = ? WHERE id = ?";
 
 		try {
-			et = em.getTransaction();
-			et.begin();
+			PreparedStatement stmt = connection.prepareStatement(query);
 
-			em.merge(j);
-			et.commit();
+			stmt.setInt(1, j.getClient().getId());
+			stmt.setInt(2, j.getJobPrice().getId());
+			stmt.setInt(3, j.getProductColor().getId());
+			stmt.setInt(4, j.getQtd());
+			stmt.setDouble(5, j.getShipping());
+			stmt.setDate(6, j.getDate());
+			stmt.setBoolean(7, j.isRepetition());
+			stmt.setBoolean(8, j.isNocost());
+			stmt.setBoolean(9, j.isPaid());
+			stmt.setDouble(10, j.getTotal());
+			stmt.setDouble(11, j.getTotalPaid());
+			stmt.setDouble(12, j.getRepValue());
+			stmt.setString(13, j.getObs());
+
+			stmt.execute();
+			stmt.close();
 
 			callback.accept(new Job());
-		} catch (Exception ex) {
-			if (et != null) {
-				et.rollback();
-			}
-			ex.printStackTrace();
-		} finally {
-			em.close();
+		} catch (SQLException u) {
+			throw new RuntimeException(u);
+		}
+	}
+
+	public static void update(int id, boolean paid) {
+		String query = "UPDATE job SET ispaid = ? WHERE id = ?";
+
+		try {
+			PreparedStatement stmt = connection.prepareStatement(query);
+
+			stmt.setBoolean(1, paid);
+			stmt.setInt(2, id);
+
+			stmt.execute();
+			stmt.close();
+
+			callback.accept(new Job());
+		} catch (SQLException u) {
+			throw new RuntimeException(u);
 		}
 	}
 

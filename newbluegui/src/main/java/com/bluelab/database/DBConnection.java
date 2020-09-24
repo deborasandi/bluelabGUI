@@ -4,17 +4,11 @@ package com.bluelab.database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
 public class DBConnection {
-
-    protected static final EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence
-            .createEntityManagerFactory("bluelab");
 
     private static String url = DBParams.URL.valueOf();
     private static String user = DBParams.USER.valueOf();
@@ -40,9 +34,5 @@ public class DBConnection {
         DBJob.init();
         DBPayment.init();
         DBJobPayment.init();
-    }
-
-    public static void close() {
-        ENTITY_MANAGER_FACTORY.close();
     }
 }

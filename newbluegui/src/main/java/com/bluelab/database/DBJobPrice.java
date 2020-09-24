@@ -10,9 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-
 import com.bluelab.jobprice.JobPrice;
 
 import javafx.application.Platform;
@@ -71,48 +68,53 @@ public class DBJobPrice extends DBConnection {
     }
 
     public static void insert(List<JobPrice> list) {
-        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-        EntityTransaction et = null;
- 
-        try {
-            et = em.getTransaction();
-            et.begin();
- 
-            for (JobPrice p : list) {
-                em.persist(p);
-            }
-            et.commit();
-            
-            callback.accept(new JobPrice());
-        } catch (Exception ex) {
-            if (et != null) {
-                et.rollback();
-            }
-            ex.printStackTrace();
-        } finally {
-            em.close();
-        }
+    	 String query = "insert into job_price (price_table_id, job_type_id, price) values (?, ?, ?)";
+
+         for (int i = 1; i < list.size(); i++) {
+             query += ",(?, ?, ?)";
+         }
+
+         query += ";";
+
+         try {
+             PreparedStatement stmt = connection.prepareStatement(query);
+
+             int i = 0;
+             for (JobPrice j : list) {
+                 stmt.setInt(i + 1, j.getPriceTable().getId());
+                 stmt.setInt(i + 2, j.getJobType().getId());
+                 stmt.setDouble(i + 3, j.getPrice());
+
+                 i += 3;
+             }
+
+             stmt.execute();
+             stmt.close();
+
+             callback.accept(new JobPrice());
+         }
+         catch (SQLException u) {
+             throw new RuntimeException(u);
+         }
     }
 
-    public static void insert(JobPrice p) {
-        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-        EntityTransaction et = null;
- 
+    public static void insert(JobPrice jp) {
+        String query = "insert into job_price (price_table_id, job_type_id, price) values (?, ?, ?)";
+
         try {
-            et = em.getTransaction();
-            et.begin();
- 
-            em.persist(p);
-            et.commit();
-            
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            stmt.setInt(1, jp.getPriceTable().getId());
+            stmt.setInt(2, jp.getJobType().getId());
+            stmt.setDouble(3, jp.getPrice());
+
+            stmt.execute();
+            stmt.close();
+
             callback.accept(new JobPrice());
-        } catch (Exception ex) {
-            if (et != null) {
-                et.rollback();
-            }
-            ex.printStackTrace();
-        } finally {
-            em.close();
+        }
+        catch (SQLException u) {
+            throw new RuntimeException(u);
         }
     }
 
@@ -135,27 +137,24 @@ public class DBJobPrice extends DBConnection {
         }
     }
 
-    public static void update(JobPrice p) {
-        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-        EntityTransaction et = null;
-        
-        try {
-            et = em.getTransaction();
-            et.begin();
- 
-            em.merge(p);
-            et.commit();
-            
-            callback.accept(new JobPrice());
+    public static void update(JobPrice jp) {
+        String query = "UPDATE job_price SET price_table_id=?, job_type_id=?,price=? WHERE id = ?;";
 
-            DBJobPrice.updateData();
-        } catch (Exception ex) {
-            if (et != null) {
-                et.rollback();
-            }
-            ex.printStackTrace();
-        } finally {
-            em.close();
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            stmt.setInt(1, jp.getPriceTable().getId());
+            stmt.setInt(2, jp.getJobType().getId());
+            stmt.setDouble(3, jp.getPrice());
+            stmt.setInt(4, jp.getId());
+
+            stmt.execute();
+            stmt.close();
+
+            callback.accept(new JobPrice());
+        }
+        catch (SQLException u) {
+            throw new RuntimeException(u);
         }
     }
 

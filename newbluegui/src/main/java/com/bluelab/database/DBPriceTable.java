@@ -1,15 +1,13 @@
 package com.bluelab.database;
 
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 
 import com.bluelab.pricetable.PriceTable;
 
@@ -67,24 +65,20 @@ public class DBPriceTable extends DBConnection {
     }
 
     public static void insert(PriceTable p) {
-        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-        EntityTransaction et = null;
- 
+        String query = "insert into price_table (name) values (?)";
+
         try {
-            et = em.getTransaction();
-            et.begin();
- 
-            em.persist(p);
-            et.commit();
-            
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            stmt.setString(1, p.getName());
+
+            stmt.execute();
+            stmt.close();
+
             callback.accept(new PriceTable());
-        } catch (Exception ex) {
-            if (et != null) {
-                et.rollback();
-            }
-            ex.printStackTrace();
-        } finally {
-            em.close();
+        }
+        catch (SQLException u) {
+            throw new RuntimeException(u);
         }
     }
 
@@ -98,51 +92,43 @@ public class DBPriceTable extends DBConnection {
     }
 
     public static void update(PriceTable p) {
-        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-        EntityTransaction et = null;
-        
-        try {
-            et = em.getTransaction();
-            et.begin();
- 
-            em.merge(p);
-            et.commit();
-            
-            callback.accept(new PriceTable());
+        String query = "UPDATE price_table SET name = ? WHERE id = ?;";
 
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            stmt.setString(1, p.getName());
+            stmt.setInt(2, p.getId());
+
+            stmt.execute();
+            stmt.close();
+
+            callback.accept(new PriceTable());
+            
             DBJobPrice.updateData();
-        } catch (Exception ex) {
-            if (et != null) {
-                et.rollback();
-            }
-            ex.printStackTrace();
-        } finally {
-            em.close();
+        }
+        catch (SQLException u) {
+            throw new RuntimeException(u);
         }
     }
 
     public static void delete(int id) {
-        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-        EntityTransaction et = null;
-        PriceTable p = null;
- 
+        String query = "DELETE FROM price_table WHERE id = ?;";
+
         try {
-            et = em.getTransaction();
-            et.begin();
-            p = em.find(PriceTable.class, id);
-            em.remove(p);
-            et.commit();
-            
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            stmt.setInt(1, id);
+
+            stmt.execute();
+            stmt.close();
+
             callback.accept(new PriceTable());
             
             DBJobPrice.updateData();
-        } catch (Exception ex) {
-            if (et != null) {
-                et.rollback();
-            }
-            ex.printStackTrace();
-        } finally {
-            em.close();
+        }
+        catch (SQLException u) {
+            throw new RuntimeException(u);
         }
     }
 

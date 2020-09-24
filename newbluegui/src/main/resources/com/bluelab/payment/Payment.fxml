@@ -83,8 +83,8 @@
 												<TableView fx:id="viewPayment" BorderPane.alignment="CENTER">
 													<columns>
 														<TableColumn fx:id="colClient" prefWidth="150.0" text="Cliente" />
+														<TableColumn fx:id="colJob" prefWidth="150.0" text="Trabalho" />
 														<TableColumn fx:id="colDate" prefWidth="75.0" text="Data" />
-														<TableColumn fx:id="colValue" prefWidth="75.0" text="Valor" />
 													</columns>
 												</TableView>
 											</center>

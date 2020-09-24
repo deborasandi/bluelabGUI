@@ -9,9 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-
 import com.bluelab.client.Client;
 
 import javafx.application.Platform;
@@ -85,50 +82,69 @@ public class DBClient extends DBConnection {
     }
 
     public static void insert(Client c) {
-        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-        EntityTransaction et = null;
+        String query = "INSERT INTO client (name, cpf, tel, cel, resp_name, resp_cpf, resp_tel, resp_cel, address, number, compl, "
+                + "city, state, cep, price_table_id) VALUES" + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
         try {
-            et = em.getTransaction();
-            et.begin();
+            PreparedStatement stmt = connection.prepareStatement(query);
 
-            em.persist(c);
-            et.commit();
+            stmt.setString(1, c.getName());
+            stmt.setString(2, c.getCpf());
+            stmt.setString(3, c.getTel());
+            stmt.setString(4, c.getCel());
+            stmt.setString(5, c.getRespName());
+            stmt.setString(6, c.getRespCpf());
+            stmt.setString(7, c.getRespTel());
+            stmt.setString(8, c.getRespCel());
+            stmt.setString(9, c.getAddress());
+            stmt.setInt(10, c.getNumber());
+            stmt.setString(11, c.getCompl());
+            stmt.setString(12, c.getCity());
+            stmt.setString(13, c.getState());
+            stmt.setString(14, c.getCep());
+            stmt.setInt(15, c.getPriceTable().getId());
+
+            stmt.execute();
+            stmt.close();
 
             callback.accept(new Client());
         }
-        catch (Exception ex) {
-            if (et != null) {
-                et.rollback();
-            }
-            ex.printStackTrace();
-        }
-        finally {
-            em.close();
+        catch (SQLException u) {
+            throw new RuntimeException(u);
         }
     }
 
     public static void update(Client c) {
-        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-        EntityTransaction et = null;
+        String query = "UPDATE client SET name = ?, cpf = ?, tel = ?, cel = ?, resp_name = ?, resp_cpf = ?, resp_tel = ?, resp_cel = ?, "
+                + "address = ?, number = ?, compl = ?, city = ?, state = ?, cep = ?, price_table_id = ? WHERE id = ?";
 
         try {
-            et = em.getTransaction();
-            et.begin();
+            PreparedStatement stmt = connection.prepareStatement(query);
 
-            em.merge(c);
-            et.commit();
+            stmt.setString(1, c.getName());
+            stmt.setString(2, c.getCpf());
+            stmt.setString(3, c.getTel());
+            stmt.setString(4, c.getCel());
+            stmt.setString(5, c.getRespName());
+            stmt.setString(6, c.getRespCpf());
+            stmt.setString(7, c.getRespTel());
+            stmt.setString(8, c.getRespCel());
+            stmt.setString(9, c.getAddress());
+            stmt.setInt(10, c.getNumber());
+            stmt.setString(11, c.getCompl());
+            stmt.setString(12, c.getCity());
+            stmt.setString(13, c.getState());
+            stmt.setString(14, c.getCep());
+            stmt.setInt(15, c.getPriceTable().getId());
+            stmt.setInt(16, c.getId());
+
+            stmt.execute();
+            stmt.close();
 
             callback.accept(new Client());
         }
-        catch (Exception ex) {
-            if (et != null) {
-                et.rollback();
-            }
-            ex.printStackTrace();
-        }
-        finally {
-            em.close();
+        catch (SQLException u) {
+            throw new RuntimeException(u);
         }
     }
 

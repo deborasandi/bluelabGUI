@@ -2,7 +2,6 @@ package com.bluelab.main;
 
 
 import com.bluelab.database.DBConnection;
-import com.bluelab.database.DBPriceTable;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -30,7 +29,6 @@ public class Main extends Application {
             primaryStage.setScene(scene);
             primaryStage.setMaximized(true);
             primaryStage.setOnCloseRequest(t -> {
-                DBConnection.close();
                 Platform.exit();
                 System.exit(0);
             });

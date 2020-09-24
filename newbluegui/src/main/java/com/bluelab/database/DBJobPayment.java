@@ -74,51 +74,51 @@ public class DBJobPayment extends DBConnection {
     }
 
     public static void insert(JobPayment p) {
-        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-        EntityTransaction et = null;
-
-        try {
-            et = em.getTransaction();
-            et.begin();
-
-            em.persist(p);
-            et.commit();
-
-            callback.accept(new JobPayment());
-        }
-        catch (Exception ex) {
-            if (et != null) {
-                et.rollback();
-            }
-            ex.printStackTrace();
-        }
-        finally {
-            em.close();
-        }
+//        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
+//        EntityTransaction et = null;
+//
+//        try {
+//            et = em.getTransaction();
+//            et.begin();
+//
+//            em.persist(p);
+//            et.commit();
+//
+//            callback.accept(new JobPayment());
+//        }
+//        catch (Exception ex) {
+//            if (et != null) {
+//                et.rollback();
+//            }
+//            ex.printStackTrace();
+//        }
+//        finally {
+//            em.close();
+//        }
     }
 
     public static void update(JobPayment p) {
-        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-        EntityTransaction et = null;
-
-        try {
-            et = em.getTransaction();
-            et.begin();
-
-            em.merge(p);
-            et.commit();
-
-            callback.accept(new JobPayment());
-        }
-        catch (Exception ex) {
-            if (et != null) {
-                et.rollback();
-            }
-            ex.printStackTrace();
-        }
-        finally {
-            em.close();
-        }
+//        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
+//        EntityTransaction et = null;
+//
+//        try {
+//            et = em.getTransaction();
+//            et.begin();
+//
+//            em.merge(p);
+//            et.commit();
+//
+//            callback.accept(new JobPayment());
+//        }
+//        catch (Exception ex) {
+//            if (et != null) {
+//                et.rollback();
+//            }
+//            ex.printStackTrace();
+//        }
+//        finally {
+//            em.close();
+//        }
     }
 
     public static void delete(int id) {

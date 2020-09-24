@@ -1,15 +1,13 @@
 package com.bluelab.database;
 
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 
 import com.bluelab.jobtype.JobType;
 
@@ -68,24 +66,20 @@ public class DBJobType extends DBConnection {
     }
 
     public static void insert(JobType j) {
-        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-        EntityTransaction et = null;
- 
+        String query = "insert into job_type (name) values (?)";
+
         try {
-            et = em.getTransaction();
-            et.begin();
- 
-            em.persist(j);
-            et.commit();
-            
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            stmt.setString(1, j.getName());
+
+            stmt.execute();
+            stmt.close();
+
             callback.accept(new JobType());
-        } catch (Exception ex) {
-            if (et != null) {
-                et.rollback();
-            }
-            ex.printStackTrace();
-        } finally {
-            em.close();
+        }
+        catch (SQLException u) {
+            throw new RuntimeException(u);
         }
     }
 
@@ -99,51 +93,43 @@ public class DBJobType extends DBConnection {
     }
 
     public static void delete(int id) {
-        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-        EntityTransaction et = null;
-        JobType p = null;
- 
+        String query = "DELETE FROM job_type WHERE id = ?;";
+
         try {
-            et = em.getTransaction();
-            et.begin();
-            p = em.find(JobType.class, id);
-            em.remove(p);
-            et.commit();
-            
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            stmt.setInt(1, id);
+
+            stmt.execute();
+            stmt.close();
+
             callback.accept(new JobType());
             
             DBJobPrice.updateData();
-        } catch (Exception ex) {
-            if (et != null) {
-                et.rollback();
-            }
-            ex.printStackTrace();
-        } finally {
-            em.close();
+        }
+        catch (SQLException u) {
+            throw new RuntimeException(u);
         }
     }
 
     public static void update(JobType j) {
-        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-        EntityTransaction et = null;
-        
-        try {
-            et = em.getTransaction();
-            et.begin();
- 
-            em.merge(j);
-            et.commit();
-            
-            callback.accept(new JobType());
+        String query = "UPDATE job_type SET name = ? WHERE id = ?;";
 
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            stmt.setString(1, j.getName());
+            stmt.setInt(2, j.getId());
+
+            stmt.execute();
+            stmt.close();
+
+            callback.accept(new JobType());
+            
             DBJobPrice.updateData();
-        } catch (Exception ex) {
-            if (et != null) {
-                et.rollback();
-            }
-            ex.printStackTrace();
-        } finally {
-            em.close();
+        }
+        catch (SQLException u) {
+            throw new RuntimeException(u);
         }
     }
 

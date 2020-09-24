@@ -10,12 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
-
-import com.bluelab.client.Client;
 import com.bluelab.payment.Payment;
 
 import javafx.application.Platform;
@@ -49,8 +43,8 @@ public class DBPayment extends DBConnection {
                 Payment p = new Payment();
                 p.setId(rs.getInt("id"));
                 p.setClient(DBClient.get(rs.getInt("client_id")));
+                p.setJob(DBJob.get(rs.getInt("job_id")));
                 p.setDate(rs.getDate("date", Calendar.getInstance()));
-                p.setValue(rs.getDouble("value"));
 
                 list.add(p);
                 
@@ -75,60 +69,55 @@ public class DBPayment extends DBConnection {
     }
 
     public static void insert(Payment p) {
-        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-        EntityTransaction et = null;
-
-        try {
-            et = em.getTransaction();
-            et.begin();
-
-            em.persist(p);
-            et.commit();
-
-            callback.accept(new Payment());
-        }
-        catch (Exception ex) {
-            if (et != null) {
-                et.rollback();
-            }
-            ex.printStackTrace();
-        }
-        finally {
-            em.close();
-        }
-    }
-
-    public static void update(Payment p) {
-        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-        EntityTransaction et = null;
-
-        try {
-            et = em.getTransaction();
-            et.begin();
-
-            em.merge(p);
-            et.commit();
-
-            callback.accept(new Payment());
-        }
-        catch (Exception ex) {
-            if (et != null) {
-                et.rollback();
-            }
-            ex.printStackTrace();
-        }
-        finally {
-            em.close();
-        }
-    }
-
-    public static void delete(int id) {
-        String query = "DELETE FROM payment WHERE id = ?;";
+        String query = "insert into payment (client_id, job_id, date) values (?, ?, ?)";
 
         try {
             PreparedStatement stmt = connection.prepareStatement(query);
 
-            stmt.setInt(1, id);
+            stmt.setInt(1, p.getClient().getId());
+            stmt.setInt(2, p.getJob().getId());
+            stmt.setDate(3, p.getDate());
+
+            stmt.execute();
+            stmt.close();
+
+            callback.accept(new Payment());
+        }
+        catch (SQLException u) {
+            throw new RuntimeException(u);
+        }
+    }
+
+    public static void update(Payment p) {
+        String query = "UPDATE payment SET client_id = ?, job_id = ?, date = ? WHERE id = ?;";
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            stmt.setInt(1, p.getClient().getId());
+            stmt.setInt(2, p.getJob().getId());
+            stmt.setDate(3, p.getDate());
+            stmt.setInt(4, p.getId());
+
+            stmt.execute();
+            stmt.close();
+
+            callback.accept(new Payment());
+            
+            DBJobPrice.updateData();
+        }
+        catch (SQLException u) {
+            throw new RuntimeException(u);
+        }
+    }
+
+    public static void delete(int jobId) {
+        String query = "DELETE FROM payment WHERE job_id = ?;";
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            stmt.setInt(1, jobId);
 
             stmt.execute();
             stmt.close();

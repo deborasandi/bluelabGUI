@@ -16,7 +16,6 @@ import com.bluelab.util.ComboBoxSearch;
 import com.bluelab.util.DateEditingCell;
 import com.bluelab.util.DateUtil;
 import com.bluelab.util.FxmlInterface;
-import com.bluelab.util.RealTableCell;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTabPane;
@@ -25,14 +24,10 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.DateCell;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -71,7 +66,7 @@ public class PaymentCtrl implements FxmlInterface {
     private TableColumn<Payment, Date> colDate;
 
     @FXML
-    private TableColumn<Payment, Double> colValue;
+    private TableColumn<Payment, Job> colJob;
 
     @FXML
     private VBox vbox;
@@ -99,18 +94,25 @@ public class PaymentCtrl implements FxmlInterface {
         cbxClient = new ComboBoxSearch<Client>();
         vbox.getChildren().add(1, cbxClient);
         cbxClient.setMaxWidth(Double.MAX_VALUE);
+        
+        cbxClient.setOnAction(event -> {
+            filter();
+
+            if (cbxClient.getValue() == null)
+                return;
+        });
 
         colClient.setCellValueFactory(new PropertyValueFactory<>("client"));
-        colClient.setCellFactory(ComboBoxTableCell.forTableColumn(DBClient.getList()));
-        colClient.setOnEditCommit(event -> {
-            Payment p = event.getTableView().getItems().get(event.getTablePosition().getRow());
-            p.setClient(event.getNewValue());
-
-            if (p.getValue() > 0) {
-                DBPayment.update(p);
-                createJobPayment(p);
-            }
-        });
+//        colClient.setCellFactory(ComboBoxTableCell.forTableColumn(DBClient.getList()));
+//        colClient.setOnEditCommit(event -> {
+//            Payment p = event.getTableView().getItems().get(event.getTablePosition().getRow());
+//            p.setClient(event.getNewValue());
+//
+//            if (p.getValue() > 0) {
+//                DBPayment.update(p);
+//                createJobPayment(p);
+//            }
+//        });
 
         colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
         
@@ -118,27 +120,27 @@ public class PaymentCtrl implements FxmlInterface {
             return new DateEditingCell();
         });
         
-        colDate.setOnEditCommit(event -> {
-            Payment p = event.getTableView().getItems().get(event.getTablePosition().getRow());
-            p.setDate(event.getNewValue());
+//        colDate.setOnEditCommit(event -> {
+//            Payment p = event.getTableView().getItems().get(event.getTablePosition().getRow());
+//            p.setDate(event.getNewValue());
+//
+//            if (p.getValue() > 0) {
+//                DBPayment.update(p);
+//                createJobPayment(p);
+//            }
+//        });
 
-            if (p.getValue() > 0) {
-                DBPayment.update(p);
-                createJobPayment(p);
-            }
-        });
-
-        colValue.setCellValueFactory(new PropertyValueFactory<>("value"));
-        colValue.setCellFactory(c -> new RealTableCell<Payment>(true));
-        colValue.setOnEditCommit(event -> {
-            Payment p = event.getTableView().getItems().get(event.getTablePosition().getRow());
-            p.setValue(event.getNewValue());
-
-            if (p.getClient() != null) {
-                DBPayment.update(p);
-                createJobPayment(p);
-            }
-        });
+        colJob.setCellValueFactory(new PropertyValueFactory<>("job"));
+//        colJob.setCellFactory(c -> new RealTableCell<Payment>(true));
+//        colJob.setOnEditCommit(event -> {
+//            Payment p = event.getTableView().getItems().get(event.getTablePosition().getRow());
+//            p.setValue(event.getNewValue());
+//
+//            if (p.getClient() != null) {
+//                DBPayment.update(p);
+//                createJobPayment(p);
+//            }
+//        });
 
         tabpane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             disableFields(tabpane.getSelectionModel().getSelectedIndex() == 1 ? false : true);
@@ -220,36 +222,36 @@ public class PaymentCtrl implements FxmlInterface {
 
     }
 
-    private void createJobPayment(Payment p) {
-        Client c = p.getClient();
-
-        List<Job> aux = DBJob.list(c);
-
-        double tp = p.getValue();
-
-        for (Job job : aux) {
-
-            double falta = job.getTotal() - job.getTotalPaid();
-
-            if (falta > tp) {
-                job.setTotalPaid(job.getTotalPaid() + tp);
-                tp = 0;
-            }
-            else {
-                job.setTotalPaid(job.getTotal());
-                job.setPaid(true);
-                tp -= falta;
-            }
-
-            if (p != null) {
-                DBJobPayment.insert(new JobPayment(job, p, job.getTotalPaid()));
-            }
-
-            DBJob.update(job);
-
-            if (tp <= 0)
-                break;
-        }
-    }
+//    private void createJobPayment(Payment p) {
+//        Client c = p.getClient();
+//
+//        List<Job> aux = DBJob.list(c);
+//
+//        double tp = p.getValue();
+//
+//        for (Job job : aux) {
+//
+//            double falta = job.getTotal() - job.getTotalPaid();
+//
+//            if (falta > tp) {
+//                job.setTotalPaid(job.getTotalPaid() + tp);
+//                tp = 0;
+//            }
+//            else {
+//                job.setTotalPaid(job.getTotal());
+//                job.setPaid(true);
+//                tp -= falta;
+//            }
+//
+//            if (p != null) {
+//                DBJobPayment.insert(new JobPayment(job, p, job.getTotalPaid()));
+//            }
+//
+//            DBJob.update(job);
+//
+//            if (tp <= 0)
+//                break;
+//        }
+//    }
 
 }
